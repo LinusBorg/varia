@@ -10,15 +10,27 @@ interface useActiveDescendantOptions {
 
 export function useActiveDescendant(
   templateRefs: Ref<HTMLElement[]>,
-  conditionRef: Ref<boolean>,
+  isActiveRef: Ref<boolean>,
+  selectedIndexRef: Ref<number> = ref(0),
   options: useActiveDescendantOptions = {}
 ) {
-  const indexRef = ref(0)
+  const focusIndexRef = ref(0)
   const activeId = ref<string>(null)
   const genId = useIdGenerator(options.idNamespace)
 
+  watch(() => {
+    // When the focusgroup is active, we don't want to switch the index
+    // as that might confuse the user currently navigating.
+    // but when it's not active, and the selected index changes, we can
+    // safely adjust your internal index.
+    if (!isActiveRef.value) {
+      focusIndexRef.value =
+        selectedIndexRef?.value != null ? selectedIndexRef?.value : 0
+    }
+  })
+
   watch(activeId, id => {
-    const el = templateRefs.value[indexRef.value]
+    const el = templateRefs.value[focusIndexRef.value]
     el && el.scrollIntoView() // does that make sense?
   })
 
@@ -37,7 +49,7 @@ export function useActiveDescendant(
   }
 
   const forward = () => {
-    let i = indexRef.value + 1
+    let i = focusIndexRef.value + 1
     if (i >= templateRefs.value.length && options.loop) {
       i = 0
     } else {
@@ -46,7 +58,7 @@ export function useActiveDescendant(
     setActiveIdByIndex(i)
   }
   const backward = () => {
-    let i = indexRef.value - 1
+    let i = focusIndexRef.value - 1
     if (i < 0 && options.loop) {
       i = templateRefs.value.length - 1
     } else {
@@ -58,7 +70,7 @@ export function useActiveDescendant(
   const backDir = options.orientation === 'vertical' ? 'up' : 'left'
   const fwdDir = options.orientation === 'vertical' ? 'down' : 'right'
 
-  useArrowKeys(conditionRef, {
+  useArrowKeys(isActiveRef, {
     [fwdDir]: forward,
     [backDir]: backward,
   })

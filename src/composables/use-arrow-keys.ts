@@ -17,11 +17,11 @@ export function useArrowKeys(
     switch (key) {
       case 'Left':
       case 'ArrowLeft':
-        up && up(e)
+        left && left(e)
         break
       case 'Up':
       case 'ArrowUp':
-        left && left(e)
+        up && up(e)
         break
       case 'Right':
       case 'ArrowRight':

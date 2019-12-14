@@ -1,41 +1,79 @@
 import { useArrowKeys } from './use-arrow-keys'
 import { applyFocus } from '../utils'
-import { watch, Ref } from '@vue/composition-api'
+import { watch, Ref, ref } from '@vue/composition-api'
+import { useKeyIf } from './use-events'
 
-export function useRowingTabIndex(
+export function useRovingTabIndex(
   templateRefs: Ref<HTMLElement[]>,
-  indexRef: Ref<number>,
-  conditionRef: Ref<boolean>,
+  isActiveRef: Ref<boolean>,
+  selectedIndexRef: Ref<number> = ref(0),
   orientation = 'vertical', // "horizontal"
   loop = true
 ) {
+  const focusIndexRef = ref<number>(selectedIndexRef?.value || 0)
+
+  watch(() => {
+    // When the focusgroup is active, we don't want to switch the index
+    // as that might confuse the user currently navigating.
+    // but when it's not active, and the selected index changes, we can
+    // safely adjust your internal index.
+    if (!isActiveRef.value) {
+      focusIndexRef.value =
+        selectedIndexRef?.value != null ? selectedIndexRef?.value : 0
+    }
+  })
+
   // imperatively manage tabindex so template stays clean
-  watch([templateRefs, indexRef], (([els, index]: [HTMLElement[], number]) => {
+  watch([templateRefs, focusIndexRef], (([els, index]: [
+    HTMLElement[],
+    number
+  ]) => {
     for (var i = 0; i < els.length; i++) {
       els[i].tabIndex = i === index ? 0 : -1
     }
   }) as any)
 
   const forward = () => {
-    let i = indexRef.value + 1
-    if (i >= templateRefs.value.length && loop) i = 0
+    const length = templateRefs.value.length
+    let i = focusIndexRef.value + 1
+    if (i >= length && loop) i = 0
+    else i = Math.min(i, length - 1)
     const el = templateRefs.value[i]
+    focusIndexRef.value = i
     el && applyFocus(el)
   }
   const backward = () => {
-    let i = indexRef.value - 1
-    if (i < 0 && loop) i = templateRefs.value.length - 1
+    const length = templateRefs.value.length
+    let i = focusIndexRef.value - 1
+    if (i < 0 && loop) i = length - 1
+    else i = Math.max(i, 0)
     const el = templateRefs.value[i]
+    focusIndexRef.value = i
     el && applyFocus(el)
   }
 
   // Arrow Key Handling
   const backDir = orientation === 'vertical' ? 'up' : 'left'
   const fwdDir = orientation === 'vertical' ? 'down' : 'right'
-  useArrowKeys(conditionRef, {
+  useArrowKeys(isActiveRef, {
     [backDir]: backward,
     [fwdDir]: forward,
   })
+
+  useKeyIf(isActiveRef, ['Home', 'End'], ((event: KeyboardEvent) => {
+    switch (event.key) {
+      case 'Home':
+        focusIndexRef.value = 0
+        break
+      case 'End':
+        focusIndexRef.value = templateRefs.value.length - 1
+        break
+      default:
+        return
+    }
+    const el = templateRefs.value[focusIndexRef.value]
+    el && applyFocus(el)
+  }) as EventHandlerNonNull)
 
   return {
     forward,

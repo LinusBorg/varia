@@ -17,7 +17,7 @@ export interface FocusTrackerState {
 
 export const key: InjectionKey<FocusTrackerState> = Symbol('globalFocusTracker')
 
-export function provideGlobalFocusTracking() {
+export function provideGlobalFocusTracking(doProvide: boolean = true) {
   // all elements that are not claimed by an explicit FocusGroup
   // are part of the global FocusGroup
 
@@ -28,26 +28,27 @@ export function provideGlobalFocusTracking() {
   // it notifies the tracker by calling this function
 
   useEvent(ref(document), 'focusin', e => {
+    docHasFocus.value = true
     prevEl.value = activeEl.value
     activeEl.value = e.target as HTMLElement
   })
 
-  useEvent(ref(document), 'focusin', e => {
+  useEvent(ref(document), 'focusout', () => {
     setTimeout(() => {
-      if (!document.hasFocus()) {
-        docHasFocus.value = false
-      }
+      docHasFocus.value = document.hasFocus()
     }, 0)
   })
-
-  provide(key, {
+  const state = {
     // State
     prevEl: computed(() => prevEl.value),
     activeEl: computed(() => activeEl.value),
     currentEl: computed(() => (docHasFocus.value ? activeEl.value : null)),
     tabDirection: useTabDirection(),
     ...useTabControl(),
-  })
+  }
+  doProvide && provide(key, state)
+
+  return state
 }
 
 export function useGlobalFocusTracker() {

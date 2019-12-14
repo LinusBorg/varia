@@ -1,5 +1,5 @@
 import { ref, Ref, watch } from '@vue/composition-api'
-import { MaybeRef } from '@/types'
+import { MaybeRef } from '~/types'
 import { wrap } from '../utils'
 
 type MaybeRefElement = MaybeRef<HTMLElement | typeof document>

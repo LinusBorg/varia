@@ -3,6 +3,5 @@ declare module '*.vue' {
   export default Vue
 }
 
-declare module 'nanoid/non-secure' {
-  export default any
-}
+type nanoidFn = () => string
+declare module 'nanoid/non-secure'

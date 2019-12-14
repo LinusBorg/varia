@@ -1,18 +1,30 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    Test <br />
+    <input type="text" id="1" /><br />
+    Another Test <br />
+    <input type="text" id="2" />
+    <hr />
+    <ListBox />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import { createComponent, watch } from '@vue/composition-api'
+import { useGlobalFocusTracker } from '../../src'
+import ListBox from '../components/ListBox.vue'
 
-export default {
+export default createComponent({
   name: 'home',
   components: {
-    HelloWorld,
+    ListBox,
   },
-}
+  setup() {
+    const tracker = useGlobalFocusTracker()
+    // watch(tracker.currentEl, el => {
+    //   console.log(el)
+    //   console.log(tracker.tabDirection.value)
+    // })
+  },
+})
 </script>

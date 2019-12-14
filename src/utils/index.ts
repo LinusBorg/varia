@@ -18,7 +18,9 @@ export function isVisible(el: HTMLElement) {
 }
 
 function isFocusable(el: HTMLElement) {
-  return el.isConnected && (focusables.includes(el.tag) || el.tabIndex >= -1)
+  return (
+    el.isConnected && (focusables.includes(el.tagName) || el.tabIndex >= -1)
+  )
 }
 
 export function applyFocus(el: HTMLElement) {
@@ -29,39 +31,4 @@ export function applyFocus(el: HTMLElement) {
     console.warn('Trying to set focus to non-focusable element: ', el)
   }
   return _isFocusable
-}
-
-type DollarRefs = {
-  [key: string]: HTMLElement | Array<HTMLElement>
-}
-
-export function createTemplateListRef(refs: DollarRefs, name: string) {
-  if (!Array.isArray(refs[name])) return
-  const templateRef = ref<HTMLElement[]>([])
-  onUpdated(() => (templateRef.value = [...(<any>refs[name])]))
-  return templateRef
-}
-
-const QUERY_FOCUSABLE_ELEMENTS =
-  'button, [href], input, textarea, [tabindex=-1], [tabindex=0]'
-
-export function createQueryTemplateRef(
-  elRef: Ref<HTMLElement>,
-  query: string = QUERY_FOCUSABLE_ELEMENTS
-) {
-  const templateRef = ref<HTMLElement[]>([])
-  const handler = () => {
-    const el = elRef.value
-    if (el) {
-      templateRef.value = [
-        ...((el.querySelectorAll(query) as unknown) as HTMLElement[]),
-      ]
-    } else {
-      templateRef.value = []
-    }
-  }
-  onMounted(handler)
-  onUpdated(handler)
-
-  return templateRef
 }

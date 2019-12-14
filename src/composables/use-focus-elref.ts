@@ -1,6 +1,6 @@
 import { ref, watch } from '@vue/composition-api'
-import { MaybeRef } from '@/types'
-import { wrap } from '@/utils'
+import { MaybeRef } from '~/types'
+import { wrap } from '~/utils'
 
 export function useFocusElRef(_elRef: MaybeRef<HTMLElement>) {
   const elRef = wrap(_elRef) || ref(null)
