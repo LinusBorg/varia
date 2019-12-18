@@ -1,4 +1,4 @@
-import { Ref } from '@vue/composition-api'
+import { Ref, watch } from '@vue/composition-api'
 import { useEventIf } from './use-events'
 import { applyFocus } from '../utils'
 import { useGlobalFocusTracker } from './use-global-focustracker'
@@ -7,7 +7,16 @@ export function useFocusTrap(
   templateRefs: Ref<HTMLElement[]>,
   conditionRef: Ref<boolean>
 ) {
-  const { tabDirection } = useGlobalFocusTracker()
+  const { tabDirection, focusTrapQueue } = useGlobalFocusTracker()
+  const id = Symbol('focusGroupId')
+
+  watch(conditionRef, isActive => {
+    if (isActive) {
+      focusTrapQueue.add(id)
+    } else {
+      focusTrapQueue.remove(id)
+    }
+  })
 
   useEventIf(conditionRef, document, 'focusout', event => {
     const el = event.target

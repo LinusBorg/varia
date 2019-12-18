@@ -10,7 +10,7 @@ import { useGlobalFocusTracker } from './use-global-focustracker'
 import { applyFocus } from '../utils'
 
 interface useFocusGroupOptions {
-  returnOnEscape?: false | true | ((...args: any) => any)
+  returnOnEscape?: false | true
   returnOnUnMount?: false | true
 }
 
@@ -48,7 +48,7 @@ export function useFocusGroup(
 
   function setFocusToIndex(index: number) {
     const el = templateRefs.value[index]
-    el && el.isConnected && applyFocus(el)
+    el && applyFocus(el)
   }
 
   function returnFocus() {
@@ -59,14 +59,9 @@ export function useFocusGroup(
   if (returnOnUnMount) {
     onBeforeUnmount(returnFocus)
   }
-
   if (returnOnEscape) {
     useKeyIf(containsFocus, ['Esc'], ((e: KeyboardEvent) => {
-      if (typeof returnOnEscape === 'function') {
-        returnOnEscape(currentTabindex, returnEl.value)
-      } else {
-        returnFocus()
-      }
+      returnFocus()
     }) as EventHandlerNonNull)
   }
 
