@@ -9,7 +9,7 @@ interface useActiveDescendantOptions {
 }
 
 export function useActiveDescendant(
-  templateRefs: Ref<HTMLElement[]>,
+  elements: Ref<HTMLElement[]>,
   isActiveRef: Ref<boolean>,
   selectedIndexRef: Ref<number> = ref(0),
   options: useActiveDescendantOptions = {}
@@ -30,37 +30,37 @@ export function useActiveDescendant(
   })
 
   watch(activeId, id => {
-    const el = templateRefs.value[focusIndexRef.value]
+    const el = elements.value[focusIndexRef.value]
     el && el.scrollIntoView() // does that make sense?
   })
 
   const isActiveIndex = (index: number) =>
-    templateRefs.value[index].id === activeId.value
+    elements.value[index].id === activeId.value
 
   const containerAttrs = computed(() => {
     return {
       'aria-activedescendant': activeId,
       tabindex: 0,
-      'aria-owns': templateRefs.value.map(el => el.id).join(' '),
+      'aria-owns': elements.value.map(el => el.id).join(' '),
     }
   })
   function setActiveIdByIndex(index: number) {
-    const activeId = templateRefs.value[index] && templateRefs.value[index].id
+    const activeId = elements.value[index] && elements.value[index].id
   }
 
   const forward = () => {
     let i = focusIndexRef.value + 1
-    if (i >= templateRefs.value.length && options.loop) {
+    if (i >= elements.value.length && options.loop) {
       i = 0
     } else {
-      i = Math.min(i, templateRefs.value.length - 1)
+      i = Math.min(i, elements.value.length - 1)
     }
     setActiveIdByIndex(i)
   }
   const backward = () => {
     let i = focusIndexRef.value - 1
     if (i < 0 && options.loop) {
-      i = templateRefs.value.length - 1
+      i = elements.value.length - 1
     } else {
       i = Math.max(0, i)
     }

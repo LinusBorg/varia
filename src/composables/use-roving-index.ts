@@ -4,7 +4,7 @@ import { watch, Ref, ref } from '@vue/composition-api'
 import { useKeyIf } from './use-events'
 
 export function useRovingTabIndex(
-  templateRefs: Ref<HTMLElement[]>,
+  elements: Ref<HTMLElement[]>,
   isActiveRef: Ref<boolean>,
   selectedIndexRef: Ref<number> = ref(0),
   orientation = 'vertical', // "horizontal"
@@ -24,30 +24,27 @@ export function useRovingTabIndex(
   })
 
   // imperatively manage tabindex so template stays clean
-  watch([templateRefs, focusIndexRef], (([els, index]: [
-    HTMLElement[],
-    number
-  ]) => {
+  watch([elements, focusIndexRef], (([els, index]: [HTMLElement[], number]) => {
     for (var i = 0; i < els.length; i++) {
       els[i].tabIndex = i === index ? 0 : -1
     }
   }) as any)
 
   const forward = () => {
-    const length = templateRefs.value.length
+    const length = elements.value.length
     let i = focusIndexRef.value + 1
     if (i >= length && loop) i = 0
     else i = Math.min(i, length - 1)
-    const el = templateRefs.value[i]
+    const el = elements.value[i]
     focusIndexRef.value = i
     el && applyFocus(el)
   }
   const backward = () => {
-    const length = templateRefs.value.length
+    const length = elements.value.length
     let i = focusIndexRef.value - 1
     if (i < 0 && loop) i = length - 1
     else i = Math.max(i, 0)
-    const el = templateRefs.value[i]
+    const el = elements.value[i]
     focusIndexRef.value = i
     el && applyFocus(el)
   }
@@ -66,12 +63,12 @@ export function useRovingTabIndex(
         focusIndexRef.value = 0
         break
       case 'End':
-        focusIndexRef.value = templateRefs.value.length - 1
+        focusIndexRef.value = elements.value.length - 1
         break
       default:
         return
     }
-    const el = templateRefs.value[focusIndexRef.value]
+    const el = elements.value[focusIndexRef.value]
     el && applyFocus(el)
   }) as EventHandlerNonNull)
 

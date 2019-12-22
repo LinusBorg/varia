@@ -4,7 +4,7 @@ import { applyFocus } from '../utils'
 import { useGlobalFocusTracker } from './use-global-focustracker'
 
 export function useFocusTrap(
-  templateRefs: Ref<HTMLElement[]>,
+  elements: Ref<HTMLElement[]>,
   conditionRef: Ref<boolean>
 ) {
   const { tabDirection, focusTrapQueue } = useGlobalFocusTracker()
@@ -20,7 +20,7 @@ export function useFocusTrap(
 
   useEventIf(conditionRef, document, 'focusout', event => {
     const el = event.target
-    const els = templateRefs.value
+    const els = elements.value
     if (els[0] === el && tabDirection.value === 'backward') {
       const lastEl = els[els.length - 1]
       applyFocus(lastEl)
