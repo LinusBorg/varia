@@ -14,7 +14,6 @@ export interface FocusTrackerState {
   activeEl: Readonly<Ref<HTMLElement | null>>
   currentEl: Readonly<Ref<HTMLElement | null>>
   tabDirection: Readonly<Ref<'backward' | 'forward' | null>>
-  focusTrapQueue: Readonly<ReturnType<typeof useFocusTrapQueue>>
 }
 
 export const key: InjectionKey<FocusTrackerState> = Symbol('globalFocusTracker')
@@ -46,7 +45,6 @@ export function provideGlobalFocusTracking(doProvide: boolean = true) {
     activeEl: computed(() => activeEl.value),
     currentEl: computed(() => (docHasFocus.value ? activeEl.value : null)),
     tabDirection: useTabDirection(),
-    focusTrapQueue: useFocusTrapQueue(),
   }
   doProvide && provide(key, state)
 
@@ -55,21 +53,6 @@ export function provideGlobalFocusTracking(doProvide: boolean = true) {
 
 export function useGlobalFocusTracker() {
   return inject(key) as FocusTrackerState
-}
-
-function useFocusTrapQueue() {
-  const queue = reactive<Set<Symbol>>(new Set())
-  const remove = (id: Symbol) => queue.delete(id)
-  const add = (id: Symbol) => {
-    remove(id)
-    queue.add(id)
-  }
-  const active = computed(() => Array.from(queue)[0])
-  return Object.seal({
-    active,
-    add,
-    remove,
-  })
 }
 
 function useTabDirection() {

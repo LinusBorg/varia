@@ -1,13 +1,15 @@
-import { Ref, watch } from '@vue/composition-api'
+import { Ref, watch, reactive, computed } from '@vue/composition-api'
 import { useEventIf } from './use-events'
 import { applyFocus } from '../utils'
 import { useGlobalFocusTracker } from './use-global-focustracker'
+
+const focusTrapQueue = useFocusTrapQueue()
 
 export function useFocusTrap(
   elements: Ref<HTMLElement[]>,
   conditionRef: Ref<boolean>
 ) {
-  const { tabDirection, focusTrapQueue } = useGlobalFocusTracker()
+  const { tabDirection } = useGlobalFocusTracker()
   const id = Symbol('focusGroupId')
 
   watch(conditionRef, isActive => {
@@ -28,5 +30,20 @@ export function useFocusTrap(
       const firstEl = els[0]
       applyFocus(firstEl)
     }
+  })
+}
+
+function useFocusTrapQueue() {
+  const queue = reactive<Set<Symbol>>(new Set())
+  const remove = (id: Symbol) => queue.delete(id)
+  const add = (id: Symbol) => {
+    remove(id)
+    queue.add(id)
+  }
+  const active = computed(() => Array.from(queue).reverse()[0])
+  return Object.seal({
+    active,
+    add,
+    remove,
   })
 }
