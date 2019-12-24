@@ -34,11 +34,11 @@ export function useEventIf(
 export function useKeyIf(
   condRef: Ref<boolean>,
   keys: string[],
-  handler: EventHandlerNonNull,
+  handler: (e?: KeyboardEvent) => void,
   opts?: any
 ) {
   useEventIf(condRef, document, 'keyup', e => {
     if (keys.indexOf((e as any).key) === -1) return
-    handler(e)
+    handler(e as KeyboardEvent)
   })
 }
