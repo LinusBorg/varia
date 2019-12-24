@@ -4,7 +4,11 @@ type DollarRefs = { [key: string]: Vue | Element | Vue[] | Element[] }
 
 export function createTemplateListRef(refs: DollarRefs, name: string) {
   console.log(refs, name)
-  if (!Array.isArray(refs[name])) return
+  if (!Array.isArray(refs[name])) {
+    throw new Error(
+      'createTemplateListRef expects an array ref, got a single element ref'
+    )
+  }
   const templateRef = ref<HTMLElement[]>([])
   const handler = () => (templateRef.value = [...(<any>refs[name])])
   onUpdated(handler)
