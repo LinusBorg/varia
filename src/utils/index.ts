@@ -1,4 +1,5 @@
-import { isRef, ref, Ref, onUpdated, onMounted } from '@vue/composition-api'
+import { VueConstructor } from 'vue'
+import { isRef, ref } from '@vue/composition-api'
 import { MaybeRef } from '../types'
 
 export const wrap = <T>(value: MaybeRef<T>) =>
@@ -23,7 +24,24 @@ function isFocusable(el: HTMLElement) {
   )
 }
 
-export function applyFocus(el: HTMLElement) {
+export function applyFocus(
+  _el: HTMLElement | InstanceType<VueConstructor>
+): boolean {
+  // if it's a Vue Component Instance ...
+  if ((_el as any)._isVue) {
+    const vm = _el as InstanceType<VueConstructor>
+    if (applyFocus(vm.$el as HTMLElement)) {
+      return true
+    } else {
+      const el2 = vm.$el.querySelector(
+        `button, [href], input, select, textarea, [tabindex=0],[tabindex=-1])`
+      )
+      if (!el2) return false
+      return applyFocus(el2 as HTMLElement)
+    }
+  }
+  // else, it's an Element
+  const el = _el as HTMLElement
   const _isFocusable = isFocusable(el)
   if (_isFocusable) {
     el.focus()
