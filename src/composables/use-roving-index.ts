@@ -75,5 +75,6 @@ export function useRovingTabIndex(
   return {
     forward,
     backward,
+    index: focusIndexRef,
   }
 }
