@@ -25,7 +25,9 @@ export default createComponent({
       computed<HTMLElement>(() => refs.ul as HTMLElement),
       'li.selectable'
     )
-    const focusGroup = useFocusGroup(els)
+    const focusGroup = useFocusGroup(els, {
+      includeChildComponents: true,
+    })
     useRovingTabIndex(els, focusGroup.isActive)
     // return { els }
   },
