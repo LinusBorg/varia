@@ -57,7 +57,7 @@ export function useRovingTabIndex(
     [fwdDir]: forward,
   })
 
-  useKeyIf(isActiveRef, ['Home', 'End'], ((event: KeyboardEvent) => {
+  useKeyIf(isActiveRef, ['Home', 'End'], (event: KeyboardEvent) => {
     switch (event.key) {
       case 'Home':
         focusIndexRef.value = 0
@@ -70,7 +70,7 @@ export function useRovingTabIndex(
     }
     const el = elements.value[focusIndexRef.value]
     el && applyFocus(el)
-  }) as EventHandlerNonNull)
+  })
 
   return {
     forward,

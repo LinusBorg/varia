@@ -34,7 +34,7 @@ export function useEventIf(
 export function useKeyIf(
   condRef: Ref<boolean>,
   keys: string[],
-  handler: (e?: KeyboardEvent) => void,
+  handler: (e: KeyboardEvent) => void,
   opts?: any
 ) {
   useEventIf(condRef, document, 'keyup', e => {
