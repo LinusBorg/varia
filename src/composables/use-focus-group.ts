@@ -57,7 +57,7 @@ export function useFocusGroup(
 
   function setFocusToIndex(index: number) {
     const el = elements.value[index]
-    return el && applyFocus(el) // TODO
+    return el && applyFocus(el)
   }
 
   return {
