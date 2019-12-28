@@ -3,7 +3,7 @@ import { createTemplateRef } from '../composables/template-ref-helpers'
 import { useFocusGroup, useRovingTabIndex } from '~/composables'
 import { useIdGenerator } from '../composables/use-id-generator'
 
-interface useTabsOptions {
+export interface useTabsOptions {
   vertical?: boolean
   autoSelect?: boolean
 }
@@ -18,7 +18,7 @@ export function useTabs(
   const elements = createTemplateRef(ctx.refs, names)
   const focusGroup = useFocusGroup(elements)
 
-  const idGen = useIdGenerator()
+  const idGen = useIdGenerator('tabs')
 
   const selectedIndex = computed(() => {
     const idx = names.findIndex(name => name === selectedName.value)
@@ -52,13 +52,14 @@ export function useTabs(
         const id = idGen(name)
         obj.tabs[name] = {
           role: 'tab',
-          ariaSelected: name === selectedName.value,
-          ariaControls: id,
+          'aria-selected': name === selectedName.value,
+          'aria-controls': id,
         }
         obj.tabPanels[name] = {
-          role: 'tabPanel',
+          role: 'tabpanel',
           id,
           hidden: name !== selectedName.value,
+          tabindex: name == selectedName.value ? 0 : undefined,
         }
         return obj
       },
