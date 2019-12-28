@@ -1,3 +1,4 @@
+export * from './widgets'
 export * from './composables'
 export * from './directives'
 export * from './types'
