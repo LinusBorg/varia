@@ -5,9 +5,8 @@ import {
   computed,
   Ref,
   InjectionKey,
-  reactive,
 } from '@vue/composition-api'
-import { useEvent, useKeyIf } from './use-events'
+import { useEvent } from './use-events'
 
 export interface FocusTrackerState {
   prevEl: Readonly<Ref<HTMLElement | null>>
@@ -25,16 +24,16 @@ export function provideGlobalFocusTracking(doProvide: boolean = true) {
   const prevEl = ref<HTMLElement>(null)
   const activeEl = ref<HTMLElement>(document.activeElement)
   const docHasFocus = ref<boolean>(document.hasFocus())
-  // when a FocusGroup takes aver focus management,
+  // when a FocusGroup takes over focus management,
   // it notifies the tracker by calling this function
 
-  useEvent(ref(document), 'focusin', e => {
+  useEvent(document, 'focusin', e => {
     docHasFocus.value = true
     prevEl.value = activeEl.value
     activeEl.value = e.target as HTMLElement
   })
 
-  useEvent(ref(document), 'focusout', () => {
+  useEvent(document, 'focusout', () => {
     setTimeout(() => {
       docHasFocus.value = document.hasFocus()
     }, 0)
@@ -57,7 +56,7 @@ export function useGlobalFocusTracker() {
 
 function useTabDirection() {
   const tabDirection = ref<'backward' | 'forward'>(null)
-  useEvent(ref(document), 'keydown', ((event: KeyboardEvent) => {
+  useEvent(document, 'keydown', ((event: KeyboardEvent) => {
     if (event.key === 'Tab') {
       tabDirection.value = event.shiftKey ? 'backward' : 'forward'
     }
