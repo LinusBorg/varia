@@ -1,4 +1,4 @@
-import { wait } from 'helpers'
+import { wait, focus } from 'helpers'
 import {
   useGlobalFocusTracker,
   provideGlobalFocusTracking,
@@ -7,12 +7,6 @@ import {
 import { fireEvent } from '@testing-library/dom'
 import { createComponent } from '@vue/composition-api'
 import { mount } from '@vue/test-utils'
-
-const focus = (el: any) => {
-  ;(el as HTMLElement).focus()
-  // workaround for jsdom: focus() does not trigger focusin event
-  fireEvent.focusIn(el as Element)
-}
 
 describe('useGlobalFocusTracker', () => {
   it('tracks currently focussed element', async () => {
