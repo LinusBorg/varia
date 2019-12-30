@@ -17,6 +17,7 @@
   },
   "peerDependencies": {},
   "devDependencies": {
+    "@testing-library/vue": "^4.1.0",
     "@types/jest": "^24.0.19",
     "@vue/cli-plugin-babel": "^4.1.0",
     "@vue/cli-plugin-eslint": "^4.1.0",
@@ -31,6 +32,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-vue": "^5.0.0",
+    "jsdom": "15.1.1",
     "lint-staged": "^9.4.3",
     "np": "^5.2.1",
     "prettier": "^1.19.1",
