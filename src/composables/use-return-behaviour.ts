@@ -12,7 +12,7 @@ import { useKeyIf } from './use-events'
 
 export function useReturnBehaviour(
   isActive: Ref<boolean>,
-  options: useFocusGroupOptions
+  options: useFocusGroupOptions = {}
 ) {
   const returnEl = ref<HTMLElement>(null)
 
@@ -24,8 +24,9 @@ export function useReturnBehaviour(
   })
 
   function returnFocus() {
+    if (!isActive.value) return
     const el = returnEl.value
-    el && el.isConnected && applyFocus(el)
+    el && applyFocus(el)
   }
 
   if (options.returnOnUnmount) {
