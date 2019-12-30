@@ -1,6 +1,15 @@
 // in Vue 3, we can do all of that within the templataeRef Fn, maybe?
-import Vue, { DirectiveOptions } from 'vue'
+import Vue, { DirectiveOptions, VNodeDirective } from 'vue'
 import { applyFocus } from '../utils'
+
+interface RefFnBinding extends VNodeDirective {
+  value?: (el: HTMLElement) => void
+}
+export const refFn: DirectiveOptions = {
+  bind: (el: HTMLElement, { value }: RefFnBinding) => value && value(el),
+  componentUpdated: (el: HTMLElement, { value }: RefFnBinding) =>
+    value && value(el),
+}
 
 const keyToClickHandlers = new Map()
 export const keyToClick: DirectiveOptions = {

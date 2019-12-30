@@ -1,6 +1,40 @@
-import { ref, onUpdated, Ref, onMounted } from '@vue/composition-api'
+import {
+  ref,
+  onUpdated,
+  Ref,
+  onMounted,
+  onBeforeUpdate,
+} from '@vue/composition-api'
 
 type DollarRefs = { [key: string]: Vue | Element | Vue[] | Element[] }
+
+export function createTemplateRefFn() {
+  const elements = ref<HTMLElement[]>([])
+  let cache: HTMLElement[] = []
+
+  onBeforeUpdate(() => {
+    cache = []
+  })
+  onMounted(() => (elements.value = cache))
+  onUpdated(() => (elements.value = cache))
+
+  const fn = (el: HTMLElement) => cache.push(el)
+
+  return {
+    elements,
+    fn,
+  }
+}
+export function createTemplateRefDynamic(
+  refs: DollarRefs,
+  names: string | string[]
+) {
+  if (Array.isArray(names)) {
+    return createTemplateRef(refs, names)
+  } else {
+    return createTemplateListRef(refs, names)
+  }
+}
 
 export function createTemplateListRef(refs: DollarRefs, name: string) {
   console.log(refs, name)
