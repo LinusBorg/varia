@@ -2,7 +2,7 @@ import { ref, Ref, watch } from '@vue/composition-api'
 import { MaybeRef } from '~/types'
 import { wrap } from '../utils'
 
-type MaybeRefElement = MaybeRef<HTMLElement | typeof document>
+type MaybeRefElement = MaybeRef<HTMLElement | typeof document | null>
 
 export function useEvent(
   _el: MaybeRefElement = ref(document),
@@ -28,7 +28,7 @@ export function useEventIf(
   handler: EventHandlerNonNull,
   opts?: any
 ) {
-  useEvent(elRef, name, event => condRef.value && handler(event), opts)
+  return useEvent(elRef, name, event => condRef.value && handler(event), opts)
 }
 
 export function useKeyIf(
@@ -37,7 +37,7 @@ export function useKeyIf(
   handler: (e: KeyboardEvent) => void,
   opts?: any
 ) {
-  useEventIf(condRef, document, 'keyup', e => {
+  return useEventIf(condRef, document, 'keyup', e => {
     if (keys.indexOf((e as any).key) === -1) return
     handler(e as KeyboardEvent)
   })
