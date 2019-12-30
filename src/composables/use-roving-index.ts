@@ -12,15 +12,8 @@ export function useRovingTabIndex(
 ) {
   const focusIndexRef = ref<number>(selectedIndexRef?.value || 0)
 
-  watch(() => {
-    // When the focusgroup is active, we don't want to switch the index
-    // as that might confuse the user currently navigating.
-    // but when it's not active, and the selected index changes, we can
-    // safely adjust your internal index.
-    if (!isActiveRef.value) {
-      focusIndexRef.value =
-        selectedIndexRef?.value != null ? selectedIndexRef?.value : 0
-    }
+  watch(selectedIndexRef, selectedIndex => {
+    focusIndexRef.value = selectedIndex != null ? selectedIndex : 0
   })
 
   // imperatively manage tabindex so template stays clean
