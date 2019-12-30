@@ -1,27 +1,28 @@
-import { SetupContext, Ref, computed, watch } from '@vue/composition-api'
-import { createTemplateRef } from '../composables/template-ref-helpers'
+import Vue from 'vue'
+import { Ref, computed, watch } from '@vue/composition-api'
+import { createTemplateRefFn } from '../composables/template-ref-helpers'
 import { useFocusGroup, useRovingTabIndex } from '~/composables'
 import { useIdGenerator } from '../composables/use-id-generator'
+import { MaybeRef } from '~/types'
+import { wrap } from '~/utils'
 
 export interface useTabsOptions {
   vertical?: boolean
   autoSelect?: boolean
 }
 export function useTabs(
-  ctx: SetupContext,
-  names: string[],
+  _names: MaybeRef<string[]>,
   selectedName: Ref<string>,
   options: useTabsOptions = {}
 ) {
+  const names = wrap(_names)
   const { autoSelect } = options
 
-  const elements = createTemplateRef(ctx.refs, names)
+  const { elements, fn: tabsRefFn } = createTemplateRefFn()
   const focusGroup = useFocusGroup(elements)
 
-  const idGen = useIdGenerator('tabs')
-
   const selectedIndex = computed(() => {
-    const idx = names.findIndex(name => name === selectedName.value)
+    const idx = names.value.findIndex(name => name === selectedName.value)
     return idx !== -1 ? idx : 0
   })
   const rovingTabIndex = useRovingTabIndex(
@@ -38,38 +39,31 @@ export function useTabs(
     })
   }
 
-  type TAttributes = {
-    tabs: {
-      [key: string]: Record<string, any>
-    }
-    tabPanels: {
-      [key: string]: Record<string, any>
+  // Attribute generator functions
+  const idGen = useIdGenerator('tabs')
+  const tab = (name: string) => {
+    const id = idGen(name)
+    return {
+      role: 'tab',
+      'aria-selected': name === selectedName.value,
+      'aria-controls': id,
     }
   }
-  const attributes = computed(() => {
-    return names.reduce<TAttributes>(
-      (obj, name) => {
-        const id = idGen(name)
-        obj.tabs[name] = {
-          role: 'tab',
-          'aria-selected': name === selectedName.value,
-          'aria-controls': id,
-        }
-        obj.tabPanels[name] = {
-          role: 'tabpanel',
-          id,
-          hidden: name !== selectedName.value,
-          tabindex: name == selectedName.value ? 0 : undefined,
-        }
-        return obj
-      },
-      { tabs: {}, tabPanels: {} }
-    )
-  })
+  const tabPanel = (name: string) => {
+    const id = idGen(name)
+    return {
+      role: 'tabpanel',
+      id,
+      hidden: name !== selectedName.value,
+      tabindex: name == selectedName.value ? 0 : undefined,
+    }
+  }
 
   return {
+    fn: tabsRefFn,
     ...rovingTabIndex,
     isActive: focusGroup.isActive,
-    attributes,
+    tab,
+    tabPanel,
   }
 }
