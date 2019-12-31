@@ -3,15 +3,23 @@ import { applyFocus } from '../utils'
 import { watch, Ref, ref } from '@vue/composition-api'
 import { useKeyIf } from './use-events'
 
+interface IUseRovingTabIndexOptions {
+  orientation?: 'vertical' | 'horizontal'
+  loop?: boolean
+}
+const defaults = {
+  orientation: 'vertical', // "horizontal"
+  loop: true,
+}
 export function useRovingTabIndex(
   elements: Ref<HTMLElement[]>,
   isActiveRef: Ref<boolean>,
   selectedIndexRef: Ref<number> = ref(0),
-  orientation = 'vertical', // "horizontal"
-  loop = true
+  options: IUseRovingTabIndexOptions = {}
 ) {
-  const focusIndexRef = ref<number>(selectedIndexRef?.value || 0)
+  const { orientation, loop } = Object.assign({}, defaults, options)
 
+  const focusIndexRef = ref<number>(selectedIndexRef?.value || 0)
   watch(selectedIndexRef, selectedIndex => {
     focusIndexRef.value = selectedIndex != null ? selectedIndex : 0
   })

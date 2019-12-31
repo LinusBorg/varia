@@ -52,8 +52,10 @@ export function useMenu(
     elements,
     focusGroup.isActive,
     undefined,
-    orientation,
-    loop
+    {
+      orientation,
+      loop,
+    }
   )
 
   return {
