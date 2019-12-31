@@ -24,7 +24,7 @@ export function mount(setup: SetupFn, options?: any) {
           return h()
         },
   }
-  _mount(component, options)
+  return _mount(component, options)
 }
 
 const Parent = {
