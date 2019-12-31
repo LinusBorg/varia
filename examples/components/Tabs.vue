@@ -3,12 +3,12 @@
     <ul class="nav nav-tabs" role="tablist">
       <li class="nav-item" v-for="tab in tabs" :key="tab.name">
         <a
+          v-ref-fn="tabsA11y.fn"
           href="#"
           class="nav-link"
           :class="activeTab === tab.name && 'active'"
           v-bind="tabsA11y.tab(tab.name)"
           @click="setTab(tab.name)"
-          v-ref-fn="tabsA11y.fn"
           >{{ tab.label }}</a
         >
       </li>
@@ -67,7 +67,7 @@ export default createComponent({
     const setTab = (tab: string) => (activeTab.value = tab)
 
     // A11y
-    const tabsA11y = useTabs(tabNames, activeTab, {
+    const tabsA11y = useTabs(activeTab, {
       autoSelect: true,
     })
     return {

@@ -11,26 +11,28 @@ export interface useTabsOptions {
   autoSelect?: boolean
 }
 export function useTabs(
-  _names: MaybeRef<string[]>,
   selectedName: Ref<string>,
   options: useTabsOptions = {}
 ) {
-  const names = wrap(_names)
   const { autoSelect } = options
 
   const { elements, fn: tabsRefFn } = createTemplateRefFn()
   const focusGroup = useFocusGroup(elements)
 
   const selectedIndex = computed(() => {
-    const idx = names.value.findIndex(name => name === selectedName.value)
+    const idx = elements.value.findIndex(
+      el => el.dataset['tabName'] === '' + selectedName.value
+    )
     return idx !== -1 ? idx : 0
   })
   const rovingTabIndex = useRovingTabIndex(
     elements,
     focusGroup.isActive,
     selectedIndex,
-    'horizontal',
-    true
+    {
+      orientation: 'horizontal',
+      loop: true,
+    }
   )
 
   if (autoSelect) {
@@ -47,6 +49,7 @@ export function useTabs(
       role: 'tab',
       'aria-selected': name === selectedName.value,
       'aria-controls': id,
+      'data-tab-name': name,
     }
   }
   const tabPanel = (name: string) => {
