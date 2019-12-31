@@ -8,17 +8,19 @@ import {
 
 type DollarRefs = { [key: string]: Vue | Element | Vue[] | Element[] }
 
-export function createTemplateRefFn() {
+export function createTemplateRefFn(cb?: (el: HTMLElement) => any) {
   const elements = ref<HTMLElement[]>([])
   let cache: HTMLElement[] = []
 
-  onBeforeUpdate(() => {
-    cache = []
-  })
+  onBeforeUpdate(() => (cache = []))
   onMounted(() => (elements.value = cache))
   onUpdated(() => (elements.value = cache))
 
-  const fn = (el: HTMLElement) => cache.push(el)
+  const fn = (el: HTMLElement) => {
+    cache.push(el)
+    // if we need to do something else with the el, we can pass in a callback
+    cb && cb(el)
+  }
 
   return {
     elements,
