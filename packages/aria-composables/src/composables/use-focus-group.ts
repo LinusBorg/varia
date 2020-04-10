@@ -1,16 +1,15 @@
-import { computed, InjectionKey } from 'vue'
+import { computed, InjectionKey, Ref } from 'vue'
 import { useGlobalFocusTracker } from './use-global-focustracker'
 import { useReturnBehaviour } from './use-return-behaviour'
 import { applyFocus } from '../utils'
-import { TemplateRefs, useFocusGroupOptions } from '../types'
+import { useFocusGroupOptions } from '../types'
 
 export const GroupInterfaceKey: InjectionKey<any> = Symbol('GroupInterface')
 
-export function useFocusGroup(
-  elements: TemplateRefs,
+export function useFocusGroup<El extends HTMLElement>(
+  elements: Ref<El[]>,
   options: useFocusGroupOptions = {}
 ) {
-  const { integrateWithParentGroup, includeChildComponents } = options
   const { currentEl: currentElGlobal } = useGlobalFocusTracker()
 
   const currentTabindex = computed(

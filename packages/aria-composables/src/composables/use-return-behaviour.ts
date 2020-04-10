@@ -1,14 +1,14 @@
 import { useFocusGroupOptions } from '../types'
 import { Ref, watch, ref, onBeforeUnmount, computed } from 'vue'
 import { useGlobalFocusTracker } from './use-global-focustracker'
-import { applyFocus } from '~/utils'
+import { applyFocus } from '../utils'
 import { useKeyIf } from './use-events'
 
 export function useReturnBehaviour(
   isActive: Ref<boolean>,
   options: useFocusGroupOptions = {}
 ) {
-  const returnEl = ref<HTMLElement>(null)
+  const returnEl = ref<HTMLElement | null>(null)
 
   const { prevEl } = useGlobalFocusTracker()
   watch(isActive, (newVal, oldVal) => {

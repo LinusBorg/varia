@@ -25,11 +25,11 @@ export function useRovingTabIndex(
   })
 
   // imperatively manage tabindex so template stays clean
-  watch([elements, focusIndexRef], (([els, index]: [HTMLElement[], number]) => {
+  watch([elements, focusIndexRef], ([els, index]: [HTMLElement[], number]) => {
     for (var i = 0; i < els.length; i++) {
       els[i].tabIndex = i === index ? 0 : -1
     }
-  }) as any) //TODO: fix type of watcher callback
+  }) //TODO: fix type of watcher callback
 
   const forward = () => {
     const length = elements.value.length
