@@ -7,5 +7,8 @@
   ],
   "devDependencies": {
     "lerna": "^3.20.2"
+  },
+  "dependencies": {
+    "tsdx": "^0.13.1"
   }
 }

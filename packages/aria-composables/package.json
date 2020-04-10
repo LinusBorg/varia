@@ -1,0 +1,54 @@
+{
+  "name": "vue-aria-composables",
+  "version": "0.0.0",
+  "description": "Core composables for vue-aria-widgets",
+  "author": "Thorsten <t.luenborg@googlemail.com>",
+  "homepage": "https://github.com/LinusBorg/vue-focus-management/packages/aria-composables#readme",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "eslint src/**/*.ts test/**/*.ts --fix",
+    "prepare": "tsdx build"
+  },
+  "peerDependencies": {
+    "vue": "^3.0.0-alpha.11"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "module": "dist/aria-composables-2.esm.js",
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "@vue/eslint-config-typescript": "^5.0.1",
+    "eslint-plugin-vue": "^6.1.2",
+    "husky": "^4.2.5",
+    "tslib": "^1.11.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "tsdx": "^0.13.1"
+  },
+  "publishConfig": {
+    "registry": "https://registry.yarnpkg.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LinusBorg/vue-focus-management.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LinusBorg/vue-focus-management/issues"
+  }
+}
