@@ -20,9 +20,9 @@
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
     "baseUrl": "./",
-    "paths": {
-      "*": ["src/*", "node_modules/*"]
-    },
+    "include": ["packages/*/src/**/*.ts"],
+    "exclude": ["node_modules"],
+
     "jsx": "preserve",
     "esModuleInterop": true
   }

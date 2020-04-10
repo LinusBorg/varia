@@ -1,4 +1,4 @@
-export * from './template-ref-helpers'
+export * from './template-refs'
 export * from './use-global-focustracker'
 
 export * from './use-focus-group'

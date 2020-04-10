@@ -1,12 +1,7 @@
 import { ref, provide, inject, computed, Ref, InjectionKey } from 'vue'
 import { useEvent } from './use-events'
 
-export interface FocusTrackerState<El extends HTMLElement> {
-  prevEl: Readonly<Ref<El | null>>
-  activeEl: Readonly<Ref<El | null>>
-  currentEl: Readonly<Ref<El | null>>
-  tabDirection: Readonly<Ref<'backward' | 'forward' | null>>
-}
+import { FocusTrackerState } from '../types'
 
 export const key: InjectionKey<FocusTrackerState> = Symbol('globalFocusTracker')
 
