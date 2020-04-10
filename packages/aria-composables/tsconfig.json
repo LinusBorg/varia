@@ -1,4 +1,5 @@
 {
+  "extends": "../../tconfig.json",
   "include": ["src", "types"],
   "compilerOptions": {
     "module": "esnext",

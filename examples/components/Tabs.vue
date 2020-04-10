@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, ref } from '@vue/composition-api'
+import { defineComponent, ref } from 'vue'
 import { useTabs, refFn } from '../../src'
 const tabs = [
   {
@@ -58,7 +58,7 @@ const tabs = [
 ]
 const tabNames = tabs.map(t => t.name)
 
-export default createComponent({
+export default defineComponent({
   directives: {
     refFn,
   },

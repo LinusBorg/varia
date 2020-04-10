@@ -9,9 +9,9 @@
 </template>
 
 <script lang="ts">
-import { createComponent } from '@vue/composition-api'
+import { defineComponent } from 'vue'
 import { provideGlobalFocusTracking } from '~/index'
-export default createComponent({
+export default defineComponent({
   name: 'App',
   setup() {
     provideGlobalFocusTracking()

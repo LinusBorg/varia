@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { createComponent, computed, ref, onUpdated } from '@vue/composition-api'
+import { defineComponent, computed, ref, onUpdated } from 'vue'
 import {
   useFocusGroup,
   createTemplateRef,
@@ -27,7 +27,7 @@ import {
   refFn,
 } from '../../src'
 
-export default createComponent({
+export default defineComponent({
   name: 'ListBox',
   directives: {
     refFn,

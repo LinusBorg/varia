@@ -33,7 +33,7 @@
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@vue/eslint-config-typescript": "^5.0.1",
-    "eslint-plugin-vue": "^6.1.2",
+    "eslint-plugin-vue": "^7.0.0-alpha.0",
     "husky": "^4.2.5",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"

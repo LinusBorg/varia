@@ -1,12 +1,14 @@
 {
-  "include": ["src", "types"],
   "compilerOptions": {
+    "paths": {
+      "vue-aria-composables": ["aria-composables/src"],
+      "vue-aria-widgets": ["aria-widgets/src"]
+    },
     "module": "esnext",
     "lib": ["dom", "esnext"],
     "importHelpers": true,
     "declaration": true,
     "sourceMap": true,
-    "rootDir": "./src",
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -19,10 +21,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "baseUrl": "./",
-    "include": ["packages/*/src/**/*.ts"],
-    "exclude": ["node_modules"],
-
+    "baseUrl": "./packages",
     "jsx": "preserve",
     "esModuleInterop": true
   }
