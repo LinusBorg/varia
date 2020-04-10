@@ -12,8 +12,8 @@ export function createTemplateRefFn(cb?: (el: HTMLElement) => any) {
   const elements = ref<HTMLElement[]>([])
   let cache: HTMLElement[] = []
 
-  onBeforeUpdate(() => (cache = []))
   onMounted(() => (elements.value = cache))
+  onBeforeUpdate(() => (cache = []))
   onUpdated(() => (elements.value = cache))
 
   const fn = (el: HTMLElement) => {
@@ -63,8 +63,7 @@ export function createTemplateRef(refs: DollarRefs, names: string[]) {
   return templateRef
 }
 
-const QUERY_FOCUSABLE_ELEMENTS =
-  'button, [href], input, textarea, [tabindex=-1], [tabindex=0]'
+const QUERY_FOCUSABLE_ELEMENTS = 'button, [href], input, textarea, [tabindex]'
 
 export function createQueryTemplateRef(
   elRef: Ref<HTMLElement>,

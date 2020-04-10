@@ -29,7 +29,7 @@ export function useRovingTabIndex(
     for (var i = 0; i < els.length; i++) {
       els[i].tabIndex = i === index ? 0 : -1
     }
-  }) as any)
+  }) as any) //TODO: fix type of watcher callback
 
   const forward = () => {
     const length = elements.value.length

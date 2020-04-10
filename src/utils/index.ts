@@ -34,7 +34,7 @@ export function applyFocus(
       return true
     } else {
       const el2 = vm.$el.querySelector(
-        `button, [href], input, select, textarea, [tabindex=0],[tabindex=-1])`
+        `button, [href], input, select, textarea, [tabindex=0]`
       )
       if (!el2) return false
       return applyFocus(el2 as HTMLElement)

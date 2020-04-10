@@ -19,6 +19,7 @@ const defaultValues = {
   min: 0,
   max: 100,
   step: 1,
+  jump: 0,
 }
 
 export function useSlider(
@@ -62,11 +63,11 @@ export function useSlider(
   if (jump) {
     useKeyIf(isActive, ['PageUp'], () => {
       valueRef.value < max.value &&
-        (valueRef.value = Math.min(max.value, valueRef.value + step.value))
+        (valueRef.value = Math.min(max.value, valueRef.value + jump.value))
     })
     useKeyIf(isActive, ['PageDown'], () => {
       valueRef.value > min.value &&
-        (valueRef.value = Math.max(min.value, valueRef.value + step.value))
+        (valueRef.value = Math.max(min.value, valueRef.value + jump.value))
     })
   }
 

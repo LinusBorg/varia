@@ -36,11 +36,6 @@ export function useMenu(
     ? createTemplateRef(ctx.refs, refName)
     : createTemplateListRef(ctx.refs, refName)
 
-  focusOnMount &&
-    onMounted(() => {
-      focusGroup.setFocusToIndex(0)
-    })
-
   const focusGroup = useFocusGroup(elements, {
     includeChildComponents: true,
     integrateWithParentGroup,
@@ -48,6 +43,10 @@ export function useMenu(
     returnOnUnmount,
   })
 
+  focusOnMount &&
+    onMounted(() => {
+      focusGroup.setFocusToIndex(0)
+    })
   const rovingTabIndex = useRovingTabIndex(
     elements,
     focusGroup.isActive,
