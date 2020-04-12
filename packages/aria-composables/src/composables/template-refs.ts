@@ -1,10 +1,13 @@
 import { ref, Ref, onBeforeUpdate, onMounted, onUpdated, watch } from 'vue'
 
-export function createTemplateRefList<El extends HTMLElement>() {
-  const elements = ref<El[]>([])
+export function createTemplateRefList() {
+  const elements = ref<HTMLElement[]>([])
 
   onBeforeUpdate(() => (elements.value = []))
-  return (el: El) => elements.value.push(el)
+  return {
+    elements,
+    refFn: (el: HTMLElement) => elements.value.push(el),
+  }
 }
 
 const QUERY_FOCUSABLE_ELEMENTS = 'button, [href], input, textarea, [tabindex]'

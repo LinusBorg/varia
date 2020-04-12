@@ -27,9 +27,9 @@ export function useSlider(
   const { min, max, jump, step } = toRefs(Object.assign(defaultValues, values))
   const { orientation, presenter } = options
 
-  const element = ref<HTMLElement>(null)
+  const element = ref<HTMLElement | null>(null)
   const { isActive } = useFocusGroup(
-    computed(() => [element.value]) as TemplateRefs
+    computed(() => (element.value ? [element.value] : []))
   )
   const inc = () =>
     valueRef.value < max.value &&
@@ -45,7 +45,7 @@ export function useSlider(
     left: dec,
   })
 
-  useKeyIf(isActive, ['Home', 'End'], (event: KeyboardEvent) => {
+  useKeyIf(isActive, ['Home', 'End'], ((event: KeyboardEvent) => {
     switch (event.key) {
       case 'Home':
         valueRef.value = max.value
@@ -56,7 +56,8 @@ export function useSlider(
       default:
         return
     }
-  })
+  }) as EventListener)
+
   if (jump) {
     useKeyIf(isActive, ['PageUp'], () => {
       valueRef.value < max.value &&

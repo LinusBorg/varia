@@ -64,5 +64,6 @@ export function useRovingTabIndex(
     forward,
     backward,
     index: focusIndex,
+    setIndex,
   }
 }

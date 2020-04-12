@@ -1,10 +1,10 @@
-import { Ref, computed, watch } from 'vue'
+import { Ref, watch } from 'vue'
 
 import {
   useFocusGroup,
   useRovingTabIndex,
   useIdGenerator,
-  MaybeRef,
+  createTemplateRefList,
 } from 'vue-aria-composables'
 
 export interface useTabsOptions {
@@ -17,15 +17,9 @@ export function useTabs(
 ) {
   const { autoSelect } = options
 
-  const { elements, fn: tabsRefFn } = createTemplateRefFn()
+  const { elements, refFn } = createTemplateRefList()
   const focusGroup = useFocusGroup(elements)
 
-  const selectedIndex = computed(() => {
-    const idx = elements.value.findIndex(
-      el => el.dataset['tabName'] === '' + selectedName.value
-    )
-    return idx !== -1 ? idx : 0
-  })
   const rovingTabIndex = useRovingTabIndex(elements, focusGroup.isActive)
 
   if (autoSelect) {
@@ -36,7 +30,7 @@ export function useTabs(
 
   // Attribute generator functions
   const idGen = useIdGenerator('tabs')
-  const tab = (name: string) => {
+  const tabAttrs = (name: string) => {
     const id = idGen(name)
     return {
       role: 'tab',
@@ -45,7 +39,7 @@ export function useTabs(
       'data-tab-name': name,
     }
   }
-  const tabPanel = (name: string) => {
+  const tabPanelAttrs = (name: string) => {
     const id = idGen(name)
     return {
       role: 'tabpanel',
@@ -56,10 +50,10 @@ export function useTabs(
   }
 
   return {
-    fn: tabsRefFn,
+    refFn,
     ...rovingTabIndex,
-    isActive: focusGroup.isActive,
-    tab,
-    tabPanel,
+    hasFocus: focusGroup.isActive,
+    tabAttrs,
+    tabPanelAttrs,
   }
 }

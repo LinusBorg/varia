@@ -21,29 +21,15 @@ export function useRadiogroup(
   selectedIndexRef: Ref<number>,
   options: IUseRadiogroupOptions
 ) {
-  const { integrateWithParentGroup, orientation, loop } = Object.assign(
-    {},
-    defaults,
-    options
-  )
+  const { integrateWithParentGroup } = Object.assign({}, defaults, options)
   const { elements, fn } = createTemplateRefFn()
 
-  const focusGroup = useFocusGroup(elements, {
-    integrateWithParentGroup,
-  })
+  const focusGroup = useFocusGroup(elements)
 
   // if we integrate with the parent, we don't ned to take care of arrow nav ourselves
   let rovingIndex = {}
   if (!integrateWithParentGroup) {
-    rovingIndex = useRovingTabIndex(
-      elements,
-      focusGroup.isActive,
-      selectedIndexRef,
-      {
-        orientation,
-        loop,
-      }
-    )
+    rovingIndex = useRovingTabIndex(elements, focusGroup.isActive)
   }
 
   // TODO: implement aria-attribute generator
