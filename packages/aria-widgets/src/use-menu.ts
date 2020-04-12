@@ -3,8 +3,8 @@ import {
   createTemplateRef,
   useFocusGroup,
   useRovingTabIndex,
-} from '~/composables'
-import { SetupContext, onMounted } from '@vue/composition-api'
+} from 'vue-aria-composables'
+import { SetupContext, onMounted } from 'vue'
 
 interface useMenuOptions {
   loop?: boolean

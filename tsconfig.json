@@ -1,28 +1,10 @@
 {
+  "extends": "./config/typescript/tsconfig.build.json",
   "compilerOptions": {
     "paths": {
-      "vue-aria-composables": ["aria-composables/src"],
-      "vue-aria-widgets": ["aria-widgets/src"]
+      "vue-aria-composables": ["packages/aria-composables/src"],
+      "vue-aria-widgets": ["packages/aria-widgets/src"]
     },
-    "module": "esnext",
-    "lib": ["dom", "esnext"],
-    "importHelpers": true,
-    "declaration": true,
-    "sourceMap": true,
-    "strict": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
-    "strictFunctionTypes": true,
-    "strictPropertyInitialization": true,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "node",
-    "baseUrl": "./packages",
-    "jsx": "preserve",
-    "esModuleInterop": true
+    "baseUrl": "./packages"
   }
 }

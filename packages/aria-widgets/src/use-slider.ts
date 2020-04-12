@@ -1,8 +1,5 @@
-import { computed, ref, Ref, toRefs } from '@vue/composition-api'
-import { useArrowKeys } from '../composables/use-arrow-keys'
-import { useKeyIf } from '../composables/use-events'
-import { useFocusGroup } from '../composables/use-focus-group'
-import { TemplateRefs } from '../types'
+import { computed, ref, Ref, toRefs } from 'vue'
+import { useArrowKeys, useKeyIf, useFocusGroup } from 'vue-aria-composables'
 
 interface useSliderValues {
   min: number

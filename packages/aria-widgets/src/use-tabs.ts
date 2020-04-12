@@ -1,10 +1,11 @@
-import Vue from 'vue'
-import { Ref, computed, watch } from '@vue/composition-api'
-import { createTemplateRefFn } from '../composables/template-ref-helpers'
-import { useFocusGroup, useRovingTabIndex } from '~/composables'
-import { useIdGenerator } from '../composables/use-id-generator'
-import { MaybeRef } from '~/types'
-import { wrap } from '~/utils'
+import { Ref, computed, watch } from 'vue'
+
+import {
+  useFocusGroup,
+  useRovingTabIndex,
+  useIdGenerator,
+  MaybeRef,
+} from 'vue-aria-composables'
 
 export interface useTabsOptions {
   vertical?: boolean
@@ -25,15 +26,7 @@ export function useTabs(
     )
     return idx !== -1 ? idx : 0
   })
-  const rovingTabIndex = useRovingTabIndex(
-    elements,
-    focusGroup.isActive,
-    selectedIndex,
-    {
-      orientation: 'horizontal',
-      loop: true,
-    }
-  )
+  const rovingTabIndex = useRovingTabIndex(elements, focusGroup.isActive)
 
   if (autoSelect) {
     watch(rovingTabIndex.index, idx => {

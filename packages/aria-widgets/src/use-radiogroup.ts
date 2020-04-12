@@ -2,8 +2,8 @@ import {
   useFocusGroup,
   useRovingTabIndex,
   createTemplateRefFn,
-} from '~/composables'
-import { Ref } from '@vue/composition-api'
+} from 'vue-aria-composables'
+import { Ref } from 'vue'
 
 interface IUseRadiogroupOptions {
   integrateWithParentGroup?: boolean

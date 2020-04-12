@@ -1,15 +1,10 @@
 import { computed, InjectionKey, Ref } from 'vue'
 import { useGlobalFocusTracker } from './use-global-focustracker'
-import { useReturnBehaviour } from './use-return-behaviour'
 import { applyFocus } from '../utils'
-import { useFocusGroupOptions } from '../types'
 
 export const GroupInterfaceKey: InjectionKey<any> = Symbol('GroupInterface')
 
-export function useFocusGroup<El extends HTMLElement>(
-  elements: Ref<El[]>,
-  options: useFocusGroupOptions = {}
-) {
+export function useFocusGroup(elements: Ref<HTMLElement[]>) {
   const { currentEl: currentElGlobal } = useGlobalFocusTracker()
 
   const currentTabindex = computed(
@@ -32,7 +27,5 @@ export function useFocusGroup<El extends HTMLElement>(
     currentTabindex,
     // Fns
     setFocusToIndex,
-    // other
-    ...useReturnBehaviour(containsFocus, options),
   }
 }

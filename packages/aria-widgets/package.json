@@ -1,30 +1,52 @@
 {
-  "name": "aria-widgets",
   "version": "0.0.0",
-  "description": "composable ARIA widget behaviour for Vue 3 components",
-  "author": "Thorsten <t.luenborg@googlemail.com>",
-  "homepage": "https://github.com/LinusBorg/vue-focus-management/packages/aria-widgets#readme",
+  "name": "vue-aria-widgets",
+  "author": "Thorsten",
+  "homepage": "https://github.com/LinusBorg/vue-focus-management/packages/aria-widgets",
   "license": "Apache-2.0",
   "main": "dist/index.js",
+  "module": "dist/aria-widgets.esm.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "typings": "dist/index.d.ts",
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build --tsconfig tsconfig.build.json",
+    "test": "tsdx test",
+    "lint": "eslint src/**/*.ts test/**/*.ts --fix",
+    "prepare": "tsdx build"
+  },
+  "dependencies": {
+    "vue-aria-composables": "0.0.0"
+  },
   "peerDependencies": {
     "vue": "^3.0.0-alpha.11"
   },
-  "directories": {
-    "lib": "lib",
-    "test": "__tests__"
+  "devDependencies": {
+    "@types/jest": "^25.2.1",
+    "@vue/eslint-config-typescript": "^5.0.1",
+    "eslint-plugin-vue": "^7.0.0-alpha.0",
+    "husky": "^4.2.5",
+    "tsdx": "^0.13.1",
+    "tslib": "^1.11.1",
+    "typescript": "^3.8.3"
   },
-  "files": [
-    "lib"
-  ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
   "publishConfig": {
     "registry": "https://registry.yarnpkg.com"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LinusBorg/vue-focus-management.git"
-  },
-  "scripts": {
-    "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {
     "url": "https://github.com/LinusBorg/vue-focus-management/issues"

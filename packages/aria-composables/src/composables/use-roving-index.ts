@@ -1,7 +1,8 @@
 import { useArrowKeys } from './use-arrow-keys'
 import { applyFocus } from '../utils'
-import { watch, Ref, ref } from 'vue'
+import { watch, watchEffect, Ref } from 'vue'
 import { useKeyIf } from './use-events'
+import { useFocusMoverMachine } from './focusMoverMachine'
 
 interface IUseRovingTabIndexOptions {
   orientation?: 'vertical' | 'horizontal'
@@ -13,69 +14,55 @@ const defaults = {
 }
 export function useRovingTabIndex(
   elements: Ref<HTMLElement[]>,
-  isActiveRef: Ref<boolean>,
-  selectedIndexRef: Ref<number> = ref(0),
+  isActive: Ref<boolean>,
   options: IUseRovingTabIndexOptions = {}
 ) {
-  const { orientation, loop } = Object.assign({}, defaults, options)
+  const { orientation /*, loop*/ } = Object.assign({}, defaults, options)
 
-  const focusIndexRef = ref<number>(selectedIndexRef?.value || 0)
-  watch(selectedIndexRef, selectedIndex => {
-    focusIndexRef.value = selectedIndex != null ? selectedIndex : 0
+  const {
+    selectedIndex: focusIndex,
+    forward,
+    backward,
+    setIndex,
+  } = useFocusMoverMachine(elements, {
+    active: isActive.value,
   })
 
   // imperatively manage tabindex so template stays clean
-  watch([elements, focusIndexRef], ([els, index]: [HTMLElement[], number]) => {
+  watchEffect(() => {
+    const els = elements.value
     for (var i = 0; i < els.length; i++) {
-      els[i].tabIndex = i === index ? 0 : -1
+      els[i].tabIndex = i === focusIndex.value ? 0 : -1
     }
-  }) //TODO: fix type of watcher callback
+  })
 
-  const forward = () => {
-    const length = elements.value.length
-    let i = focusIndexRef.value + 1
-    if (i >= length && loop) i = 0
-    else i = Math.min(i, length - 1)
-    const el = elements.value[i]
-    focusIndexRef.value = i
-    el && applyFocus(el)
-  }
-  const backward = () => {
-    const length = elements.value.length
-    let i = focusIndexRef.value - 1
-    if (i < 0 && loop) i = length - 1
-    else i = Math.max(i, 0)
-    const el = elements.value[i]
-    focusIndexRef.value = i
-    el && applyFocus(el)
-  }
+  // Apply focus when Index changes
+  watch(focusIndex, (i: number) => applyFocus(elements.value[i]))
 
   // Arrow Key Handling
   const backDir = orientation === 'vertical' ? 'up' : 'left'
   const fwdDir = orientation === 'vertical' ? 'down' : 'right'
-  useArrowKeys(isActiveRef, {
+  useArrowKeys(isActive, {
     [backDir]: backward,
     [fwdDir]: forward,
   })
 
-  useKeyIf(isActiveRef, ['Home', 'End'], (event: KeyboardEvent) => {
+  useKeyIf(isActive, ['Home', 'End'], ((event: KeyboardEvent) => {
     switch (event.key) {
       case 'Home':
-        focusIndexRef.value = 0
+        setIndex(0)
         break
       case 'End':
-        focusIndexRef.value = elements.value.length - 1
+        setIndex(elements.value.length - 1)
         break
       default:
         return
     }
-    const el = elements.value[focusIndexRef.value]
-    el && applyFocus(el)
-  })
+  }) as EventListener)
 
   return {
     forward,
     backward,
-    index: focusIndexRef,
+    index: focusIndex,
   }
 }

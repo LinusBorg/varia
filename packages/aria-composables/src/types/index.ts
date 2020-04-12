@@ -1,11 +1,11 @@
 import { Ref } from 'vue'
 
-export type MaybeRef<T> = Ref<T> | T
+export type MaybeRef<T = any> = T | Ref<T>
 
-export interface FocusTrackerState<El extends HTMLElement> {
-  prevEl: Readonly<Ref<El | null>>
-  activeEl: Readonly<Ref<El | null>>
-  currentEl: Readonly<Ref<El | null>>
+export interface FocusTrackerState {
+  prevEl: Readonly<Ref<HTMLElement | null>>
+  activeEl: Readonly<Ref<HTMLElement | null>>
+  currentEl: Readonly<Ref<HTMLElement | null>>
   tabDirection: Readonly<Ref<'backward' | 'forward' | null>>
 }
 

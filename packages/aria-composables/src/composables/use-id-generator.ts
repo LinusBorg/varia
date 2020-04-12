@@ -6,7 +6,7 @@ export function useIdGenerator(seed?: string) {
   return (name: string) => {
     if (name && idMap[name]) return idMap[name]
 
-    const _id = (nanoid as () => string)()
+    const _id = nanoid()
     const id = seed ? `${seed}_${_id}` : _id
     if (name) {
       idMap[name] = id

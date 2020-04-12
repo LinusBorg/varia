@@ -5,10 +5,15 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "postinstall": "patch-package"
+  },
   "devDependencies": {
     "lerna": "^3.20.2"
   },
   "dependencies": {
+    "patch-package": "^6.2.2",
+    "postinstall-postinstall": "^2.1.0",
     "tsdx": "^0.13.1"
   }
 }

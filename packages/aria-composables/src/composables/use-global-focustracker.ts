@@ -1,4 +1,4 @@
-import { ref, provide, inject, computed, Ref, InjectionKey } from 'vue'
+import { ref, provide, inject, computed, InjectionKey } from 'vue'
 import { useEvent } from './use-events'
 
 import { FocusTrackerState } from '../types'
@@ -10,7 +10,9 @@ export function provideGlobalFocusTracking(doProvide: boolean = true) {
   // are part of the global FocusGroup
 
   const prevEl = ref<HTMLElement | null>(null)
-  const activeEl = ref<HTMLElement | null>(document.activeElement)
+  const activeEl = ref<HTMLElement | null>(
+    document.activeElement as HTMLElement
+  )
   const docHasFocus = ref<boolean>(document.hasFocus())
   // when a FocusGroup takes over focus management,
   // it notifies the tracker by calling this function
@@ -43,7 +45,7 @@ export function useGlobalFocusTracker() {
 }
 
 function useTabDirection() {
-  const tabDirection = ref<'backward' | 'forward'>(null)
+  const tabDirection = ref<'backward' | 'forward' | null>(null)
   useEvent(document, 'keydown', ((event: KeyboardEvent) => {
     if (event.key === 'Tab') {
       tabDirection.value = event.shiftKey ? 'backward' : 'forward'
