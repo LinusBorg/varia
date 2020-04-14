@@ -10,9 +10,9 @@ export function useFocusGroup(elements: Ref<HTMLElement[]>) {
   const currentTabindex = computed(
     () => currentElGlobal.value && elements.value.indexOf(currentElGlobal.value)
   )
-  const containsFocus = computed(() => currentTabindex.value !== -1)
+  const hasFocus = computed(() => currentTabindex.value !== -1)
   const currentEl = computed(() =>
-    containsFocus.value ? currentElGlobal.value : null
+    hasFocus.value ? currentElGlobal.value : null
   )
 
   function setFocusToIndex(index: number) {
@@ -22,7 +22,7 @@ export function useFocusGroup(elements: Ref<HTMLElement[]>) {
 
   return {
     // state
-    isActive: containsFocus,
+    hasFocus,
     currentEl,
     currentTabindex,
     // Fns

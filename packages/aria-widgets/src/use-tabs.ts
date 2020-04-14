@@ -1,4 +1,4 @@
-import { Ref, watch } from 'vue'
+import { watch } from 'vue'
 
 import {
   useFocusGroup,
@@ -11,16 +11,13 @@ export interface useTabsOptions {
   vertical?: boolean
   autoSelect?: boolean
 }
-export function useTabs(
-  selectedName: Ref<string>,
-  options: useTabsOptions = {}
-) {
+export function useTabs(options: useTabsOptions = {}) {
   const { autoSelect } = options
 
   const { elements, refFn } = createTemplateRefList()
   const focusGroup = useFocusGroup(elements)
 
-  const rovingTabIndex = useRovingTabIndex(elements, focusGroup.isActive)
+  const rovingTabIndex = useRovingTabIndex(elements, focusGroup.hasFocus)
 
   if (autoSelect) {
     watch(rovingTabIndex.index, idx => {
@@ -30,29 +27,29 @@ export function useTabs(
 
   // Attribute generator functions
   const idGen = useIdGenerator('tabs')
-  const tabAttrs = (name: string) => {
+  const tabAttrs = (name: string, selected: boolean) => {
     const id = idGen(name)
     return {
       role: 'tab',
-      'aria-selected': name === selectedName.value,
+      'aria-selected': selected,
       'aria-controls': id,
       'data-tab-name': name,
     }
   }
-  const tabPanelAttrs = (name: string) => {
+  const tabPanelAttrs = (name: string, selected: boolean) => {
     const id = idGen(name)
     return {
       role: 'tabpanel',
       id,
-      hidden: name !== selectedName.value,
-      tabindex: name == selectedName.value ? 0 : undefined,
+      hidden: selected,
+      tabindex: selected ? 0 : undefined,
     }
   }
 
   return {
     refFn,
     ...rovingTabIndex,
-    hasFocus: focusGroup.isActive,
+    hasFocus: focusGroup.hasFocus,
     tabAttrs,
     tabPanelAttrs,
   }

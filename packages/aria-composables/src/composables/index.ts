@@ -2,8 +2,11 @@ export * from './template-refs'
 export * from './use-global-focustracker'
 
 export * from './use-focus-group'
-// export * from './use-activedescendant'
+
+export * from './use-activedescendant'
 export * from './use-roving-index'
+
+export * from './use-return-behaviour'
 
 // export * from './use-focustrap'
 

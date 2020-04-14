@@ -1,9 +1,8 @@
 import {
   useFocusGroup,
   useRovingTabIndex,
-  createTemplateRefFn,
+  createTemplateRefList,
 } from 'vue-aria-composables'
-import { Ref } from 'vue'
 
 interface IUseRadiogroupOptions {
   integrateWithParentGroup?: boolean
@@ -11,31 +10,28 @@ interface IUseRadiogroupOptions {
   loop?: boolean
 }
 
-const defaults: IUseRadiogroupOptions = {
-  integrateWithParentGroup: true,
-  orientation: 'horizontal',
-  loop: true,
-}
-
-export function useRadiogroup(
-  selectedIndexRef: Ref<number>,
-  options: IUseRadiogroupOptions
-) {
-  const { integrateWithParentGroup } = Object.assign({}, defaults, options)
-  const { elements, fn } = createTemplateRefFn()
+export function useRadiogroup({ orientation }: IUseRadiogroupOptions) {
+  const { elements, refFn } = createTemplateRefList()
 
   const focusGroup = useFocusGroup(elements)
 
-  // if we integrate with the parent, we don't ned to take care of arrow nav ourselves
-  let rovingIndex = {}
-  if (!integrateWithParentGroup) {
-    rovingIndex = useRovingTabIndex(elements, focusGroup.isActive)
+  const rovingTabIndex = useRovingTabIndex(elements, focusGroup.hasFocus, {
+    orientation,
+  })
+  const genAttrs = (checked: boolean, label: string = '') => {
+    const labelProperty = label.startsWith('#')
+      ? 'aria-labelledby'
+      : 'aria-label'
+    return {
+      role: 'radio',
+      'aria-checked': checked,
+      [labelProperty]: label,
+    }
   }
 
-  // TODO: implement aria-attribute generator
-
   return {
-    fn,
-    ...rovingIndex,
+    refFn,
+    genAttrs,
+    ...rovingTabIndex,
   }
 }

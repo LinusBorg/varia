@@ -28,7 +28,7 @@ export function useSlider(
   const { orientation, presenter } = options
 
   const element = ref<HTMLElement | null>(null)
-  const { isActive } = useFocusGroup(
+  const { hasFocus } = useFocusGroup(
     computed(() => (element.value ? [element.value] : []))
   )
   const inc = () =>
@@ -38,14 +38,14 @@ export function useSlider(
     valueRef.value > min.value &&
     (valueRef.value = Math.max(min.value, valueRef.value - step.value))
 
-  useArrowKeys(isActive, {
+  useArrowKeys(hasFocus, {
     up: inc,
     right: inc,
     down: dec,
     left: dec,
   })
 
-  useKeyIf(isActive, ['Home', 'End'], ((event: KeyboardEvent) => {
+  useKeyIf(hasFocus, ['Home', 'End'], ((event: KeyboardEvent) => {
     switch (event.key) {
       case 'Home':
         valueRef.value = max.value
@@ -59,11 +59,11 @@ export function useSlider(
   }) as EventListener)
 
   if (jump) {
-    useKeyIf(isActive, ['PageUp'], () => {
+    useKeyIf(hasFocus, ['PageUp'], () => {
       valueRef.value < max.value &&
         (valueRef.value = Math.min(max.value, valueRef.value + jump.value))
     })
-    useKeyIf(isActive, ['PageDown'], () => {
+    useKeyIf(hasFocus, ['PageDown'], () => {
       valueRef.value > min.value &&
         (valueRef.value = Math.max(min.value, valueRef.value + jump.value))
     })

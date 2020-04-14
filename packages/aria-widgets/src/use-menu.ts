@@ -1,65 +1,53 @@
 import {
-  createTemplateListRef,
-  createTemplateRef,
+  createTemplateRefList,
   useFocusGroup,
   useRovingTabIndex,
+  useReturnBehaviour,
 } from 'vue-aria-composables'
-import { SetupContext, onMounted } from 'vue'
+import { onMounted } from 'vue'
 
 interface useMenuOptions {
   loop?: boolean
   focusOnMount?: boolean
   orientation?: 'horizontal' | 'vertical'
-  integrateWithParentGroup?: boolean
   returnOnEscape?: boolean
   returnOnUnmount?: boolean
 }
 
 export function useMenu(
-  ctx: SetupContext, // refactor for Vue: not needed
-  refName: string | string[], // refactor for Vue: not needed
   options: useMenuOptions = {
     orientation: 'vertical',
   }
 ) {
   const {
     focusOnMount,
-    orientation,
-    loop,
-    integrateWithParentGroup,
-    returnOnEscape,
     returnOnUnmount,
+    returnOnEscape,
+    orientation,
+    // loop,
   } = options
 
-  // for Vue 3, we have to return a ref-function as well as elements
-  const elements = Array.isArray(refName)
-    ? createTemplateRef(ctx.refs, refName)
-    : createTemplateListRef(ctx.refs, refName)
+  const { elements, refFn } = createTemplateRefList()
 
-  const focusGroup = useFocusGroup(elements, {
-    includeChildComponents: true,
-    integrateWithParentGroup,
+  const focusGroup = useFocusGroup(elements)
+
+  const { returnFocus } = useReturnBehaviour(focusGroup.hasFocus, {
     returnOnEscape,
     returnOnUnmount,
   })
 
+  const rovingTabIndex = useRovingTabIndex(elements, focusGroup.hasFocus, {
+    orientation,
+  })
   focusOnMount &&
     onMounted(() => {
       focusGroup.setFocusToIndex(0)
     })
-  const rovingTabIndex = useRovingTabIndex(
-    elements,
-    focusGroup.isActive,
-    undefined,
-    {
-      orientation,
-      loop,
-    }
-  )
 
   return {
-    elements,
+    refFn,
     ...rovingTabIndex,
-    isActive: focusGroup.isActive,
+    isActive: focusGroup.hasFocus,
+    returnFocus,
   }
 }
