@@ -1,11 +1,29 @@
 import { Ref } from 'vue'
-import { useEventIf } from './use-events'
+import { useEventIf } from './events'
 
 type ArrowKeyHandlers = {
   up?: EventHandlerNonNull
   down?: EventHandlerNonNull
   left?: EventHandlerNonNull
   right?: EventHandlerNonNull
+}
+
+export function useKeyIf(
+  condRef: Ref<boolean>,
+  keys: string[],
+  handler: EventListener,
+  opts?: boolean | AddEventListenerOptions
+) {
+  return useEventIf(
+    condRef,
+    document,
+    'keyup',
+    ((e: KeyboardEvent) => {
+      if (keys.indexOf((e as any).key) === -1) return
+      handler(e)
+    }) as EventListener,
+    opts
+  )
 }
 
 export function useArrowKeys(

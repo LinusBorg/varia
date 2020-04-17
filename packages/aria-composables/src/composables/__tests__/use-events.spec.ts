@@ -1,5 +1,5 @@
 import { wait } from 'helpers'
-import { useEvent, useEventIf, useKeyIf } from '../use-events'
+import { useEvent, useEventIf, useKeyIf } from '../events'
 import { ref } from 'vue'
 import { fireEvent } from '@testing-library/dom'
 

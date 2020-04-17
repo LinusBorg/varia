@@ -3,7 +3,7 @@ import {
   useGlobalFocusTracker,
   provideGlobalFocusTracking,
   FocusTrackerState,
-} from '../use-global-focustracker'
+} from '../focus-tracker'
 import { fireEvent } from '@testing-library/dom'
 import { createComponent } from 'vue'
 import { mount } from '@vue/test-utils'

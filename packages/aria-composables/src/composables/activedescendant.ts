@@ -1,6 +1,6 @@
 import { computed, Ref, watch } from 'vue'
-import { useArrowKeys } from './use-arrow-keys'
-import { useIdGenerator } from './use-id-generator'
+import { useArrowKeys } from './keys'
+import { useIdGenerator } from '../utils/id-generator'
 import { useFocusMoverMachine } from './focusMoverMachine'
 interface useActiveDescendantOptions {
   idNamespace?: string
@@ -21,6 +21,7 @@ export function useActiveDescendant(
     setIndex,
   } = useFocusMoverMachine(elements, {
     active: isActive.value,
+    loop: options.loop,
   })
   watch(isActive, _isActive =>
     service.send(_isActive ? 'DEACTIVATE' : 'ACTIVATE')

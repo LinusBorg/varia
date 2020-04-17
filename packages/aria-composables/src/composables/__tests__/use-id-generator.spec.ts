@@ -1,4 +1,4 @@
-import { useIdGenerator } from '../use-id-generator'
+import { useIdGenerator } from '../../utils/id-generator'
 
 describe('UseIdGenerator', () => {
   it('returns a function', () => {

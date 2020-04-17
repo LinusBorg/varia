@@ -1,5 +1,5 @@
 import { wait } from 'helpers'
-import { useArrowKeys } from '../use-arrow-keys'
+import { useArrowKeys } from '../keys'
 import { ref } from 'vue'
 import { fireEvent } from '@testing-library/dom'
 

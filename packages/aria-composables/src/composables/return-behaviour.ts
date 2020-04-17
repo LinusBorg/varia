@@ -1,8 +1,8 @@
 import { useFocusGroupOptions } from '../types'
 import { Ref, watch, ref, onBeforeUnmount, computed } from 'vue'
-import { useGlobalFocusTracker } from './use-global-focustracker'
+import { useGlobalFocusTracker } from './focus-tracker'
 import { applyFocus } from '../utils'
-import { useKeyIf } from './use-events'
+import { useKeyIf } from './keys'
 
 export function useReturnBehaviour(
   isActive: Ref<boolean>,
@@ -27,9 +27,9 @@ export function useReturnBehaviour(
     onBeforeUnmount(returnFocus)
   }
   if (options.returnOnEscape) {
-    useKeyIf(isActive, ['Esc'], ((e: KeyboardEvent) => {
+    useKeyIf(isActive, ['Esc'], (() => {
       returnFocus()
-    }) as EventHandlerNonNull)
+    }) as EventHandler)
   }
 
   return {

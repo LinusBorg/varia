@@ -1,15 +1,15 @@
 export * from './template-refs'
-export * from './use-global-focustracker'
+export * from './focus-tracker'
 
-export * from './use-focus-group'
+export * from './focus-group'
 
-export * from './use-activedescendant'
+export * from './activedescendant'
 export * from './use-roving-index'
 
-export * from './use-return-behaviour'
+export * from './return-behaviour'
 
 // export * from './use-focustrap'
 
-export * from './use-arrow-keys'
-export * from './use-events'
-export * from './use-id-generator'
+export * from './keys'
+export * from './events'
+export * from '../utils/id-generator'

@@ -6,7 +6,6 @@ export interface FocusTrackerState {
   prevEl: Readonly<Ref<HTMLElement | null>>
   activeEl: Readonly<Ref<HTMLElement | null>>
   currentEl: Readonly<Ref<HTMLElement | null>>
-  tabDirection: Readonly<Ref<'backward' | 'forward' | null>>
 }
 
 export interface useFocusGroupOptions {

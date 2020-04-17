@@ -1,5 +1,5 @@
-import { key as TrackerKey } from '../use-global-focustracker'
-import { useReturnBehaviour } from '../use-return-behaviour'
+import { key as TrackerKey } from '../focus-tracker'
+import { useReturnBehaviour } from '../return-behaviour'
 import { ref, Ref } from 'vue'
 import { mount, wait } from 'helpers'
 import { fireEvent } from '@testing-library/dom'

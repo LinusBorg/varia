@@ -8,6 +8,7 @@ const context = {
   active: false,
   selectedIndex: 0,
   max: Infinity,
+  loop: false,
 }
 
 type Context = typeof context
@@ -107,10 +108,16 @@ const actions = {
     active: false,
   }),
   backward: assign<Context, BACKWARD>({
-    selectedIndex: ctx => Math.max(0, ctx.selectedIndex - 1),
+    selectedIndex: ctx => {
+      if (ctx.loop && ctx.selectedIndex === 0) return ctx.max
+      return Math.max(0, ctx.selectedIndex - 1)
+    },
   }),
   forward: assign<Context, FORWARD>({
-    selectedIndex: ctx => Math.min(ctx.max, ctx.selectedIndex + 1),
+    selectedIndex: ctx => {
+      if (ctx.loop && ctx.selectedIndex === ctx.max) return 0
+      return Math.min(ctx.max, ctx.selectedIndex + 1)
+    },
   }),
   updateMax: assign<Context, UPDATE_MAX>({
     max: (_, evt) => evt.max,

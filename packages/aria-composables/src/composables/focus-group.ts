@@ -1,5 +1,5 @@
 import { computed, InjectionKey, Ref } from 'vue'
-import { useGlobalFocusTracker } from './use-global-focustracker'
+import { useGlobalFocusTracker } from './focus-tracker'
 import { applyFocus } from '../utils'
 
 export const GroupInterfaceKey: InjectionKey<any> = Symbol('GroupInterface')

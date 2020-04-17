@@ -1,7 +1,7 @@
-import { useArrowKeys } from './use-arrow-keys'
+import { useArrowKeys } from './keys'
 import { applyFocus } from '../utils'
 import { watch, watchEffect, Ref } from 'vue'
-import { useKeyIf } from './use-events'
+import { useKeyIf } from './keys'
 import { useFocusMoverMachine } from './focusMoverMachine'
 
 interface IUseRovingTabIndexOptions {
@@ -17,7 +17,7 @@ export function useRovingTabIndex(
   isActive: Ref<boolean>,
   options: IUseRovingTabIndexOptions = {}
 ) {
-  const { orientation /*, loop*/ } = Object.assign({}, defaults, options)
+  const { orientation, loop } = Object.assign({}, defaults, options)
 
   const {
     selectedIndex: focusIndex,
@@ -26,6 +26,7 @@ export function useRovingTabIndex(
     setIndex,
   } = useFocusMoverMachine(elements, {
     active: isActive.value,
+    loop,
   })
 
   // imperatively manage tabindex so template stays clean
