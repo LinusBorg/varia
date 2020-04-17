@@ -8,7 +8,7 @@ export * from './use-roving-index'
 
 export * from './return-behaviour'
 
-// export * from './use-focustrap'
+// export * from './focus-trap'
 
 export * from './keys'
 export * from './events'
