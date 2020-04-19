@@ -11,15 +11,12 @@
     "dist",
     "src"
   ],
-  "engines": {
-    "node": ">=10"
-  },
+  "module": "dist/aria-composables-2.esm.js",
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build --tsconfig tsconfig.build.json",
     "test": "tsdx test",
-    "lint": "eslint src/**/*.ts test/**/*.ts --fix",
-    "prepare": "tsdx build"
+    "lint": "eslint src/**/*.ts test/**/*.ts --fix"
   },
   "peerDependencies": {
     "vue": "^3.0.0-beta.1"
@@ -29,10 +26,10 @@
       "pre-commit": "tsdx lint"
     }
   },
-  "module": "dist/aria-composables-2.esm.js",
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@vue/eslint-config-typescript": "^5.0.1",
+    "@vue/test-utils": "^2.0.0-alpha.1",
     "eslint-plugin-vue": "^7.0.0-alpha.0",
     "husky": "^4.2.5",
     "nanoid": "^3.1.3",
@@ -45,6 +42,9 @@
   },
   "publishConfig": {
     "registry": "https://registry.yarnpkg.com"
+  },
+  "engines": {
+    "node": ">=10"
   },
   "repository": {
     "type": "git",
