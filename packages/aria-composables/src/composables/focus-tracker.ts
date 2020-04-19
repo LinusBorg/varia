@@ -27,6 +27,7 @@ useEvent(document, 'focusout', () => {
     docHasFocus.value = document.hasFocus()
   }, 0)
 })
+
 export const state = {
   // State
   prevEl: computed(() => prevEl.value),
@@ -39,5 +40,5 @@ export function provideFocusTracker() {
 }
 
 export function useFocusTracker() {
-  return inject(focusTrackerKey) as FocusTrackerState
+  return inject(focusTrackerKey, state)
 }

@@ -1,6 +1,5 @@
-import { Ref, watch } from 'vue'
+import { ref, Ref, watch } from 'vue'
 import { MaybeRef } from '../types'
-import { wrap } from '../utils'
 
 export type ElementRefs =
   | MaybeRef<HTMLElement | undefined>
@@ -13,7 +12,7 @@ export function useEvent(
   handler: (event: Event) => void,
   opts?: boolean | AddEventListenerOptions
 ) {
-  const el = wrap((_el as unknown) as Element)
+  const el = ref((_el as unknown) as Element)
   const unwatch = watch(el, (el, _, onCleanup) => {
     el && el.addEventListener(name, handler, opts)
     onCleanup(() => {

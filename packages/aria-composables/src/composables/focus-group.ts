@@ -1,11 +1,11 @@
 import { computed, InjectionKey, Ref } from 'vue'
-import { useGlobalFocusTracker } from './focus-tracker'
+import { useFocusTracker } from './focus-tracker'
 import { applyFocus } from '../utils'
 
 export const GroupInterfaceKey: InjectionKey<any> = Symbol('GroupInterface')
 
 export function useFocusGroup(elements: Ref<HTMLElement[]>) {
-  const { currentEl: currentElGlobal } = useGlobalFocusTracker()
+  const { currentEl: currentElGlobal } = useFocusTracker()
 
   const currentTabindex = computed(
     () => currentElGlobal.value && elements.value.indexOf(currentElGlobal.value)

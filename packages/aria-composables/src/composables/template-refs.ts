@@ -11,6 +11,13 @@ import {
   inject,
 } from 'vue'
 
+interface TemplateRefInjection {
+  add: (el: HTMLElement) => void
+  remove: (el: HTMLElement) => void
+}
+
+type TemplateRefKey = InjectionKey<TemplateRefInjection>
+
 export function createTemplateRefList() {
   const elements = ref<HTMLElement[]>([])
 
@@ -21,11 +28,6 @@ export function createTemplateRefList() {
   }
 }
 
-interface TemplateRefInjection {
-  add: (el: HTMLElement) => void
-  remove: (el: HTMLElement) => void
-}
-type TemplateRefKey = InjectionKey<TemplateRefInjection>
 const templateRefKey = Symbol('templateRefKey') as TemplateRefKey
 
 export function createTemplateRefProvider(
@@ -47,9 +49,7 @@ export function createTemplateRefProvider(
   )
 
   // This ref handles elements picked directly from the template with a refFn
-  const elementsFromRefs = ref<HTMLElement[]>([])
-  const refFn = (el: HTMLElement) => elementsFromRefs.value.push(el)
-  onBeforeUpdate(() => (elementsFromRefs.value = []))
+  const { elements: elementsFromRefs, refFn } = createTemplateRefList()
 
   // Then we combine both element arrays and sort the elements according
   // do their DOM position, so tab order is preserved
@@ -82,17 +82,20 @@ export function useParentElementInjection(
   )
 }
 
-const QUERY_FOCUSABLE_ELEMENTS = 'button, [href], input, textarea, [tabindex]'
+const QUERY_FOCUSABLE_ELEMENTS =
+  'button, [href], input, textarea, [tabindex], audio, video'
 
-export function createTemplateRefQuery<El extends HTMLElement>(
-  elRef: Ref<El>,
+export function createTemplateRefQuery(
+  elRef: Ref<HTMLElement>,
   query: string = QUERY_FOCUSABLE_ELEMENTS
 ) {
-  const elements = ref<El[]>([])
+  const elements = ref<HTMLElement[]>([])
   const handler = () => {
     const el = elRef.value
     if (el) {
-      elements.value = [...((el.querySelectorAll(query) as unknown) as El[])]
+      elements.value = [
+        ...((el.querySelectorAll(query) as unknown) as HTMLElement[]),
+      ]
     } else {
       elements.value = []
     }

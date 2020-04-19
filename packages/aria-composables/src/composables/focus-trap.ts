@@ -1,14 +1,22 @@
 import { ref, reactive, computed, onMounted, onUnmounted } from 'vue'
 import { useEventIf } from './events'
-import {
-  applyFocus,
-  getNextFocusableElement,
-  getPreviousFocusableElement,
-} from '../utils'
+import { getNextFocusableElement, getPreviousFocusableElement } from '../utils'
+import { applyFocus } from '../utils'
 import { useFocusTracker } from './focus-tracker'
 import { useTabDirection } from './tab-direction'
 
-const focusTrapQueue = useFocusTrapQueue()
+const queue = reactive<Set<Symbol>>(new Set())
+const remove = (id: Symbol) => queue.delete(id)
+const add = (id: Symbol) => {
+  remove(id)
+  queue.add(id)
+}
+const active = computed(() => Array.from(queue).reverse()[0])
+const focusTrapQueue = Object.seal({
+  active,
+  add,
+  remove,
+})
 
 interface FocusTrapOptions {
   activateOnMount?: boolean
@@ -41,11 +49,11 @@ export function useFocusTrap(options: FocusTrapOptions = {}) {
         const prevEl = focusTracker.prevEl.value
         if (prevEl) {
           if (wrapperEl.value?.contains(prevEl)) {
-            // if focus moved outside of the Trap,
+            // if focus was moved outside of the Trap,
             // bring it back to the last element in the Trap
             applyFocus(prevEl)
           } else {
-            // but if so far it hasn't been inside the FocusTrap,
+            // but if the previously focussed Element wasn't inside the FocusTrap,
             // move focus to the first element in the Trap.
             const el = getNextFocusableElement(wrapperEl.value!, startEl.value!)
             el && applyFocus(el)
@@ -88,19 +96,4 @@ export function useFocusTrap(options: FocusTrapOptions = {}) {
     activate,
     deactivate,
   }
-}
-
-function useFocusTrapQueue() {
-  const queue = reactive<Set<Symbol>>(new Set())
-  const remove = (id: Symbol) => queue.delete(id)
-  const add = (id: Symbol) => {
-    remove(id)
-    queue.add(id)
-  }
-  const active = computed(() => Array.from(queue).reverse()[0])
-  return Object.seal({
-    active,
-    add,
-    remove,
-  })
 }

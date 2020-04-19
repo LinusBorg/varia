@@ -17,14 +17,11 @@ useEvent(document, 'keydown', ((event: KeyboardEvent) => {
 export function useTabDirection() {
   return inject(
     tabDirectionKey,
-    (computed(() => null) as unknown) as TabDirection
+    (computed(() => null) as unknown) as TabDirection // default
   )
 }
 
 export function provideTabDirection() {
-  provide(
-    tabDirectionKey,
-    computed(() => tabDirection.value)
-  )
+  provide(tabDirectionKey, tabDirection)
   return computed(() => tabDirection.value)
 }

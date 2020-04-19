@@ -1,6 +1,6 @@
 import { useFocusGroupOptions } from '../types'
 import { Ref, watch, ref, onBeforeUnmount, computed } from 'vue'
-import { useGlobalFocusTracker } from './focus-tracker'
+import { useFocusTracker } from './focus-tracker'
 import { applyFocus } from '../utils'
 import { useKeyIf } from './keys'
 
@@ -10,7 +10,7 @@ export function useReturnBehaviour(
 ) {
   const returnEl = ref<HTMLElement | null>(null)
 
-  const { prevEl } = useGlobalFocusTracker()
+  const { prevEl } = useFocusTracker()
   watch(isActive, (newVal, oldVal) => {
     if (newVal && !oldVal) {
       returnEl.value = prevEl.value
@@ -29,7 +29,7 @@ export function useReturnBehaviour(
   if (options.returnOnEscape) {
     useKeyIf(isActive, ['Esc'], (() => {
       returnFocus()
-    }) as EventHandler)
+    }) as EventListener)
   }
 
   return {
