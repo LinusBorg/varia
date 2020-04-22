@@ -1,3 +1,3 @@
-export * from './use-tabs'
+export * from './Tabs'
 // export * from './use-slider'
 // export * from './use-menu'

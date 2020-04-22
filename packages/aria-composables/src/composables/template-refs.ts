@@ -16,7 +16,7 @@ interface TemplateRefInjection {
   remove: (el: HTMLElement) => void
 }
 
-type TemplateRefKey = InjectionKey<TemplateRefInjection>
+export type TemplateRefKey = InjectionKey<TemplateRefInjection>
 
 export function createTemplateRefList() {
   const elements = ref<HTMLElement[]>([])
