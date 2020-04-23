@@ -12,8 +12,5 @@ export function useClickable(options: ClickableOptions) {
     }
   }) as EventListener)
 
-  return {
-    ...tabbableAttrs,
-    role: 'button' as const,
-  }
+  return tabbableAttrs
 }

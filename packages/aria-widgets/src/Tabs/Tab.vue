@@ -9,6 +9,7 @@ import {
   computed,
   defineComponent,
   inject,
+  onMounted,
   ref,
   Ref,
   PropType,
@@ -37,9 +38,15 @@ export default defineComponent({
       attrs: ClickableOptions
     }
   ) {
-    if (!inject(tabListMarker)) {
-      console.warn('<Tab/> has to be nested inside of a `<TabList />`')
-    }
+    const el = ref<HTMLElement>()
+
+    // Verify presence of an ancestor with role="tabList"
+    const hasTabListMarker = inject(tabListMarker)
+    onMounted(() => {
+      if (!hasTabListMarker && el.value?.closest('[role="tablist"]')) {
+        console.warn('<Tab/> has to be nested inside of a `<TabList />`')
+      }
+    })
     const tabState = inject(tabAPIKey)
     if (!tabState) {
       console.warn('<Tab />: useTabs() was not called in parent component')
@@ -52,11 +59,7 @@ export default defineComponent({
 
     // A11y
     const id = computed(() => tabState.generateId(props.name))
-    const el = ref<HTMLElement>()
-    const tabEls = useParentElementInjection(
-      tabElementsKey,
-      el as Ref<HTMLElement>
-    )
+    const tabEls = useParentElementInjection(el, tabElementsKey)
 
     // Element Attributes
     const clickableAttrs = useClickable(attrs)

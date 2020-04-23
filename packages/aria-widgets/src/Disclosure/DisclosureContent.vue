@@ -1,9 +1,9 @@
 <template>
-  <div v-if="show" :is="tag" v-bind="contentAttrs"></div>
+  <div v-if="show" :is="tag" v-bind="attributes"></div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, h } from 'vue'
 import { injectDisclosureContext } from './use-disclosure'
 export default defineComponent({
   name: 'Disclosure',
@@ -14,9 +14,9 @@ export default defineComponent({
     },
   },
   setup() {
-    const { contentAttrs, show } = injectDisclosureContext()
+    const { contentAttrs: attributes, show } = injectDisclosureContext()
     return {
-      contentAttrs,
+      attributes,
       show,
     }
   },

@@ -66,8 +66,8 @@ export function createTemplateRefProvider(
 }
 
 export function useParentElementInjection(
-  key: TemplateRefKey = templateRefKey,
-  _el: Ref<HTMLElement | HTMLElement[]>
+  _el: Ref<HTMLElement | undefined | HTMLElement[]>,
+  key: TemplateRefKey = templateRefKey
 ) {
   const { add, remove } = inject(key, {} as TemplateRefInjection)!
   if (!add || !remove) return // nothing provided from parent
@@ -75,6 +75,7 @@ export function useParentElementInjection(
   watch(
     _el,
     (el, _, onCleanup) => {
+      if (!el) return
       Array.isArray(el) ? el.map(add) : add(el)
       onCleanup(() => (Array.isArray(el) ? el.map(remove) : remove(el)))
     },
