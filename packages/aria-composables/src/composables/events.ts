@@ -13,12 +13,16 @@ export function useEvent(
   opts?: boolean | AddEventListenerOptions
 ) {
   const el = ref((_el as unknown) as Element)
-  const unwatch = watch(el, (el, _, onCleanup) => {
-    el && el.addEventListener(name, handler, opts)
-    onCleanup(() => {
-      el && el.removeEventListener(name, handler, opts)
-    })
-  })
+  const unwatch = watch(
+    el,
+    (el, _, onCleanup) => {
+      el && el.addEventListener(name, handler, opts)
+      onCleanup(() => {
+        el && el.removeEventListener(name, handler, opts)
+      })
+    },
+    { immediate: true }
+  )
 
   return unwatch
 }

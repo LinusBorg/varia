@@ -1,29 +1,28 @@
 import { wait, focus } from 'helpers'
-import {
-  useGlobalFocusTracker,
-  provideGlobalFocusTracking,
-  FocusTrackerState,
-} from '../focus-tracker'
+import { useFocusTracker, provideFocusTracker } from '../focus-tracker'
+import { useTabDirection, provideTabDirection } from '../tab-direction'
 import { fireEvent } from '@testing-library/dom'
-import { createComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 
-describe('useGlobalFocusTracker', () => {
+describe('useFocusTracker', () => {
   it('tracks currently focussed element', async () => {
-    let tracker: FocusTrackerState | undefined
+    let tracker!: ReturnType<typeof useFocusTracker>
     const wrapper = mount(
-      createComponent({
-        setup() {
-          tracker = provideGlobalFocusTracking(false)
-          return {}
-        },
-      }),
       {
         template: `<div>
                 <input ref="a">
                 <button ref="b">Test me</button>
               </div>`,
-        attachToDocument: true,
+        setup() {
+          provideFocusTracker()
+          tracker = useFocusTracker()
+          const a = ref<HTMLElement>()
+          return { a }
+        },
+      },
+      {
+        attachTo: document.querySelector('body') as HTMLElement,
       }
     )
     await wait()
@@ -40,15 +39,17 @@ describe('useGlobalFocusTracker', () => {
     expect(tracker?.prevEl.value).toBe(wrapper.vm.$refs.a)
 
     // we need to manually unmount the component since we attached to the document.
-    wrapper.destroy()
+    //@ts-ignore
+    wrapper.vm.$destroy()
   })
 
   it('tracks tabDirection', async () => {
-    let tracker: FocusTrackerState | undefined
+    let tabDirection!: ReturnType<typeof useTabDirection>
     const wrapper = mount(
-      createComponent({
+      defineComponent({
         setup() {
-          tracker = provideGlobalFocusTracking(false)
+          provideTabDirection()
+          tabDirection = useTabDirection()
           return {}
         },
       }),
@@ -61,13 +62,13 @@ describe('useGlobalFocusTracker', () => {
       }
     )
 
-    expect(tracker?.tabDirection.value).toBe(null)
+    expect(tabDirection.value).toBe(null)
     fireEvent.keyDown(document, {
       key: 'Tab',
       code: 9,
     })
     await wait()
-    expect(tracker?.tabDirection.value).toBe('forward')
+    expect(tabDirection.value).toBe('forward')
 
     fireEvent.keyDown(document, {
       key: 'Tab',
@@ -75,23 +76,24 @@ describe('useGlobalFocusTracker', () => {
       shiftKey: true,
     })
     await wait()
-    expect(tracker?.tabDirection.value).toBe('backward')
+    expect(tabDirection.value).toBe('backward')
 
-    wrapper.destroy()
+    // @ts-ignore
+    wrapper.vm.$destroy()
   })
   it('optionally provides state to children', async () => {
-    let tracker: FocusTrackerState | undefined
+    let tracker!: ReturnType<typeof useFocusTracker>
     const wrapper = mount(
-      createComponent({
+      defineComponent({
         setup() {
-          tracker = useGlobalFocusTracker()
+          tracker = useFocusTracker()
           return {}
         },
       }),
       {
-        parentComponent: createComponent({
+        parentComponent: defineComponent({
           setup() {
-            provideGlobalFocusTracking(true)
+            provideFocusTracker()
             return {}
           },
         }),
@@ -108,6 +110,7 @@ describe('useGlobalFocusTracker', () => {
     await wait()
     expect(tracker?.currentEl.value).toBe(wrapper.vm.$refs.a)
 
-    wrapper.destroy()
+    // @ts-ignore
+    wrapper.vm.$destroy()
   })
 })

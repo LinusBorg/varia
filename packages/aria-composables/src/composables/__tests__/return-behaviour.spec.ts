@@ -1,8 +1,10 @@
-import { key as TrackerKey } from '../focus-tracker'
+import { focusTrackerKey as TrackerKey } from '../focus-tracker'
 import { useReturnBehaviour } from '../return-behaviour'
-import { ref, Ref } from 'vue'
-import { mount, wait } from 'helpers'
+import { ref, Ref, nextTick } from 'vue'
+import { mount } from 'helpers'
 import { fireEvent } from '@testing-library/dom'
+
+const wait = nextTick
 
 // setup some focusable elements in the document
 const genEl = () => {
@@ -14,7 +16,7 @@ const els = Array(3)
   .fill(null)
   .map(genEl)
 
-const mountOptions = (prevEl: Ref<HTMLElement | null>) => ({
+const mountOptions = (prevEl: Ref<HTMLElement | undefined>) => ({
   provide: {
     [TrackerKey as symbol]: {
       prevEl,
@@ -31,7 +33,7 @@ describe('useReturnBehaviour', () => {
   it('provides return element according to the isActive Ref flag', async () => {
     let returnBehaviour: ReturnType<typeof useReturnBehaviour> | undefined
     const isActive = ref(false)
-    const prevEl = ref<HTMLElement>(null)
+    const prevEl = ref<HTMLElement>()
     const wrapper = mount(() => {
       returnBehaviour = useReturnBehaviour(isActive)
       return {}

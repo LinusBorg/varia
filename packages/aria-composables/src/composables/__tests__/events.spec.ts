@@ -1,6 +1,6 @@
-import { wait } from 'helpers'
-import { useEvent, useEventIf, useKeyIf } from '../events'
-import { ref } from 'vue'
+import { useEvent, useEventIf } from '../events'
+
+import { ref, nextTick } from 'vue'
 import { fireEvent } from '@testing-library/dom'
 
 describe('useEvent', () => {
@@ -10,7 +10,7 @@ describe('useEvent', () => {
     const unwatch = useEvent(el, 'click', spy)
     el.click()
 
-    await wait()
+    await nextTick()
 
     expect(spy).toHaveBeenCalled()
     unwatch()
@@ -23,7 +23,7 @@ describe('useEvent', () => {
     el.click()
     unwatch()
     el.click()
-    await wait()
+    await nextTick()
 
     expect(spy).toHaveBeenCalledTimes(1)
   })
@@ -37,10 +37,10 @@ describe('useEvent', () => {
     elRef.value.click()
     elRef.value = el2
 
-    await wait()
+    await nextTick()
     elRef.value.click()
 
-    await wait()
+    await nextTick()
     expect(spy).toHaveBeenCalledTimes(2)
     expect(spy.mock.calls[0][0].target).toBe(el1)
     expect(spy.mock.calls[1][0].target).toBe(el2)
@@ -52,14 +52,14 @@ describe('useEvent', () => {
     const el1 = document.createElement('button')
     const el2 = document.createElement('button')
     const spy = jest.fn()
-    const elRef = ref<HTMLElement | null>(el1)
+    const elRef = ref<HTMLElement | undefined>(el1)
     const unwatch = useEvent(elRef, 'click', spy)
     elRef.value!.click()
 
-    elRef.value = null
-    await wait()
+    elRef.value = undefined
+    await nextTick()
     el1.click()
-    await wait()
+    await nextTick()
     expect(spy).toHaveBeenCalledTimes(1)
 
     unwatch()
@@ -74,38 +74,13 @@ describe('useEventIf', () => {
     const unwatch = useEventIf(conditionRef, el, 'click', spy)
 
     el.click()
-    await wait()
+    await nextTick()
     expect(spy).not.toHaveBeenCalled()
 
     conditionRef.value = true
-    await wait()
+    await nextTick()
     el.click()
     expect(spy).toHaveBeenCalled()
-    unwatch()
-  })
-})
-
-describe('useKeyIf', () => {
-  it('triggers on keyboard keyup events if conditionRef = true', async () => {
-    const conditionRef = ref<boolean>(true)
-    const spy = jest.fn()
-    const unwatch = useKeyIf(conditionRef, ['Up'], spy)
-
-    fireEvent.keyUp(document, {
-      key: 'Up',
-      code: 38,
-    })
-    fireEvent.keyUp(document, {
-      key: 'Down',
-      code: 40,
-    })
-    expect(spy).toHaveBeenCalledTimes(1)
-    conditionRef.value = false
-    fireEvent.keyUp(document, {
-      key: 'Up',
-      code: 38,
-    })
-    expect(spy).toHaveBeenCalledTimes(1)
     unwatch()
   })
 })

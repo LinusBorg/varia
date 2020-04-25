@@ -1,5 +1,4 @@
-import { wait } from 'helpers'
-import { useArrowKeys } from '../keys'
+import { useArrowKeys, useKeyIf } from '../keys'
 import { ref } from 'vue'
 import { fireEvent } from '@testing-library/dom'
 
@@ -23,6 +22,31 @@ const pressRight = () =>
     key: 'Right',
     code: 39,
   })
+
+describe('useKeyIf', () => {
+  it('triggers on keyboard keyup events if conditionRef = true', async () => {
+    const conditionRef = ref<boolean>(true)
+    const spy = jest.fn()
+    const unwatch = useKeyIf(conditionRef, ['Up'], spy)
+
+    fireEvent.keyUp(document, {
+      key: 'Up',
+      code: 38,
+    })
+    fireEvent.keyUp(document, {
+      key: 'Down',
+      code: 40,
+    })
+    expect(spy).toHaveBeenCalledTimes(1)
+    conditionRef.value = false
+    fireEvent.keyUp(document, {
+      key: 'Up',
+      code: 38,
+    })
+    expect(spy).toHaveBeenCalledTimes(1)
+    unwatch()
+  })
+})
 
 describe('useArrowKeys', () => {
   it('triggers handlers for correct Keys if conditionRef = true', () => {

@@ -7,17 +7,19 @@ export function useButton(options: ClickableOptions) {
   }))
 }
 
+export const ButtonProps = {
+  tag: { type: String, default: 'BUTTON' },
+  disabled: { type: Boolean as PropType<boolean | undefined> },
+  focusable: {
+    type: Boolean as PropType<boolean | undefined>,
+    default: true,
+  },
+  tabIndex: { type: [Number, String] },
+}
+
 export const Button = defineComponent({
   name: 'Button',
-  props: {
-    tag: { type: String, default: 'BUTTON' },
-    disabled: { type: Boolean as PropType<boolean | undefined> },
-    focusable: {
-      type: Boolean as PropType<boolean | undefined>,
-      default: true,
-    },
-    tabIndex: { type: [Number, String] },
-  },
+  props: ButtonProps,
   setup(props, { slots }) {
     const attributes = useButton(props)
 

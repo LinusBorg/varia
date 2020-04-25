@@ -1,4 +1,4 @@
-import nanoid from 'nanoid/non-secure'
+import { nanoid } from 'nanoid/non-secure'
 
 export function useIdGenerator(seed?: string) {
   const idMap: { [key: string]: string } = {}
