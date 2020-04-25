@@ -9,6 +9,7 @@ import {
   InjectionKey,
   provide,
   inject,
+  readonly,
 } from 'vue'
 
 interface TemplateRefInjection {
@@ -23,8 +24,8 @@ export function createTemplateRefList() {
 
   onBeforeUpdate(() => (elements.value = []))
   return {
-    elements,
-    refFn: (el: HTMLElement) => elements.value.push(el),
+    elements: readonly(elements),
+    refFn: (el: HTMLElement) => void elements.value.push(el),
   }
 }
 
@@ -76,8 +77,8 @@ export function useParentElementInjection(
     _el,
     (el, _, onCleanup) => {
       if (!el) return
-      Array.isArray(el) ? el.map(add) : add(el)
-      onCleanup(() => (Array.isArray(el) ? el.map(remove) : remove(el)))
+      if (el) Array.isArray(el) ? el.map(add) : add(el)
+      onCleanup(() => el && (Array.isArray(el) ? el.map(remove) : remove(el)))
     },
     { immediate: true }
   )
