@@ -7,12 +7,14 @@ export const GroupInterfaceKey: InjectionKey<any> = Symbol('GroupInterface')
 export function useFocusGroup(elements: Ref<HTMLElement[]>) {
   const { currentEl: currentElGlobal } = useFocusTracker()
 
-  const currentTabindex = computed(
-    () => currentElGlobal.value && elements.value.indexOf(currentElGlobal.value)
+  const currentIndex = computed(() =>
+    currentElGlobal.value ? elements.value.indexOf(currentElGlobal.value) : -1
   )
-  const hasFocus = computed(() => currentTabindex.value !== -1)
+  const hasFocus = computed(
+    () => !!currentIndex.value && currentIndex.value > -1
+  )
   const currentEl = computed(() =>
-    hasFocus.value ? currentElGlobal.value : null
+    hasFocus.value ? currentElGlobal.value : undefined
   )
 
   function setFocusToIndex(index: number) {
@@ -24,7 +26,7 @@ export function useFocusGroup(elements: Ref<HTMLElement[]>) {
     // state
     hasFocus,
     currentEl,
-    currentTabindex,
+    currentIndex,
     // Fns
     setFocusToIndex,
   }

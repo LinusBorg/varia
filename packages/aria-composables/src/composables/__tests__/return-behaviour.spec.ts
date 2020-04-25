@@ -1,7 +1,7 @@
 import { focusTrackerKey as TrackerKey } from '../focus-tracker'
 import { useReturnBehaviour } from '../return-behaviour'
 import { ref, Ref, nextTick } from 'vue'
-import { mount } from 'helpers'
+import { mount } from '../../../test/helpers'
 import { fireEvent } from '@testing-library/dom'
 
 const wait = nextTick
@@ -26,11 +26,11 @@ const mountOptions = (prevEl: Ref<HTMLElement | undefined>) => ({
         <div>
         </div>
         `,
-  attachToDocument: true,
+  attachTo: document.body as HTMLElement,
 })
 
 describe('useReturnBehaviour', () => {
-  it('provides return element according to the isActive Ref flag', async () => {
+  it.only('provides return element according to the isActive Ref flag', async () => {
     let returnBehaviour: ReturnType<typeof useReturnBehaviour> | undefined
     const isActive = ref(false)
     const prevEl = ref<HTMLElement>()
@@ -39,7 +39,7 @@ describe('useReturnBehaviour', () => {
       return {}
     }, mountOptions(prevEl))
 
-    expect(returnBehaviour?.returnEl.value).toBe(null)
+    expect(returnBehaviour?.returnEl.value).toBe(undefined)
     prevEl.value = els[0]
     isActive.value = true
     await wait()
@@ -56,7 +56,7 @@ describe('useReturnBehaviour', () => {
     await wait()
     expect(returnBehaviour?.returnEl.value).toBe(els[2])
 
-    wrapper.destroy()
+    wrapper.vm.$destroy()
   })
   it('returns to that element on unmount', async () => {
     let returnBehaviour: ReturnType<typeof useReturnBehaviour> | undefined
@@ -72,7 +72,7 @@ describe('useReturnBehaviour', () => {
     await wait()
     expect(returnBehaviour?.returnEl.value).toBe(els[0])
 
-    wrapper.destroy()
+    wrapper.vm.$destroy()
     await wait()
     expect(els[0]).toBe(document.activeElement)
   })
@@ -97,7 +97,7 @@ describe('useReturnBehaviour', () => {
     await wait()
     expect(els[0]).toBe(document.activeElement)
 
-    wrapper.destroy()
+    wrapper.vm.$destroy()
   })
   it('returns to that element when return fn is called', async () => {
     let returnBehaviour: ReturnType<typeof useReturnBehaviour> | undefined

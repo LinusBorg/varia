@@ -8,7 +8,7 @@ export function useReturnBehaviour(
   isActive: Ref<boolean>,
   options: useFocusGroupOptions = {}
 ) {
-  const returnEl = ref<HTMLElement | null>(null)
+  const returnEl = ref<HTMLElement>()
 
   const { prevEl } = useFocusTracker()
   watch(isActive, (newVal, oldVal) => {

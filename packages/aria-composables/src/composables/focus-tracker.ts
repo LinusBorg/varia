@@ -10,8 +10,8 @@ export const focusTrackerKey: InjectionKey<FocusTrackerState> = Symbol(
 // all elements that are not claimed by an explicit FocusGroup
 // are part of the global FocusGroup
 
-const prevEl = ref<HTMLElement | null>(null)
-const activeEl = ref<HTMLElement | null>(document.activeElement as HTMLElement)
+const prevEl = ref<HTMLElement>()
+const activeEl = ref<HTMLElement>(document.activeElement as HTMLElement)
 const docHasFocus = ref<boolean>(document.hasFocus())
 // when a FocusGroup takes over focus management,
 // it notifies the tracker by calling this function
@@ -32,7 +32,7 @@ export const state = {
   // State
   prevEl: computed(() => prevEl.value),
   activeEl: computed(() => activeEl.value),
-  currentEl: computed(() => (docHasFocus.value ? activeEl.value : null)),
+  currentEl: computed(() => (docHasFocus.value ? activeEl.value : undefined)),
 }
 
 export function provideFocusTracker() {
