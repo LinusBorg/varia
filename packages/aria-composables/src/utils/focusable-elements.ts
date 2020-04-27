@@ -36,10 +36,3 @@ const focusableEls = [
   'object',
   'embed',
 ]
-
-export function isFocusable(el: HTMLElement) {
-  if (!el.isConnected) return false
-  if (!focusableEls.includes(el.tagName) && !el.contentEditable) return false
-  if ((el as HTMLInputElement).disabled) return false
-  return true
-}

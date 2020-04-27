@@ -2,7 +2,7 @@ import { useArrowKeys } from './keys'
 import { applyFocus } from '../utils'
 import { watch, watchEffect, Ref } from 'vue'
 import { useKeyIf } from './keys'
-import { useFocusMoverMachine } from './focusMoverMachine'
+import { useIndexMover } from './index-mover'
 
 interface IUseRovingTabIndexOptions {
   orientation?: 'vertical' | 'horizontal'
@@ -21,13 +21,15 @@ export function useRovingTabIndex(
 
   const {
     selectedIndex: focusIndex,
-    forward,
-    backward,
+    forward: moveIndexForward,
+    backward: moveIndexBackward,
     setIndex,
-  } = useFocusMoverMachine(elements, {
-    active: isActive.value,
+  } = useIndexMover(elements, {
     loop,
   })
+
+  const forward = () => isActive.value && moveIndexForward()
+  const backward = () => isActive.value && moveIndexBackward()
 
   // imperatively manage tabindex so template stays clean
   watchEffect(() => {
@@ -65,6 +67,6 @@ export function useRovingTabIndex(
     forward,
     backward,
     index: focusIndex,
-    setIndex,
+    focusByIndex: setIndex,
   }
 }

@@ -1,7 +1,7 @@
-import { computed, Ref, watch } from 'vue'
+import { computed, Ref, watchEffect } from 'vue'
 import { useArrowKeys } from './keys'
-import { useIdGenerator } from '../utils/id-generator'
-import { useFocusMoverMachine } from './focusMoverMachine'
+import { useIndexMover } from './index-mover'
+import { nanoid } from 'nanoid/non-secure'
 interface useActiveDescendantOptions {
   idNamespace?: string
   loop?: boolean
@@ -15,21 +15,21 @@ export function useActiveDescendant(
 ) {
   const {
     selectedIndex,
-    service,
-    forward,
-    backward,
+    forward: moveIndexForward,
+    backward: moveIndexBackward,
     setIndex,
-  } = useFocusMoverMachine(elements, {
-    active: isActive.value,
+  } = useIndexMover(elements, {
     loop: options.loop,
   })
-  watch(isActive, _isActive =>
-    service.send(_isActive ? 'DEACTIVATE' : 'ACTIVATE')
-  )
+
+  const forward = () => isActive.value && moveIndexForward()
+  const backward = () => isActive.value && moveIndexBackward()
 
   const activeId = computed(() => elements.value[selectedIndex.value]?.id || '')
 
-  const genId = useIdGenerator(options.idNamespace)
+  watchEffect(() => {
+    elements.value.forEach(el => !!el.id && (el.id = nanoid()))
+  })
   // Container Attributes Generator
   const containerAttrs = computed(() => {
     return {
@@ -38,15 +38,8 @@ export function useActiveDescendant(
       'aria-owns': elements.value.map(el => el.id).join(' '),
     }
   })
-  // Items Attributes Generator
-  const genItemAttrs = (name: string) => ({
-    onClick: handleClick,
-    id: genId(name),
-  })
 
-  function handleClick(event: Event) {
-    const el = event.target as HTMLElement
-    const { id } = el
+  function focusbyId(id: string) {
     if (id) {
       const index = elements.value.findIndex(el => el.id === id)
       index !== -1 && setIndex(index)
@@ -68,8 +61,8 @@ export function useActiveDescendant(
     activeId,
 
     // Fns
-    genItemAttrs,
-    setIndex,
+    focusbyId,
+    focusByIndex: setIndex,
     forward,
     backward,
   }

@@ -4,7 +4,7 @@ export * from './focus-tracker'
 export * from './focus-group'
 
 export * from './activedescendant'
-export * from './use-roving-index'
+export * from './roving-index'
 
 export * from './return-behaviour'
 
