@@ -22,11 +22,6 @@ const mountOptions = (prevEl: Ref<HTMLElement | undefined>) => ({
       prevEl,
     },
   },
-  template: `
-        <div>
-        </div>
-        `,
-  attachTo: document.body as HTMLElement,
 })
 
 describe('useReturnBehaviour', () => {

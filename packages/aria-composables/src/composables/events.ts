@@ -6,19 +6,19 @@ export type ElementRefs =
   | MaybeRef<Window>
   | MaybeRef<Document>
 
-export function useEvent(
+export function useEvent<Evt extends Event = Event>(
   _el: ElementRefs,
   name: string,
-  handler: (event: Event) => void,
+  handler: (event: Evt) => void,
   opts?: boolean | AddEventListenerOptions
 ) {
   const el = ref((_el as unknown) as Element)
   const unwatch = watch(
     el,
     (el, _, onCleanup) => {
-      el && el.addEventListener(name, handler, opts)
+      el && el.addEventListener(name, handler as EventListener, opts)
       onCleanup(() => {
-        el && el.removeEventListener(name, handler, opts)
+        el && el.removeEventListener(name, handler as EventListener, opts)
       })
     },
     { immediate: true }

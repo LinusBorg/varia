@@ -46,8 +46,14 @@ export function useRovingTabIndex(
   const backDir = orientation === 'vertical' ? 'up' : 'left'
   const fwdDir = orientation === 'vertical' ? 'down' : 'right'
   useArrowKeys(isActive, {
-    [backDir]: backward,
-    [fwdDir]: forward,
+    [backDir]: (event: KeyboardEvent) => {
+      if (event.shiftKey || event.ctrlKey) return
+      backward()
+    },
+    [fwdDir]: (event: KeyboardEvent) => {
+      if (event.shiftKey || event.ctrlKey) return
+      forward()
+    },
   })
 
   useKeyIf(isActive, ['Home', 'End'], ((event: KeyboardEvent) => {

@@ -13,9 +13,10 @@
   ],
   "module": "dist/aria-composables-2.esm.js",
   "scripts": {
-    "start": "tsdx watch",
+    "serve": "tsdx watch",
     "build": "tsdx build --tsconfig tsconfig.build.json",
     "test": "tsdx test",
+    "test:watch": "tsdx test --watch --runInBand",
     "lint": "eslint src/**/*.ts test/**/*.ts --fix"
   },
   "peerDependencies": {

@@ -1,4 +1,4 @@
-import { ref, provide, inject, computed, InjectionKey } from 'vue'
+import { ref, provide, inject, computed, InjectionKey, readonly } from 'vue'
 import { useEvent } from './events'
 
 import { FocusTrackerState } from '../types'
@@ -17,6 +17,7 @@ const docHasFocus = ref<boolean>(document.hasFocus())
 // it notifies the tracker by calling this function
 
 useEvent(document, 'focusin', e => {
+  console.log('focusin triggered!')
   docHasFocus.value = true
   prevEl.value = activeEl.value
   activeEl.value = e.target as HTMLElement
@@ -30,8 +31,8 @@ useEvent(document, 'focusout', () => {
 
 export const state = {
   // State
-  prevEl: computed(() => prevEl.value),
-  activeEl: computed(() => activeEl.value),
+  prevEl: readonly(prevEl),
+  activeEl: readonly(activeEl),
   currentEl: computed(() => (docHasFocus.value ? activeEl.value : undefined)),
 }
 

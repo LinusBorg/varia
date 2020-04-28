@@ -5,6 +5,7 @@ import { fireEvent } from '@testing-library/dom'
 type SetupFn = (...args: any[]) => Record<string, any>
 
 export const focus = (el: any) => {
+  console.log('attempting to give focus')
   ;(el as HTMLElement).focus()
   // workaround for jsdom: focus() does not trigger focusin event
   fireEvent.focusIn(el as Element)
