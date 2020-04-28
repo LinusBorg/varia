@@ -5,6 +5,10 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "serve": "lerna run serve",
+    "postinstall": "patch-package"
+  },
   "devDependencies": {
     "lerna": "^3.20.2"
   },
