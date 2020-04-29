@@ -13,7 +13,8 @@
   ],
   "module": "dist/aria-composables-2.esm.js",
   "scripts": {
-    "serve": "tsdx watch",
+    "start": "tsdx watch --tsconfig tsconfig.build.json",
+    "serve": "tsdx watch --tsconfig tsconfig.build.json --noClean",
     "build": "tsdx build --tsconfig tsconfig.build.json",
     "test": "tsdx test",
     "test:watch": "tsdx test --watch --runInBand",

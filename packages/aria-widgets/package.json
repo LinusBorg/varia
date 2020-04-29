@@ -15,7 +15,8 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch",
+    "start": "tsdx watch --tsconfig tsconfig.build.json",
+    "serve": "tsdx watch --tsconfig tsconfig.build.json --noClean",
     "build": "tsdx build --tsconfig tsconfig.build.json",
     "test": "tsdx test",
     "lint": "eslint src/**/*.ts test/**/*.ts --fix",
