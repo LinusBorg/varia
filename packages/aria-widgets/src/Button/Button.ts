@@ -1,4 +1,4 @@
-import { computed, defineComponent, PropType, h } from 'vue'
+import { computed, defineComponent, PropType, h, reactive } from 'vue'
 import { useClickable, ClickableOptions } from '../Clickable'
 export function useButton(options: ClickableOptions) {
   return computed(() => ({
@@ -8,11 +8,11 @@ export function useButton(options: ClickableOptions) {
 }
 
 export const ButtonProps = {
-  tag: { type: String, default: 'BUTTON' },
-  disabled: { type: Boolean as PropType<boolean | undefined> },
+  tag: { type: String, default: 'button' },
+  disabled: { type: Boolean as PropType<boolean> },
   focusable: {
-    type: Boolean as PropType<boolean | undefined>,
-    default: true,
+    type: Boolean as PropType<boolean>,
+    default: false,
   },
   tabIndex: { type: [Number, String] },
 }
@@ -21,7 +21,7 @@ export const Button = defineComponent({
   name: 'Button',
   props: ButtonProps,
   setup(props, { slots }) {
-    const attributes = useButton(props)
+    const attributes = reactive(useButton(props))
 
     return () => {
       return slots.replace

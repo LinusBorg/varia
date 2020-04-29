@@ -1,4 +1,4 @@
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, Ref } from 'vue'
 import { useEvent } from 'vue-aria-composables'
 
 export interface TabbableOptions {
@@ -12,15 +12,20 @@ export interface TabbableOptions {
 
 const defaults = {
   disabled: false,
-  focusable: true,
+  focusable: undefined,
 }
 
-export function useTabbable(_options: Partial<TabbableOptions> = {}) {
+export function useTabbable(
+  _options: Partial<TabbableOptions> = {},
+  _el?: Ref<HTMLElement>
+) {
   const options = reactive(Object.assign({}, defaults, _options))
 
-  const trulyDisabled = computed(() => options.disabled && !options.focusable)
+  const trulyDisabled = computed(
+    () => (options.disabled && !options.focusable) || undefined
+  )
 
-  const el = ref<HTMLElement>()
+  const el = _el || ref<HTMLElement>()
 
   const preventDefaults = (e: Event): true | undefined => {
     if (options.disabled) {
@@ -37,8 +42,8 @@ export function useTabbable(_options: Partial<TabbableOptions> = {}) {
 
   return {
     ref: el,
-    tabIndex: options.tabIndex || 0,
-    disabled: trulyDisabled.value,
-    'aria-disabled': options.disabled,
+    tabIndex: computed(() => options.tabIndex || 0),
+    disabled: trulyDisabled,
+    'aria-disabled': computed(() => options.disabled || undefined),
   }
 }
