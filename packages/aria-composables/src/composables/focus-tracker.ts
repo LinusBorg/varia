@@ -17,7 +17,6 @@ const docHasFocus = ref<boolean>(document.hasFocus())
 // it notifies the tracker by calling this function
 
 useEvent(document, 'focusin', e => {
-  console.log('focusin triggered!')
   docHasFocus.value = true
   prevEl.value = activeEl.value
   activeEl.value = e.target as HTMLElement
