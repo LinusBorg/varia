@@ -1,7 +1,7 @@
 import { defineComponent, h } from 'vue'
 import { Button } from '../Button'
 import { injectDisclosureContext } from './use-disclosure'
-export default defineComponent({
+export const DisclosureTrigger = defineComponent({
   name: 'DisclosureTrigger',
   components: {
     Button,
@@ -23,7 +23,7 @@ export default defineComponent({
               ...attributes.value,
               tag: props.tag,
             },
-            slots.default?.(attributes)
+            () => slots.default?.(attributes)
           )
     }
   },

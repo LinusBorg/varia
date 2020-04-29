@@ -27,10 +27,15 @@ export const disclosureKey = Symbol('disclosure') as DisclosureKey
 export function useDisclosure(initialValue: boolean = false) {
   const id = useIdGenerator()('disclosure')
   const show = ref<boolean>(initialValue)
+  const onClick = () => {
+    console.log('click!')
+    show.value = !show.value
+  }
   const triggerAttrs = computed(() => ({
     'aria-expanded': show.value,
     role: 'button' as const,
     'aria-controls': id,
+    onClick,
   }))
   const contentAttrs = computed(() => ({
     id,
