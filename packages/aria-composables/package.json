@@ -6,12 +6,12 @@
   "homepage": "https://github.com/LinusBorg/vue-focus-management/packages/aria-composables",
   "license": "Apache-2.0",
   "main": "dist/index.js",
+  "module": "dist/vue-aria-composables.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
   ],
-  "module": "dist/aria-composables-2.esm.js",
   "scripts": {
     "start": "tsdx watch --tsconfig tsconfig.build.json",
     "serve": "tsdx watch --tsconfig tsconfig.build.json --noClean",
