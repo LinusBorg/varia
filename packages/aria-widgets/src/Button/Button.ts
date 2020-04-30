@@ -1,7 +1,13 @@
-import { computed, defineComponent, PropType, h, reactive, Ref } from 'vue'
-import { useClickable, ClickableOptions } from '../Clickable'
+import { computed, defineComponent, h, reactive, Ref } from 'vue'
+import { useClickable, ClickableOptions, ClickableProps } from '../Clickable'
 
 export type ButtonOptions = ClickableOptions
+
+export const ButtonProps = {
+  tag: { type: String, default: 'button' },
+  ...ClickableProps,
+}
+
 export function useButton(
   options: ClickableOptions,
   el?: Ref<HTMLElement | undefined>
@@ -10,16 +16,6 @@ export function useButton(
     ...useClickable(options, el).value,
     role: 'button' as const,
   }))
-}
-
-export const ButtonProps = {
-  tag: { type: String, default: 'button' },
-  disabled: { type: Boolean as PropType<boolean> },
-  focusable: {
-    type: Boolean as PropType<boolean>,
-    default: false,
-  },
-  tabIndex: { type: [Number, String] },
 }
 
 export const Button = defineComponent({

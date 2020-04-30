@@ -1,13 +1,21 @@
-import { computed, reactive, ref, Ref } from 'vue'
+import { computed, reactive, ref, Ref, PropType } from 'vue'
 import { useEvent } from 'vue-aria-composables'
 
 export interface TabbableOptions {
-  disabled?: boolean
-  focusable?: boolean
-  tabIndex?: number | string
+  disabled?: boolean | undefined
+  focusable?: boolean | undefined
   onClick?: <T extends any>(e: T) => any
   onMouseDown?: <T extends any>(e: T) => any
   [key: string]: any
+}
+
+export const TabbableProps = {
+  disabled: {
+    type: Boolean as PropType<boolean>,
+  },
+  focusable: {
+    type: Boolean as PropType<boolean>,
+  },
 }
 
 const defaults = {
@@ -42,7 +50,7 @@ export function useTabbable(
 
   return computed(() => ({
     ref: el,
-    tabIndex: options.tabIndex || 0,
+    tabIndex: 0,
     disabled: trulyDisabled.value,
     'aria-disabled': options.disabled || undefined,
   }))
