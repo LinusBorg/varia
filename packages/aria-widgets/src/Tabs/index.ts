@@ -1,6 +1,6 @@
 export * from './use-tabs'
-import TabList from './TabList.vue'
-import Tab from './TabPanel.vue'
-import TabPanel from './TabPanel.vue'
+import TabList from './TabList'
+import Tab from './Tab'
+import TabPanel from './TabPanel'
 export * from './use-tabs'
 export { Tab, TabList, TabPanel }
