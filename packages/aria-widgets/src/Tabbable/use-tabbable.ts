@@ -17,7 +17,7 @@ const defaults = {
 
 export function useTabbable(
   _options: Partial<TabbableOptions> = {},
-  _el?: Ref<HTMLElement>
+  _el?: Ref<HTMLElement | undefined>
 ) {
   const options = reactive(Object.assign({}, defaults, _options))
 
@@ -40,10 +40,10 @@ export function useTabbable(
   useEvent(el, 'mouseDown', preventDefaults, { capture: true, passive: true })
   useEvent(el, 'click', onClick, { capture: true, passive: true })
 
-  return {
+  return computed(() => ({
     ref: el,
-    tabIndex: computed(() => options.tabIndex || 0),
-    disabled: trulyDisabled,
-    'aria-disabled': computed(() => options.disabled || undefined),
-  }
+    tabIndex: options.tabIndex || 0,
+    disabled: trulyDisabled.value,
+    'aria-disabled': options.disabled || undefined,
+  }))
 }

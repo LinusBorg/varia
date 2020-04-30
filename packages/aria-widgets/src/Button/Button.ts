@@ -1,8 +1,13 @@
-import { computed, defineComponent, PropType, h, reactive } from 'vue'
+import { computed, defineComponent, PropType, h, reactive, Ref } from 'vue'
 import { useClickable, ClickableOptions } from '../Clickable'
-export function useButton(options: ClickableOptions) {
+
+export type ButtonOptions = ClickableOptions
+export function useButton(
+  options: ClickableOptions,
+  el?: Ref<HTMLElement | undefined>
+) {
   return computed(() => ({
-    ...useClickable(options),
+    ...useClickable(options, el).value,
     role: 'button' as const,
   }))
 }
