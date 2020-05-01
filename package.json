@@ -8,8 +8,7 @@
   "scripts": {
     "build": "lerna run build --scope vue-aria-*",
     "serve": "lerna run serve --parallel --scope vue-aria-*",
-    "examples": "cd packages/examples && yarn serve",
-    "postinstall": "patch-package"
+    "examples": "cd packages/examples && yarn serve"
   },
   "devDependencies": {
     "lerna": "^3.20.2"
