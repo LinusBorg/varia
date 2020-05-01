@@ -1,59 +1,33 @@
-import {
-  computed,
-  provide,
-  inject,
-  InjectionKey,
-  ComputedRef,
-  Ref,
-  ref,
-} from 'vue'
+import { provide, inject, InjectionKey, Ref } from 'vue'
 import { useIdGenerator } from 'vue-aria-composables'
 
-interface DisclosureContext {
-  show: Ref<boolean>
-  triggerAttrs: ComputedRef<{
-    'aria-expanded': boolean
-    role: 'button'
-    'aria-controls': string
-  }>
-  contentAttrs: ComputedRef<{
-    id: string
-  }>
+export interface DisclosureAPI {
+  state: Ref<boolean>
+  id: string
 }
-export type DisclosureKey = InjectionKey<DisclosureContext>
+export type DisclosureKey = InjectionKey<DisclosureAPI>
 
 export const disclosureKey = Symbol('disclosure') as DisclosureKey
 
-export function useDisclosure(initialValue: boolean = false) {
+export function useDisclosure(
+  state: Ref<boolean>,
+  { skipProvide }: { skipProvide?: boolean } = {}
+) {
   const id = useIdGenerator()('disclosure')
-  const show = ref<boolean>(initialValue)
-  const onClick = () => {
-    console.log('click!')
-    show.value = !show.value
-  }
-  const triggerAttrs = computed(() => ({
-    'aria-expanded': show.value,
-    role: 'button' as const,
-    'aria-controls': id,
-    onClick,
-  }))
-  const contentAttrs = computed(() => ({
-    id,
-  }))
-  provide(disclosureKey, {
-    show,
-    triggerAttrs,
-    contentAttrs,
-  })
+
+  !skipProvide &&
+    provide(disclosureKey, {
+      state,
+      id,
+    })
 
   return {
-    show,
-    triggerAttrs,
-    contentAttrs,
+    state,
+    id,
   }
 }
 
-export function injectDisclosureContext() {
+export function injectDisclosureAPI() {
   const context = inject(disclosureKey)
   if (!context) {
     throw new Error('Disclosure: useDisclosure() not called in parent')

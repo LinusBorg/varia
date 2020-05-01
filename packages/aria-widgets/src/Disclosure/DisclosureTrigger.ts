@@ -1,29 +1,47 @@
-import { defineComponent, h } from 'vue'
-import { Button } from '../Button'
-import { injectDisclosureContext } from './use-disclosure'
+import { defineComponent, computed, h, Ref } from 'vue'
+import { useButton, ButtonProps, ButtonOptions } from '../Button'
+import { injectDisclosureAPI } from './use-disclosure'
+
+export function useDisclosureTrigger(
+  props: ButtonOptions,
+  el?: Ref<HTMLElement>
+) {
+  const { state, id } = injectDisclosureAPI()
+
+  const onClick = () => {
+    state.value = !state.value
+  }
+  const btnAttrs = useButton(props, el)
+  const attributes = computed(() => ({
+    ...btnAttrs.value,
+    'aria-expanded': state.value,
+    'aria-controls': id,
+    onClick,
+  }))
+
+  return attributes
+}
+
 export const DisclosureTrigger = defineComponent({
   name: 'DisclosureTrigger',
-  components: {
-    Button,
-  },
   props: {
     tag: {
       type: String,
       default: 'DIV',
     },
+    ...ButtonProps,
   },
   setup(props, { slots }) {
-    const { triggerAttrs: attributes } = injectDisclosureContext()
+    const attributes = useDisclosureTrigger(props)
     return () => {
       return slots.replace
         ? slots.replace(attributes.value)
         : h(
-            Button,
+            props.tag,
             {
               ...attributes.value,
-              tag: props.tag,
             },
-            () => slots.default?.(attributes)
+            slots.default?.(attributes.value)
           )
     }
   },

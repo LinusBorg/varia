@@ -1,9 +1,18 @@
-// <template>
-//   <div v-if="show" :is="tag" v-bind="attributes"></div>
-// </template>
+import { defineComponent, h, computed, Ref } from 'vue'
+import { injectDisclosureAPI } from './use-disclosure'
 
-import { defineComponent, h, computed } from 'vue'
-import { injectDisclosureContext } from './use-disclosure'
+export function useDisclosureContent(el?: Ref<HTMLElement | undefined>) {
+  const { state: show, id } = injectDisclosureAPI()
+  const attributes = computed(() => ({
+    ref: el,
+    id,
+    style: !show.value ? 'display: none' : undefined,
+    'aria-hidden': !show.value,
+  }))
+
+  return { show, attributes }
+}
+
 export const DisclosureContent = defineComponent({
   name: 'Disclosure',
   props: {
@@ -13,17 +22,13 @@ export const DisclosureContent = defineComponent({
     },
   },
   setup(props, { slots }) {
-    const { contentAttrs, show } = injectDisclosureContext()
-    const attributes = computed(() =>
-      show.value
-        ? contentAttrs.value
-        : {
-            ...contentAttrs.value,
-            style: 'display: none',
-          }
-    )
+    const { show, attributes } = useDisclosureContent()
     return () => {
-      return h(props.tag, attributes.value, slots.default?.(attributes.value))
+      return h(
+        props.tag,
+        attributes.value,
+        slots.default?.({ attributes: attributes.value, show: show.value })
+      )
     }
   },
 })
