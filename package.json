@@ -8,7 +8,9 @@
   "scripts": {
     "build": "lerna run build --scope vue-aria-*",
     "serve": "lerna run serve --parallel --scope vue-aria-*",
-    "examples": "cd packages/examples && yarn serve"
+    "examples": "yarn workspace examples run serve",
+    "docs:dev": "yarn workspace docs run dev",
+    "docs:build": "yarn workspace docs run build"
   },
   "devDependencies": {
     "lerna": "^3.20.2"

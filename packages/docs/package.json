@@ -1,0 +1,26 @@
+{
+  "name": "docs",
+  "version": "0.0.0",
+  "description": "Documentationf or vue-aria-* packages",
+  "author": "Thorsten <t.luenborg@googlemail.com>",
+  "homepage": "https://github.com/LinusBorg/vue-focus-management#readme",
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "devDependencies": {
+    "vuepress": "^1.4.1"
+  },
+  "publishConfig": {
+    "registry": "https://registry.yarnpkg.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LinusBorg/vue-focus-management.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LinusBorg/vue-focus-management/issues"
+  }
+}
