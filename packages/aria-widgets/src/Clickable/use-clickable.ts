@@ -9,12 +9,11 @@ export function useClickable(
   options: ClickableOptions,
   el?: Ref<HTMLElement | undefined>
 ) {
-  const tabbableAttrs = useTabbable(options)
-  const elRef = el || tabbableAttrs.value.ref
-  useEvent(elRef, 'keyup', ((e: KeyboardEvent) => {
+  const tabbableAttrs = useTabbable(options, el)
+  useEvent(el, 'keyup', ((e: KeyboardEvent) => {
     if (el?.value?.tagName === 'BUTTON') return
-    if (e.key === 'Enter' || e.key === 'Space') {
-      elRef.value?.click()
+    if (e.key === 'Enter' || e.key === ' ') {
+      el?.value?.click()
     }
   }) as EventListener)
 
