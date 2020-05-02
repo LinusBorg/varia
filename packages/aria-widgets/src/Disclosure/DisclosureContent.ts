@@ -1,8 +1,15 @@
-import { defineComponent, h, computed, Ref } from 'vue'
-import { injectDisclosureAPI } from './use-disclosure'
+import { defineComponent, h, computed, Ref, PropType } from 'vue'
+import {
+  injectDisclosureAPI,
+  DisclosureAPI,
+  DisclosureAPIKey,
+} from './use-disclosure'
 
-export function useDisclosureContent(el?: Ref<HTMLElement | undefined>) {
-  const { state: show, id } = injectDisclosureAPI()
+export function useDisclosureContent(
+  disclosureAPI: DisclosureAPI,
+  el?: Ref<HTMLElement | undefined>
+) {
+  const { id, show } = disclosureAPI
   const attributes = computed(() => ({
     ref: el,
     id,
@@ -20,9 +27,13 @@ export const DisclosureContent = defineComponent({
       type: String,
       default: 'DIV',
     },
+    apiKey: {
+      type: Symbol as PropType<DisclosureAPIKey>,
+    },
   },
   setup(props, { slots }) {
-    const { show, attributes } = useDisclosureContent()
+    const api = injectDisclosureAPI(props.apiKey)
+    const { show, attributes } = useDisclosureContent(api)
     return () => {
       return h(
         props.tag,

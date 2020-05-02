@@ -1,20 +1,25 @@
-import { defineComponent, computed, h, Ref } from 'vue'
+import { defineComponent, computed, h, Ref, PropType } from 'vue'
 import { useButton, ButtonProps, ButtonOptions } from '../Button'
-import { injectDisclosureAPI } from './use-disclosure'
+import {
+  injectDisclosureAPI,
+  DisclosureAPIKey,
+  DisclosureAPI,
+} from './use-disclosure'
 
 export function useDisclosureTrigger(
   props: ButtonOptions,
-  el?: Ref<HTMLElement>
+  api: DisclosureAPI,
+  el?: Ref<HTMLElement | undefined>
 ) {
-  const { state, id } = injectDisclosureAPI()
+  const { show, id } = api
 
   const onClick = () => {
-    state.value = !state.value
+    show.value = !show.value
   }
   const btnAttrs = useButton(props, el)
   const attributes = computed(() => ({
     ...btnAttrs.value,
-    'aria-expanded': state.value,
+    'aria-expanded': show.value,
     'aria-controls': id,
     onClick,
   }))
@@ -29,10 +34,14 @@ export const DisclosureTrigger = defineComponent({
       type: String,
       default: 'DIV',
     },
+    apiKey: {
+      type: Symbol as PropType<DisclosureAPIKey>,
+    },
     ...ButtonProps,
   },
   setup(props, { slots }) {
-    const attributes = useDisclosureTrigger(props)
+    const api = injectDisclosureAPI(props.apiKey)
+    const attributes = useDisclosureTrigger(props, api)
     return () => {
       return slots.replace
         ? slots.replace(attributes.value)
