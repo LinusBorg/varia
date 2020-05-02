@@ -6,7 +6,7 @@ export * from './roving-index'
 // export * from './activedescendant'
 
 export * from './return-behaviour'
-
+export * from './click-outside'
 // export * from './focus-trap'
 
 export * from './keys'
