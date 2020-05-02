@@ -1,6 +1,7 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import ButtonsView from '../views/Buttons.vue'
+import TabsView from '../views/Tabs.vue'
 import DisclosuresView from '../views/Disclosures.vue'
 const routes: Array<RouteRecordRaw> = [
   {
@@ -14,6 +15,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/buttons',
     name: 'Buttons',
     component: ButtonsView,
+  },
+  {
+    path: '/tabs',
+    name: 'Tabs',
+    component: TabsView,
   },
   {
     path: '/disclosures',

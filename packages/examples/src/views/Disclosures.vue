@@ -1,18 +1,16 @@
 <template>
   <div>
-    <DisclosureTrigger>
+    <DisclosureTrigger class="btn border px-2 py-1 rounded">
       Show the hidden Secret
     </DisclosureTrigger>
-    <transition appear name="fade">
-      <DisclosureContent>
-        Hidden!
-      </DisclosureContent>
-    </transition>
+    <DisclosureContent>
+      Hidden!
+    </DisclosureContent>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref, Ref } from 'vue'
 import {
   DisclosureTrigger,
   DisclosureContent,
@@ -25,7 +23,8 @@ export default defineComponent({
     DisclosureContent,
   },
   setup() {
-    useDisclosure()
+    const show = ref(false) as Ref<boolean>
+    useDisclosure(show)
 
     return {}
   },
