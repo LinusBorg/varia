@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, reactive, Ref } from 'vue'
+import { computed, defineComponent, h, reactive, Ref, toRaw } from 'vue'
 import { useClickable, ClickableOptions, ClickableProps } from '../Clickable'
 
 export type ButtonOptions = ClickableOptions
@@ -22,7 +22,8 @@ export const Button = defineComponent({
   name: 'Button',
   props: ButtonProps,
   setup(props, { slots }) {
-    const attributes = reactive(useButton(props))
+    console.log(toRaw(props))
+    const attributes = useButton(props)
 
     return () => {
       return slots.replace
