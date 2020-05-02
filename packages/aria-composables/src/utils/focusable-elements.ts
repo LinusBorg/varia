@@ -1,3 +1,5 @@
+import { applyFocus } from './apply-focus'
+
 const ALL_TABBABLE = `a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [contenteditable]`
 // const ALL_FOCUSABLE = `a[href], area[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), button:not([disabled]), iframe, object, embed, [tabindex="0"], [tabindex="1"] [contenteditable]`
 
@@ -27,12 +29,21 @@ export function getPreviousFocusableElement(
   return i !== -1 ? els[i + 1] : undefined
 }
 
-const focusableEls = [
-  'a',
-  'button',
-  'input',
-  'textarea',
-  'iframe',
-  'object',
-  'embed',
-]
+export function moveFocusToNextElement(el: HTMLElement) {
+  console.log('')
+  if (el.matches(ALL_TABBABLE)) applyFocus(el)
+  console.log('no match on el')
+  const nextEl = el.querySelector(ALL_TABBABLE)
+  console.log('nextEl:', nextEl)
+  nextEl && applyFocus(nextEl as HTMLElement)
+}
+
+// const focusableEls = [
+//   'a',
+//   'button',
+//   'input',
+//   'textarea',
+//   'iframe',
+//   'object',
+//   'embed',
+// ]
