@@ -8,7 +8,7 @@ export default defineComponent({
     },
   },
   setup(props, { slots }) {
-    return () => {
+    return () =>
       h(
         props.tag,
         {
@@ -16,6 +16,5 @@ export default defineComponent({
         },
         slots.default?.()
       )
-    }
   },
 })

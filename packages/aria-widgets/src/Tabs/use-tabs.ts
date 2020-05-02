@@ -1,62 +1,109 @@
-import { watch, InjectionKey, provide, ref, Ref } from 'vue'
-
+import {
+  watch,
+  InjectionKey,
+  inject,
+  provide,
+  ref,
+  Ref,
+  readonly,
+  onMounted,
+} from 'vue'
 import {
   useFocusGroup,
   useRovingTabIndex,
   useIdGenerator,
-  createTemplateRefProvider,
+  createTemplateRefAPI,
 } from 'vue-aria-composables'
 
 export interface useTabsOptions {
+  initialValue: string
   orientation?: 'vertical' | 'horizontal'
   autoSelect?: boolean
+  customName?: string
 }
 
-export interface TabAPI {
+export interface TabsAPI {
   generateId: (name: string) => string
   select: (name: string) => void
-  activeTab: Ref<string>
+  selectedTab: Ref<string>
+  addMapping: (el: Ref<HTMLElement | undefined>, item: string) => void
 }
+export type TabsAPIKey = InjectionKey<TabsAPI>
 
-import { TemplateRefKey } from 'vue-aria-composables'
+export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
 
-export const tabElementsKey = Symbol('tabElements') as TemplateRefKey
-export const tabAPIKey = Symbol('tabAPI') as InjectionKey<TabAPI>
-
-export function useTabs(options: useTabsOptions = {}) {
-  const { autoSelect, orientation = 'horizontal' } = options
-
-  // Keyboard Navigation
-  const { elements, refFn } = createTemplateRefProvider(tabElementsKey)
-  const focusGroup = useFocusGroup(elements)
-  const rovingTabIndex = useRovingTabIndex(elements, focusGroup.hasFocus, {
-    orientation,
-  })
-
-  if (autoSelect) {
-    watch(rovingTabIndex.index, idx => {
-      elements.value[idx] && elements.value[idx].click()
-    })
-  }
+export function useTabs(options: useTabsOptions) {
+  const {
+    autoSelect,
+    orientation = 'horizontal',
+    customName,
+    initialValue,
+  } = options
 
   // Tab State
-  const activeTab = ref<string>('')
-  const select = (name: string) => void (activeTab.value = name)
+  const selectedTab = ref<string>(initialValue)
+  const select = (name: string) => void (selectedTab.value = name)
+
+  // Keyboard Navigation
+  const {
+    elements,
+    addMapping,
+    itemsToElements,
+    elementsToItems,
+  } = createTemplateRefAPI<string>()
+  const { hasFocus } = useFocusGroup(elements)
+  const { focusByElement, index: currentTabIndex } = useRovingTabIndex(
+    elements,
+    hasFocus,
+    {
+      orientation,
+    }
+  )
+
+  // When Tab Selection changes,
+  // adjust the rover with the index of the
+  // element matching the selected tab
+  function setIndexForSelectedTab(tab: string) {
+    const el = itemsToElements.get(tab)
+    if (!el) return // TODO: throw proper Error /w useful message
+    focusByElement(el)
+  }
+  watch(selectedTab, setIndexForSelectedTab)
+  onMounted(() => setIndexForSelectedTab(selectedTab.value))
+
+  if (autoSelect) {
+    watch(currentTabIndex, idx => {
+      const el = elements.value[idx]
+      const item = el && elementsToItems.get(el)
+      item && select(item)
+    })
+  }
 
   // Attribute generator functions
   const generateId = useIdGenerator('tabs')
 
-  provide(tabAPIKey, {
+  const tabsAPIKey = customName ? Symbol('customTabAPIKey') : _tabsAPIKey
+  provide(tabsAPIKey, {
     generateId,
     select,
-    activeTab,
+    selectedTab: readonly(selectedTab),
+    addMapping,
   })
 
   return {
-    refFn,
-    ...rovingTabIndex,
-    hasFocus: focusGroup.hasFocus,
+    hasFocus: hasFocus,
     select,
     generateId,
+    tabsKey: tabsAPIKey,
+    selectedTab: readonly(selectedTab),
   }
+}
+
+export function injectTabsAPI(key: TabsAPIKey = _tabsAPIKey) {
+  const api = inject(key)
+  if (!api) {
+    console.warn('<Tab />: useTabs() was not called in parent component')
+    throw new Error('Missing TabsAPI Injection from parent component')
+  }
+  return api
 }

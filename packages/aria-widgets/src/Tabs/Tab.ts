@@ -1,36 +1,29 @@
 import {
   computed,
   defineComponent,
-  inject,
   onMounted,
   ref,
   ExtractPropTypes,
+  PropType,
   h,
 } from 'vue'
-import { tabElementsKey, tabAPIKey } from './use-tabs'
-import { useParentElementInjection } from 'vue-aria-composables'
+import { injectTabsAPI, TabsAPIKey } from './use-tabs'
 import { useClickable, ClickableProps } from '../Clickable'
 
 export type useTabOptions = ExtractPropTypes<typeof TabProps>
 export const TabProps = {
   tag: {
     type: [String, Object],
-    default: 'DIV',
+    default: 'SPAN',
   },
   name: {
     type: String,
     required: true,
   },
+  tabsKey: {
+    type: Symbol as PropType<TabsAPIKey>,
+  },
   ...ClickableProps,
-}
-
-const generateTabAttrs = (id: string, selected: boolean) => {
-  return {
-    role: 'tab' as const,
-    'aria-selected': selected,
-    'aria-controls': id,
-    'data-tab-name': name,
-  }
 }
 
 export function useTab(props: useTabOptions) {
@@ -43,38 +36,43 @@ export function useTab(props: useTabOptions) {
   })
 
   // Inject Tabs API
-  const tabState = inject(tabAPIKey)
-  if (!tabState) {
-    console.warn('<Tab />: useTabs() was not called in parent component')
-    throw new Error('Missing TabsAPI Injection from parent component')
-  }
-  const onClick = () => {
-    props.name && tabState?.select(props.name)
-  }
-  const isActiveTab = computed(() => tabState.activeTab.value === props.name)
+  const tabsAPI = injectTabsAPI(props.tabsKey)
 
-  // A11y
-  const id = computed(() => tabState.generateId(props.name!))
-  const tabEls = useParentElementInjection(el, tabElementsKey)
+  const onClick = () => {
+    props.name && tabsAPI?.select(props.name)
+  }
+  const isSelected = computed(() => tabsAPI.selectedTab.value === props.name)
+
+  // Link into the templateRef API for A11y
+  tabsAPI.addMapping(el, props.name!) // watch this element for Keyboard access
 
   // Element Attributes
   const clickableAttrs = useClickable(props, el)
   const attributes = computed(() => ({
     ...clickableAttrs.value,
-    ...generateTabAttrs(id.value, isActiveTab.value),
+    role: 'tab' as const,
+    'aria-selected': isSelected.value,
+    'aria-controls': tabsAPI.generateId(props.name!),
     onClick,
   }))
 
-  return attributes
+  return { isSelected, attributes }
 }
 
 export default defineComponent({
   name: 'Tab',
   props: TabProps,
   setup(props, { slots }) {
-    const attributes = useTab(props)
+    const { isSelected, attributes } = useTab(props)
     return () => {
-      h(props.tag, attributes.value, slots.default?.(attributes))
+      return h(
+        props.tag,
+        attributes.value,
+        slots.default?.({
+          isSelected: isSelected.value,
+          attributes: attributes.value,
+        })
+      )
     }
   },
 })

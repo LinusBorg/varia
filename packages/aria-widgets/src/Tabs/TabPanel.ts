@@ -1,16 +1,7 @@
-import {
-  computed,
-  defineComponent,
-  inject,
-  ref,
-  ExtractPropTypes,
-  h,
-} from 'vue'
-import { tabAPIKey } from './use-tabs'
-import { TabProps } from './Tab'
-import { elsKey } from 'packages/aria-widgets/dist/ListBox/use-listbox'
+import { computed, defineComponent, ExtractPropTypes, PropType, h } from 'vue'
+import { injectTabsAPI, TabsAPIKey } from './use-tabs'
 
-export type TabPanelOptions = ExtractPropTypes<typeof TabProps>
+export type TabPanelOptions = ExtractPropTypes<typeof TabPanelProps>
 
 export const TabPanelProps = {
   tag: {
@@ -21,39 +12,44 @@ export const TabPanelProps = {
     type: String,
     required: true,
   },
-}
-const generateTabPanelAttrs = (id: string, selected: boolean) => {
-  return {
-    role: 'tabpanel' as const,
-    id,
-    hidden: selected,
-    tabindex: selected ? 0 : undefined,
-  }
+  tabsKey: {
+    type: Symbol as PropType<TabsAPIKey>,
+  },
+  hideContents: {
+    type: Boolean as PropType<boolean>,
+    default: false,
+  },
 }
 
-export function useTabPanel(options: TabPanelOptions) {
-  const tabState = inject(tabAPIKey)
-  if (!tabState) {
-    throw new Error('Missing TabsAPI Injection from parent component')
-  }
-  const id = computed(() => tabState.generateId(options.name!))
-  const isActive = computed(() => tabState.activeTab.value === options.name)
-  const attributes = computed(() =>
-    generateTabPanelAttrs(id.value, isActive.value)
-  )
-  return { isActive, attributes }
+export function useTabPanel(props: TabPanelOptions) {
+  const tabState = injectTabsAPI(props.tabsKey)
+  const isSelected = computed(() => tabState.selectedTab.value === props.name)
+  const attributes = computed(() => ({
+    role: 'tabpanel' as const,
+    id: tabState.generateId(props.name!),
+    hidden: !isSelected.value,
+    style:
+      props.hideContents && !isSelected.value ? { display: 'none' } : undefined,
+    tabIndex: isSelected.value ? 0 : undefined,
+  }))
+  return { isSelected, attributes }
 }
 
 export default defineComponent({
   name: 'TabPanel',
   props: TabPanelProps,
   setup(props, { slots }) {
-    const { isActive, attributes } = useTabPanel(props)
+    const { isSelected, attributes } = useTabPanel(props)
     return () => {
       return h(
         props.tag,
         attributes.value,
-        isActive.value && slots.default?.(attributes.value)
+        isSelected.value &&
+          !props.hideContents &&
+          slots.default?.({
+            isSelected: isSelected.value,
+            attributes: attributes.value,
+          })
       )
     }
   },
