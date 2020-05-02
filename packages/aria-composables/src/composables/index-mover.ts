@@ -1,4 +1,4 @@
-import { reactive, ref, computed, readonly } from 'vue'
+import { ref, computed, readonly } from 'vue'
 import { MaybeRef } from '../types'
 
 interface FocusMoverOptions {
@@ -7,7 +7,7 @@ interface FocusMoverOptions {
 }
 
 export function useIndexMover(
-  _elements: MaybeRef<any[]>,
+  _elements: MaybeRef<readonly any[]>,
   options: FocusMoverOptions = {}
 ) {
   const elements = ref(_elements)

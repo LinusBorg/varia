@@ -13,7 +13,7 @@ const defaults = {
   loop: true,
 }
 export function useRovingTabIndex(
-  elements: Ref<HTMLElement[]>,
+  elements: Ref<readonly HTMLElement[]>,
   isActive: Ref<boolean>,
   options: IUseRovingTabIndexOptions = {}
 ) {
@@ -40,7 +40,7 @@ export function useRovingTabIndex(
   })
 
   // Apply focus when Index changes
-  watch(focusIndex, (i: number) => applyFocus(elements.value[i]))
+  watch(focusIndex, (i: number) => isActive && applyFocus(elements.value[i]))
 
   // Arrow Key Handling
   const backDir = orientation === 'vertical' ? 'up' : 'left'
@@ -69,10 +69,16 @@ export function useRovingTabIndex(
     }
   }) as EventListener)
 
+  const focusByElement = (el: HTMLElement) => {
+    const idx = elements.value.indexOf(el)
+    if (idx !== -1) setIndex(idx)
+  }
+
   return {
     forward,
     backward,
     index: focusIndex,
     focusByIndex: setIndex,
+    focusByElement,
   }
 }

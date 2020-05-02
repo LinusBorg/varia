@@ -1,6 +1,7 @@
 import {
   computed,
   ref,
+  reactive,
   Ref,
   onBeforeUpdate,
   onMounted,
@@ -34,9 +35,9 @@ const templateRefKey = Symbol('templateRefKey') as TemplateRefKey
 export function createTemplateRefProvider(
   key: TemplateRefKey = templateRefKey
 ) {
-  const elementsFromChildren = ref<HTMLElement[]>([])
-  const add = (el: HTMLElement) => elementsFromChildren.value?.push(el)
-  const remove = (el: HTMLElement) => removeEl(elementsFromChildren.value, el)
+  const elements = ref<HTMLElement[]>([])
+  const add = (el: HTMLElement) => elements.value?.push(el)
+  const remove = (el: HTMLElement) => removeEl(elements.value, el)
   provide(key, {
     add,
     remove,
@@ -45,24 +46,73 @@ export function createTemplateRefProvider(
   // When component updates, we slice the array
   // to trigger a re-sort in the computed prop below
   // TODO find better way to do this only when dependencies change?
-  onUpdated(
-    () => (elementsFromChildren.value = elementsFromChildren.value.slice())
-  )
+  onUpdated(() => (elements.value = elements.value.slice()))
 
   // This ref handles elements picked directly from the template with a refFn
   const { elements: elementsFromRefs, refFn } = createTemplateRefList()
 
   // Then we combine both element arrays and sort the elements according
   // do their DOM position, so tab order is preserved
-  const elements = computed(() => {
+  const sortedElements = computed(() => {
     return ([] as HTMLElement[])
-      .concat(elementsFromChildren.value, elementsFromRefs.value)
+      .concat(elements.value, elementsFromRefs.value)
       .sort(sortByDocPosition)
   })
 
   return {
-    elements,
+    elements: sortedElements,
     refFn,
+  }
+}
+
+export function createTemplateRefAPI<Item = any>() {
+  const elements = ref(new Set<HTMLElement>())
+  const elementsToItems = reactive(new Map<HTMLElement, Item>())
+  const itemsToElements = reactive(new Map<Item, HTMLElement>())
+  const add = (el: HTMLElement, item?: Item) => {
+    elements.value.add(el)
+    if (item) {
+      elementsToItems.set(el, item)
+      itemsToElements.set(item, el)
+    }
+  }
+  const remove = (el: HTMLElement) => {
+    elements.value.delete(el)
+    if (elementsToItems.has(el)) {
+      const item = elementsToItems.get(el)
+      !!item && itemsToElements.delete(item)
+      elementsToItems.delete(el)
+    }
+  }
+
+  function addMapping(_el: Ref<HTMLElement | undefined>, item?: Item) {
+    watch(
+      _el,
+      (el, _, onCleanup) => {
+        if (!el) return
+        if (el) Array.isArray(el) ? el.map(el => add(el, item)) : add(el, item)
+        onCleanup(() => el && (Array.isArray(el) ? el.map(remove) : remove(el)))
+      },
+      { immediate: true }
+    )
+  }
+
+  // When component updates, we slice the array
+  // to trigger a re-sort in the computed prop below
+  // TODO find better way to do this only when dependencies change?
+  onUpdated(() => (elements.value = new Set(elements.value)))
+
+  // Then we combine both element arrays and sort the elements according
+  // do their DOM position, so tab order is preserved
+  const sortedElements = computed(() => {
+    return readonly(Array.from(elements.value).sort(sortByDocPosition))
+  })
+
+  return {
+    elements: sortedElements,
+    addMapping,
+    elementsToItems: readonly(elementsToItems),
+    itemsToElements: readonly(itemsToElements),
   }
 }
 
@@ -71,7 +121,10 @@ export function useParentElementInjection(
   key: TemplateRefKey = templateRefKey
 ) {
   const { add, remove } = inject(key, {} as TemplateRefInjection)!
-  if (!add || !remove) return // nothing provided from parent
+  if (!add || !remove) {
+    console.error(`Couldn\'T find expected injection.
+    This likely means that you  didn't call a use*() hook in the parent as you should`)
+  } // nothing provided from parent
 
   watch(
     _el,

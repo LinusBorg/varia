@@ -4,15 +4,13 @@ import { applyFocus } from '../utils'
 
 export const GroupInterfaceKey: InjectionKey<any> = Symbol('GroupInterface')
 
-export function useFocusGroup(elements: Ref<HTMLElement[]>) {
+export function useFocusGroup(elements: Ref<readonly HTMLElement[]>) {
   const { currentEl: currentElGlobal } = useFocusTracker()
 
   const currentIndex = computed(() =>
     currentElGlobal.value ? elements.value.indexOf(currentElGlobal.value) : -1
   )
-  const hasFocus = computed(
-    () => !!currentIndex.value && currentIndex.value > -1
-  )
+  const hasFocus = computed(() => currentIndex.value > -1)
   const currentEl = computed(() =>
     hasFocus.value ? currentElGlobal.value : undefined
   )
