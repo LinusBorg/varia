@@ -1,6 +1,5 @@
-import { App } from 'vue'
-export * from './Button'
 export * from './Clickable'
 export * from './Tabbable'
+export * from './Button'
 export * from './Disclosure'
 export * from 'vue-aria-composables'
