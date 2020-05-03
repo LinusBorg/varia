@@ -85,18 +85,6 @@ export function createTemplateRefAPI<Item = any>() {
     }
   }
 
-  function addMapping(_el: Ref<HTMLElement | undefined>, item?: Item) {
-    watch(
-      _el,
-      (el, _, onCleanup) => {
-        if (!el) return
-        if (el) Array.isArray(el) ? el.map(el => add(el, item)) : add(el, item)
-        onCleanup(() => el && (Array.isArray(el) ? el.map(remove) : remove(el)))
-      },
-      { immediate: true }
-    )
-  }
-
   // When component updates, we slice the array
   // to trigger a re-sort in the computed prop below
   // TODO find better way to do this only when dependencies change?
@@ -110,7 +98,8 @@ export function createTemplateRefAPI<Item = any>() {
 
   return {
     elements: sortedElements,
-    addMapping,
+    add,
+    remove,
     elementsToItems: readonly(elementsToItems),
     itemsToElements: readonly(itemsToElements),
   }
