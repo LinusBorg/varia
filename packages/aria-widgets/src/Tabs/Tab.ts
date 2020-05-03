@@ -6,8 +6,9 @@ import {
   ExtractPropTypes,
   PropType,
   h,
+  watchEffect,
 } from 'vue'
-import { injectTabsAPI, TabsAPIKey } from './use-tabs'
+import { injectTabsAPI, TabsAPI, TabsAPIKey } from './use-tabs'
 import { useClickable, ClickableProps } from '../Clickable'
 
 export type useTabOptions = ExtractPropTypes<typeof TabProps>
@@ -26,7 +27,7 @@ export const TabProps = {
   ...ClickableProps,
 }
 
-export function useTab(props: useTabOptions) {
+export function useTab(props: useTabOptions, api: TabsAPI) {
   const el = ref<HTMLElement>()
 
   onMounted(() => {
@@ -35,16 +36,20 @@ export function useTab(props: useTabOptions) {
     }
   })
 
-  // Inject Tabs API
-  const tabsAPI = injectTabsAPI(props.tabsKey)
-
   const onClick = () => {
-    props.name && tabsAPI?.select(props.name)
+    !props.disabled && props.name && api.select(props.name)
   }
-  const isSelected = computed(() => tabsAPI.selectedTab.value === props.name)
 
+  const isTrulyDisabled = computed(() => props.disabled && !props.focusable)
+  const isSelected = computed(() => api.selectedTab.value === props.name)
   // Link into the templateRef API for A11y
-  tabsAPI.addMapping(el, props.name!) // watch this element for Keyboard access
+  watchEffect(() => {
+    if (el.value) {
+      isTrulyDisabled.value
+        ? api.removeElFromArrowSequence(el.value)
+        : api.addElToArrowSequence(el.value, props.name!)
+    }
+  })
 
   // Element Attributes
   const clickableAttrs = useClickable(props, el)
@@ -52,9 +57,11 @@ export function useTab(props: useTabOptions) {
     ...clickableAttrs.value,
     role: 'tab' as const,
     'aria-selected': isSelected.value,
+    'aria-controls': api.generateId(props.name!),
     tabIndex: isSelected.value ? 0 : -1,
     onClick,
   }))
+  // props.name === 'B' && console.log(clickableAttrs, attributes)
 
   return { isSelected, attributes }
 }
@@ -63,8 +70,10 @@ export default defineComponent({
   name: 'Tab',
   props: TabProps,
   setup(props, { slots }) {
-    const { isSelected, attributes } = useTab(props)
+    const api = injectTabsAPI(props.tabsKey)
+    const { isSelected, attributes } = useTab(props, api)
     return () => {
+      console.log(attributes.value)
       return h(
         props.tag,
         attributes.value,

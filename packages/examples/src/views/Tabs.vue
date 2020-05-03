@@ -2,20 +2,20 @@
   <div class="wrapper divide-y divide-gray-300">
     <div class="mb-3 mt-6 py-2">
       <h2 class="text-xl font-bold mb-2">Basic</h2>
-      <TabList class="border-b border-gray-300">
+      <TabList class="border-b border-gray-500">
         <Tab
           name="A"
-          class="px-3 py-1 rounded-sm border border-b-0 rounded-b-none inline-block mr-1"
+          class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab A</Tab
         >
         <Tab
           name="B"
-          class="px-3 py-1 rounded-sm border border-b-0 rounded-b-none inline-block mr-1"
+          class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab B</Tab
         >
         <Tab
           name="C"
-          class="px-3 py-1 rounded-sm border border-b-0 rounded-b-none inline-block mr-1"
+          class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab C</Tab
         >
       </TabList>
@@ -25,23 +25,23 @@
     </div>
     <div class="mb-3 mt-6 py-2">
       <h2 class="text-xl font-bold mb-2">Arrow Keys auto-select</h2>
-      <TabList class="border-b border-gray-300">
+      <TabList class="border-b border-gray-500">
         <Tab
           :tabsKey="tabs2"
           name="A"
-          class="px-3 py-1 rounded-sm border border-b-0 rounded-b-none inline-block mr-1"
+          class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab A</Tab
         >
         <Tab
           :tabsKey="tabs2"
           name="B"
-          class="px-3 py-1 rounded-sm border border-b-0 rounded-b-none inline-block mr-1"
+          class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab B</Tab
         >
         <Tab
           :tabsKey="tabs2"
           name="C"
-          class="px-3 py-1 rounded-sm border border-b-0 rounded-b-none inline-block mr-1"
+          class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab C</Tab
         >
       </TabList>
@@ -54,24 +54,24 @@
     <div class="mb-3 mt-6 py-2">
       <h2 class="text-xl font-bold mb-2">Disabled Tab</h2>
       <p>This is still buggy</p>
-      <TabList class="border-b border-gray-300">
+      <TabList class="border-b border-gray-500">
         <Tab
           :tabsKey="tabs3"
           name="A"
-          class="px-3 py-1 rounded-sm border border-b-0 rounded-b-none inline-block mr-1"
+          class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab A</Tab
         >
         <Tab
           :tabsKey="tabs3"
           name="B"
           disabled
-          class="px-3 py-1 rounded-sm border border-b-0 rounded-b-none inline-block mr-1"
+          class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab B</Tab
         >
         <Tab
           :tabsKey="tabs3"
           name="C"
-          class="px-3 py-1 rounded-sm border border-b-0 rounded-b-none inline-block mr-1"
+          class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab C</Tab
         >
       </TabList>
@@ -118,7 +118,10 @@ export default defineComponent({
 
 <style scoped lang="postcss">
 .wrapper >>> [role='tab'][aria-selected='true'] {
-  @apply bg-teal-300;
+  @apply bg-teal-500 border-teal-600 text-white;
+}
+.wrapper >>> [role='tab'][aria-disabled='true'] {
+  @apply bg-gray-200 text-gray-600;
 }
 .fade-enter-active,
 .fade-leave-active {

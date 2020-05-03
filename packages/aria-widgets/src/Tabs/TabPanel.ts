@@ -1,5 +1,5 @@
 import { computed, defineComponent, ExtractPropTypes, PropType, h } from 'vue'
-import { injectTabsAPI, TabsAPIKey } from './use-tabs'
+import { injectTabsAPI, TabsAPIKey, TabsAPI } from './use-tabs'
 
 export type TabPanelOptions = ExtractPropTypes<typeof TabPanelProps>
 
@@ -21,12 +21,11 @@ export const TabPanelProps = {
   },
 }
 
-export function useTabPanel(props: TabPanelOptions) {
-  const tabState = injectTabsAPI(props.tabsKey)
-  const isSelected = computed(() => tabState.selectedTab.value === props.name)
+export function useTabPanel(props: TabPanelOptions, api: TabsAPI) {
+  const isSelected = computed(() => api.selectedTab.value === props.name)
   const attributes = computed(() => ({
     role: 'tabpanel' as const,
-    id: tabState.generateId(props.name!),
+    id: api.generateId(props.name!),
     hidden: !isSelected.value,
     style:
       props.hideContents && !isSelected.value ? { display: 'none' } : undefined,
@@ -39,7 +38,8 @@ export default defineComponent({
   name: 'TabPanel',
   props: TabPanelProps,
   setup(props, { slots }) {
-    const { isSelected, attributes } = useTabPanel(props)
+    const api = injectTabsAPI(props.tabsKey)
+    const { isSelected, attributes } = useTabPanel(props, api)
     return () => {
       return h(
         props.tag,

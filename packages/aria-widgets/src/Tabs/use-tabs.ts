@@ -24,9 +24,11 @@ export interface useTabsOptions {
 
 export interface TabsAPI {
   generateId: (name: string) => string
-  select: (name: string) => void
   selectedTab: Ref<string>
-  addMapping: (el: Ref<HTMLElement | undefined>, item: string) => void
+  select: (name: string) => void
+  addElToArrowSequence: (el: HTMLElement, item: string) => void
+  removeElFromArrowSequence: (el: HTMLElement) => void
+  currentEl: Ref<HTMLElement | undefined>
 }
 export type TabsAPIKey = InjectionKey<TabsAPI>
 
@@ -47,11 +49,12 @@ export function useTabs(options: useTabsOptions) {
   // Keyboard Navigation
   const {
     elements,
-    addMapping,
+    add: addElToArrowSequence,
+    remove: removeElFromArrowSequence,
     itemsToElements,
     elementsToItems,
   } = createTemplateRefAPI<string>()
-  const { hasFocus } = useFocusGroup(elements)
+  const { hasFocus, currentEl } = useFocusGroup(elements)
   const { focusByElement, index: currentTabIndex } = useRovingTabIndex(
     elements,
     hasFocus,
@@ -59,7 +62,6 @@ export function useTabs(options: useTabsOptions) {
       orientation,
     }
   )
-
   // When Tab Selection changes,
   // adjust the rover with the index of the
   // element matching the selected tab
@@ -80,14 +82,16 @@ export function useTabs(options: useTabsOptions) {
   }
 
   // Attribute generator functions
-  const generateId = useIdGenerator('tabs')
+  const generateId = useIdGenerator(options.customName || 'tabs')
 
   const tabsAPIKey = customName ? Symbol('customTabAPIKey') : _tabsAPIKey
   provide(tabsAPIKey, {
     generateId,
     select,
     selectedTab: readonly(selectedTab),
-    addMapping,
+    addElToArrowSequence,
+    removeElFromArrowSequence,
+    currentEl,
   })
 
   return {
