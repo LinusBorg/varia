@@ -1,6 +1,6 @@
 import { useArrowKeys } from './keys'
 import { applyFocus } from '../utils'
-import { watch, watchEffect, Ref } from 'vue'
+import { watch, Ref } from 'vue'
 import { useKeyIf } from './keys'
 import { useIndexMover } from './index-mover'
 
@@ -30,14 +30,6 @@ export function useRovingTabIndex(
 
   const forward = () => isActive.value && moveIndexForward()
   const backward = () => isActive.value && moveIndexBackward()
-
-  // imperatively manage tabindex so template stays clean
-  watchEffect(() => {
-    const els = elements.value
-    for (var i = 0; i < els.length; i++) {
-      els[i].tabIndex = i === focusIndex.value ? 0 : -1
-    }
-  })
 
   // Apply focus when Index changes
   watch(focusIndex, (i: number) => isActive && applyFocus(elements.value[i]))
