@@ -52,7 +52,7 @@ export function useTab(props: useTabOptions) {
     ...clickableAttrs.value,
     role: 'tab' as const,
     'aria-selected': isSelected.value,
-    'aria-controls': tabsAPI.generateId(props.name!),
+    tabIndex: isSelected.value ? 0 : -1,
     onClick,
   }))
 

@@ -34,7 +34,6 @@ export function useTabbable(
   const preventDefaults = (event: Event): true | undefined => {
     if (event.target !== toRaw(el.value)) return
     if (options.disabled) {
-      console.log('prevent called')
       event.stopImmediatePropagation()
       event.stopPropagation()
       event.preventDefault()
@@ -65,7 +64,7 @@ export function useTabbable(
 
   return computed(() => ({
     ref: el,
-    tabIndex: options.focusable ? 0 : undefined,
+    tabIndex: options.disabled && !options.focusable ? -1 : 0,
     'aria-disabled': options.disabled || undefined,
   }))
 }
