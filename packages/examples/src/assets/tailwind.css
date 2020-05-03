@@ -1,3 +1,7 @@
+[role='tab']:not([aria-disabled='true']) {
+  cursor: pointer;
+}
+
 @tailwind base;
 
 @tailwind components;
