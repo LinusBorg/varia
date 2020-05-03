@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, reactive, Ref, toRaw } from 'vue'
+import { computed, defineComponent, h, Ref, toRaw } from 'vue'
 import { useClickable, ClickableOptions, ClickableProps } from '../Clickable'
 
 export type ButtonOptions = ClickableOptions
