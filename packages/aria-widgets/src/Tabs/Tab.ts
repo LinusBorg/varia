@@ -6,8 +6,8 @@ import {
   ExtractPropTypes,
   PropType,
   h,
-  watchEffect,
 } from 'vue'
+import { nanoid } from 'nanoid/non-secure'
 import { injectTabsAPI, TabsAPI, TabsAPIKey } from './use-tabs'
 import { useClickable, ClickableProps } from '../Clickable'
 
@@ -29,25 +29,17 @@ export const TabProps = {
 
 export function useTab(props: useTabOptions, api: TabsAPI) {
   const el = ref<HTMLElement>()
-
+  const id = 'tab_' + nanoid()
+  // const isTrulyDisabled = computed(() => props.disabled && !props.focusable)
+  const isSelected = computed(() => api.selectedTab.value === props.name)
+  const hasFocus = computed(() => id === api.id.value)
+  const select = () => {
+    !props.disabled && props.name && api.select(props.name, el.value!)
+  }
   onMounted(() => {
+    // TODO: should set rover tabindex if this tab isSelected on mount
     if (el.value && !el.value?.closest('[role="tablist"]')) {
       console.warn('<Tab/> has to be nested inside of a `<TabList />`')
-    }
-  })
-
-  const onClick = () => {
-    !props.disabled && props.name && api.select(props.name)
-  }
-
-  const isTrulyDisabled = computed(() => props.disabled && !props.focusable)
-  const isSelected = computed(() => api.selectedTab.value === props.name)
-  // Link into the templateRef API for A11y
-  watchEffect(() => {
-    if (el.value) {
-      isTrulyDisabled.value
-        ? api.removeElFromArrowSequence(el.value)
-        : api.addElToArrowSequence(el.value, props.name!)
     }
   })
 
@@ -56,12 +48,13 @@ export function useTab(props: useTabOptions, api: TabsAPI) {
   const attributes = computed(() => ({
     ...clickableAttrs.value,
     role: 'tab' as const,
+    id,
+    tabindex: undefined, // reset tab index from clickable.
+    onClick: select,
     'aria-selected': isSelected.value,
     'aria-controls': api.generateId(props.name!),
-    tabIndex: isSelected.value ? 0 : -1,
-    onClick,
+    'data-varia-focus': hasFocus.value ? 'true' : undefined,
   }))
-  // props.name === 'B' && console.log(clickableAttrs, attributes)
 
   return { isSelected, attributes }
 }
@@ -73,7 +66,7 @@ export default defineComponent({
     const api = injectTabsAPI(props.tabsKey)
     const { isSelected, attributes } = useTab(props, api)
     return () => {
-      console.log(attributes.value)
+      // console.log(attributes.value)
       return h(
         props.tag,
         attributes.value,

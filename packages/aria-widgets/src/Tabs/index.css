@@ -1,0 +1,9 @@
+[role='tab']:not([aria-disabled='true']) {
+  cursor: pointer;
+}
+[role='tablist'] {
+  outline: none;
+}
+[role='tab'][data-varia-focus] {
+  outline: 2px solid red;
+}

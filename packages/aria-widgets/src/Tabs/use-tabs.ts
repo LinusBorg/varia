@@ -1,34 +1,28 @@
+import { InjectionKey, inject, provide, ref, Ref, readonly } from 'vue'
 import {
-  watch,
-  InjectionKey,
-  inject,
-  provide,
-  ref,
-  Ref,
-  readonly,
-  onMounted,
-} from 'vue'
-import {
-  useFocusGroup,
-  useRovingTabIndex,
   useIdGenerator,
-  createTemplateRefAPI,
+  useArrowNavigation,
+  TemplRef,
 } from 'vue-aria-composables'
+import './index.css'
 
 export interface useTabsOptions {
   initialValue: string
+  customName?: string
   orientation?: 'vertical' | 'horizontal'
   autoSelect?: boolean
-  customName?: string
+  startOnFirstSelected?: boolean
+  loop?: boolean
 }
 
 export interface TabsAPI {
   generateId: (name: string) => string
   selectedTab: Ref<string>
-  select: (name: string) => void
-  addElToArrowSequence: (el: HTMLElement, item: string) => void
-  removeElFromArrowSequence: (el: HTMLElement) => void
-  currentEl: Ref<HTMLElement | undefined>
+  select: (name: string, el: HTMLElement) => void
+  autoSelect: boolean
+  id: Ref<string>
+  tabListAttributes: ReturnType<typeof useArrowNavigation>['attributes']
+  tabListRef: TemplRef
 }
 export type TabsAPIKey = InjectionKey<TabsAPI>
 
@@ -36,49 +30,29 @@ export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
 
 export function useTabs(options: useTabsOptions) {
   const {
-    autoSelect,
-    orientation = 'horizontal',
-    customName,
     initialValue,
+    customName,
+    // Options for ArrowNavigation
+    orientation = 'horizontal',
+    loop,
+    startOnFirstSelected,
+    autoSelect = false,
   } = options
+
+  // Keyboard Navigation
+  const el: TemplRef = ref()
+  const arrowNavAPI = useArrowNavigation(el, 'tab', {
+    orientation,
+    loop,
+    autoSelect,
+    startOnFirstSelected,
+  })
 
   // Tab State
   const selectedTab = ref<string>(initialValue)
-  const select = (name: string) => void (selectedTab.value = name)
-
-  // Keyboard Navigation
-  const {
-    elements,
-    add: addElToArrowSequence,
-    remove: removeElFromArrowSequence,
-    itemsToElements,
-    elementsToItems,
-  } = createTemplateRefAPI<string>()
-  const { hasFocus, currentEl } = useFocusGroup(elements)
-  const { focusByElement, index: currentTabIndex } = useRovingTabIndex(
-    elements,
-    hasFocus,
-    {
-      orientation,
-    }
-  )
-  // When Tab Selection changes,
-  // adjust the rover with the index of the
-  // element matching the selected tab
-  function setIndexForSelectedTab(tab: string) {
-    const el = itemsToElements.get(tab)
-    if (!el) return // TODO: throw proper Error /w useful message
-    focusByElement(el)
-  }
-  watch(selectedTab, setIndexForSelectedTab)
-  onMounted(() => setIndexForSelectedTab(selectedTab.value))
-
-  if (autoSelect) {
-    watch(currentTabIndex, idx => {
-      const el = elements.value[idx]
-      const item = el && elementsToItems.get(el)
-      item && select(item)
-    })
+  const select = (name: string, el: HTMLElement) => {
+    selectedTab.value = name
+    arrowNavAPI.select(el)
   }
 
   // Attribute generator functions
@@ -89,14 +63,15 @@ export function useTabs(options: useTabsOptions) {
     generateId,
     select,
     selectedTab: readonly(selectedTab),
-    addElToArrowSequence,
-    removeElFromArrowSequence,
-    currentEl,
+    autoSelect,
+    id: arrowNavAPI.id,
+    tabListAttributes: arrowNavAPI.attributes,
+    tabListRef: el,
   })
 
   return {
-    hasFocus: hasFocus,
     select,
+    id: arrowNavAPI.id,
     generateId,
     tabsKey: tabsAPIKey,
     selectedTab: readonly(selectedTab),

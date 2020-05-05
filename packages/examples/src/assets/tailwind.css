@@ -1,11 +1,10 @@
-[role='tab']:not([aria-disabled='true']) {
-  cursor: pointer;
-}
 button[disabled],
 [role='button'][disabled],
 [role='button'][aria-disabled='true'] {
   cursor: default;
 }
+
+@import '~vue-aria-widgets/dist/index.css';
 
 @tailwind base;
 
