@@ -1,7 +1,7 @@
-import { ref, provide, computed, inject, InjectionKey, ComputedRef } from 'vue'
+import { ref, provide, computed, inject, InjectionKey } from 'vue'
 import { useEvent } from './events'
+import { TabDirection } from '../types'
 
-export type TabDirection = ComputedRef<'forward' | 'backward' | undefined>
 export const tabDirectionKey: InjectionKey<TabDirection> = Symbol(
   'TabDirectionKey'
 )

@@ -1,8 +1,6 @@
-import { computed, InjectionKey, Ref } from 'vue'
+import { computed, Ref } from 'vue'
 import { useFocusTracker } from './focus-tracker'
 import { applyFocus } from '../utils'
-
-export const GroupInterfaceKey: InjectionKey<any> = Symbol('GroupInterface')
 
 export function useFocusGroup(elements: Ref<readonly HTMLElement[]>) {
   const { currentEl: currentElGlobal } = useFocusTracker()
@@ -21,11 +19,9 @@ export function useFocusGroup(elements: Ref<readonly HTMLElement[]>) {
   }
 
   return {
-    // state
     hasFocus,
     currentEl,
     currentIndex,
-    // Fns
     setFocusToIndex,
   }
 }

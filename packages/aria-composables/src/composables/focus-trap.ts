@@ -4,6 +4,7 @@ import { getNextFocusableElement, getPreviousFocusableElement } from '../utils'
 import { applyFocus } from '../utils'
 import { useFocusTracker } from './focus-tracker'
 import { useTabDirection } from './tab-direction'
+import { TemplRef, TemplRefType } from '../types'
 
 const queue = reactive<Set<Symbol>>(new Set())
 const remove = (id: Symbol) => queue.delete(id)
@@ -29,9 +30,9 @@ export function useFocusTrap(options: FocusTrapOptions = {}) {
   options.activateOnMount && onMounted(activate)
   onUnmounted(deactivate)
 
-  const wrapperEl = ref<HTMLElement>()
-  const startEl = ref<HTMLElement>()
-  const endEl = ref<HTMLElement>()
+  const wrapperEl = ref<TemplRefType>()
+  const startEl = ref<TemplRefType>()
+  const endEl = ref<TemplRefType>()
 
   const tabDirection = useTabDirection()
   const focusTracker = useFocusTracker()
@@ -65,7 +66,7 @@ export function useFocusTrap(options: FocusTrapOptions = {}) {
   )
 
   const autoMovefocus = () => {
-    let el: HTMLElement | undefined
+    let el: TemplRefType
     switch (tabDirection.value) {
       case 'forward':
         el = getNextFocusableElement(wrapperEl.value!, startEl.value!)

@@ -1,11 +1,11 @@
 import { onMounted, onUnmounted, unref, nextTick } from 'vue'
-import { MaybeRef } from 'vue-aria-composables'
 import { useEvent } from './events'
+import { MaybeTemplRef } from '../types'
 
 useEvent
 
 export function useClickOutside(
-  _els: MaybeRef<HTMLElement | undefined>[],
+  _els: MaybeTemplRef[],
   cb: (...args: any[]) => any
 ) {
   let unwatch: ReturnType<typeof useEvent>

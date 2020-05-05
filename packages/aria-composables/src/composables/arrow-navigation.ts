@@ -2,13 +2,7 @@ import { ref, computed, watch } from 'vue'
 import { TemplRef } from '../types'
 import { useElementFocusObserver } from './focus-observer'
 import { useArrowKeys, useKeyIf } from './keys'
-
-export interface IArrowNavigationOptions {
-  orientation: 'horizontal' | 'vertical'
-  loop?: boolean
-  startOnFirstSelected?: boolean
-  autoSelect?: boolean
-}
+import { ArrowNavigationOptions } from '../types'
 
 function getCurrentEl(el: HTMLElement) {
   const currentId = el.getAttribute('aria-activedescendant')
@@ -44,7 +38,7 @@ function getFirstSelectedEl(el: Element, role: string) {
 export function useArrowNavigation(
   wrapperElRef: TemplRef,
   roleofChildren: string,
-  options: IArrowNavigationOptions
+  options: ArrowNavigationOptions
 ) {
   const hasFocus = useElementFocusObserver(wrapperElRef)
 
@@ -139,6 +133,6 @@ export function useArrowNavigation(
   return {
     id,
     attributes,
-    select: (newEl: HTMLElement) => (el.value = newEl),
+    select: (newEl: HTMLElement) => void (el.value = newEl),
   }
 }

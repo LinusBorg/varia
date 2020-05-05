@@ -1,9 +1,9 @@
 import { ref, provide, inject, computed, InjectionKey, readonly } from 'vue'
 import { useEvent } from './events'
 
-import { FocusTrackerState } from '../types'
+import { FocusTrackerAPI } from '../types'
 
-export const focusTrackerKey: InjectionKey<FocusTrackerState> = Symbol(
+export const focusTrackerKey: InjectionKey<FocusTrackerAPI> = Symbol(
   'globalFocusTracker'
 )
 

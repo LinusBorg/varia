@@ -1,12 +1,7 @@
 import { Ref } from 'vue'
 import { useEventIf } from './events'
 
-type ArrowKeyHandlers = {
-  up?: (event: KeyboardEvent) => void
-  down?: (event: KeyboardEvent) => void
-  left?: (event: KeyboardEvent) => void
-  right?: (event: KeyboardEvent) => void
-}
+import { ArrowKeyHandlers } from '../types'
 
 export function useKeyIf(
   condRef: Ref<boolean>,

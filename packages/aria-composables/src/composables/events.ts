@@ -1,8 +1,8 @@
 import { ref, Ref, watch } from 'vue'
-import { MaybeRef } from '../types'
+import { MaybeRef, TemplRefType } from '../types'
 
 export type ElementRefs =
-  | MaybeRef<HTMLElement | undefined>
+  | MaybeRef<TemplRefType>
   | MaybeRef<Window>
   | MaybeRef<Document>
 

@@ -21,7 +21,7 @@
     "lint": "eslint src/**/*.ts test/**/*.ts --fix"
   },
   "peerDependencies": {
-    "vue": "^3.0.0-beta.7"
+    "vue": "^3.0.0-beta.9"
   },
   "husky": {
     "hooks": {
