@@ -1,7 +1,7 @@
 import { computed, defineComponent, h, Ref, toRaw } from 'vue'
-import { useClickable, ClickableOptions, ClickableProps } from '../Clickable'
+import { useClickable, ClickableProps } from '../Clickable'
 
-export type ButtonOptions = ClickableOptions
+import { ButtonOptions } from '../types'
 
 export const ButtonProps = {
   tag: { type: String, default: 'button' },
@@ -9,7 +9,7 @@ export const ButtonProps = {
 }
 
 export function useButton(
-  options: ClickableOptions,
+  options: ButtonOptions,
   el?: Ref<HTMLElement | undefined>
 ) {
   return computed(() => ({

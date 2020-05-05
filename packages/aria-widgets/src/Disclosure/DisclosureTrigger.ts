@@ -1,10 +1,8 @@
 import { defineComponent, computed, h, Ref, PropType } from 'vue'
-import { useButton, ButtonProps, ButtonOptions } from '../Button'
-import {
-  injectDisclosureAPI,
-  DisclosureAPIKey,
-  DisclosureAPI,
-} from './use-disclosure'
+import { useButton, ButtonProps } from '../Button'
+import { injectDisclosureAPI } from './use-disclosure'
+
+import { ButtonOptions, DisclosureAPIKey, DisclosureAPI } from '../types'
 
 export function useDisclosureTrigger(
   props: ButtonOptions,

@@ -1,13 +1,7 @@
 import { computed, reactive, ref, Ref, toRaw, PropType, watchEffect } from 'vue'
 import { useEvent } from 'vue-aria-composables'
 import { isNativeTabbable } from '../utils/elements'
-export interface TabbableOptions {
-  disabled?: boolean | undefined
-  focusable?: boolean | undefined
-  onClick?: <T extends any>(e: T) => any
-  onMouseDown?: <T extends any>(e: T) => any
-  [key: string]: any
-}
+import { TabbableOptions } from '../types'
 
 export const TabbableProps = {
   disabled: {
@@ -24,7 +18,7 @@ const defaults = {
 }
 
 export function useTabbable(
-  _options: Partial<TabbableOptions> = {},
+  _options: TabbableOptions = {},
   _el?: Ref<HTMLElement | undefined>
 ) {
   const options = reactive(Object.assign({}, defaults, _options))

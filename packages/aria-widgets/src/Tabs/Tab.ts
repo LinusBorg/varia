@@ -8,8 +8,10 @@ import {
   h,
 } from 'vue'
 import { nanoid } from 'nanoid/non-secure'
-import { injectTabsAPI, TabsAPI, TabsAPIKey } from './use-tabs'
+import { injectTabsAPI } from './use-tabs'
 import { useClickable, ClickableProps } from '../Clickable'
+
+import { TabsAPI, TabsAPIKey } from '../types'
 
 export type useTabOptions = ExtractPropTypes<typeof TabProps>
 export const TabProps = {

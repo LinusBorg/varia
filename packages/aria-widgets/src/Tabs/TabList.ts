@@ -1,5 +1,7 @@
 import { defineComponent, h, PropType } from 'vue'
-import { injectTabsAPI, TabsAPIKey } from './use-tabs'
+import { injectTabsAPI } from './use-tabs'
+
+import { TabsAPIKey } from '../types'
 
 export default defineComponent({
   name: 'TabList',

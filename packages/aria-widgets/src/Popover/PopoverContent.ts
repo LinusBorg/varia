@@ -15,21 +15,14 @@ import {
   moveFocusToNextElement,
 } from 'vue-aria-composables'
 import { useDisclosureContent } from '../Disclosure'
-import { injectPopoverAPI, PopoverAPIKey, PopoverAPI } from './usePopover'
+import { injectPopoverAPI } from './usePopover'
 import {
   createPopper,
   Options as PopperOptions,
   Instance as PopperInstance,
 } from '@popperjs/core'
 
-interface UsePopoverContentOptions {
-  returnFocusOnClose: boolean
-  closeOnBlur: boolean
-  closeOnEscape: boolean
-  closeOnClickOutside: boolean
-  focusOnOpen: boolean
-  popperOptions?: PopperOptions
-}
+import { UsePopoverContentOptions, PopoverAPIKey, PopoverAPI } from '../types'
 
 export const PopoverContentProps = {
   tag: {

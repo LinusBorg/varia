@@ -1,9 +1,7 @@
 import { defineComponent, h, computed, Ref, PropType } from 'vue'
-import {
-  injectDisclosureAPI,
-  DisclosureAPI,
-  DisclosureAPIKey,
-} from './use-disclosure'
+import { injectDisclosureAPI } from './use-disclosure'
+
+import { DisclosureAPIKey, DisclosureAPI } from '../types'
 
 export function useDisclosureContent(
   disclosureAPI: DisclosureAPI,

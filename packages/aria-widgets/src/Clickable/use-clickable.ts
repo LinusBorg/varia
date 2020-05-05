@@ -1,9 +1,9 @@
 import { Ref } from 'vue'
-import { useTabbable, TabbableOptions } from '../Tabbable'
+import { ClickableOptions } from '../types'
+import { useTabbable } from '../Tabbable'
 import { useEvent } from 'vue-aria-composables'
 
 export { TabbableProps as ClickableProps } from '../Tabbable'
-export interface ClickableOptions extends TabbableOptions {}
 
 export function useClickable(
   options: ClickableOptions,

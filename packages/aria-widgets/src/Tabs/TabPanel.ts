@@ -1,5 +1,7 @@
 import { computed, defineComponent, ExtractPropTypes, PropType, h } from 'vue'
-import { injectTabsAPI, TabsAPIKey, TabsAPI } from './use-tabs'
+import { injectTabsAPI } from './use-tabs'
+
+import { TabsAPI, TabsAPIKey } from '../types'
 
 export type TabPanelOptions = ExtractPropTypes<typeof TabPanelProps>
 

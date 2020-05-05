@@ -1,21 +1,8 @@
-import { Ref, InjectionKey, inject, provide, ref } from 'vue'
-import { useDisclosure, DisclosureAPI } from '../Disclosure'
-
-export interface PopoverAPI extends DisclosureAPI {
-  triggerEl: Ref<HTMLElement | undefined>
-}
-
-export type PopoverAPIKey = InjectionKey<PopoverAPI>
+import { inject, provide, ref } from 'vue'
+import { useDisclosure } from '../Disclosure'
+import { PopoverAPIKey } from '../types'
 
 export const popoverAPIKey = Symbol('popoverAPI') as PopoverAPIKey
-
-export type PopoverOptions = typeof defaultOptions
-
-const defaultOptions = {
-  position: 'auto',
-  flip: true,
-  autofocus: true,
-}
 
 export function usePopover({ skipProvide }: { skipProvide?: boolean } = {}) {
   const state = ref<boolean>(false)

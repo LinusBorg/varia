@@ -1,11 +1,8 @@
-import { provide, inject, InjectionKey, Ref } from 'vue'
+import { provide, inject, Ref } from 'vue'
 import { useIdGenerator } from 'vue-aria-composables'
 
-export interface DisclosureAPI extends Record<string, any> {
-  show: Ref<boolean>
-  id: string
-}
-export type DisclosureAPIKey = InjectionKey<DisclosureAPI>
+import { DisclosureAPIKey } from '../types'
+
 export const disclosureAPIKey = Symbol('disclosure') as DisclosureAPIKey
 
 export function useDisclosure(

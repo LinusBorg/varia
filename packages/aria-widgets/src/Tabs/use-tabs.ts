@@ -1,4 +1,4 @@
-import { InjectionKey, inject, provide, ref, Ref, readonly } from 'vue'
+import { InjectionKey, inject, provide, ref, readonly } from 'vue'
 import {
   useIdGenerator,
   useArrowNavigation,
@@ -6,25 +6,7 @@ import {
 } from 'vue-aria-composables'
 import './index.css'
 
-export interface useTabsOptions {
-  initialValue: string
-  customName?: string
-  orientation?: 'vertical' | 'horizontal'
-  autoSelect?: boolean
-  startOnFirstSelected?: boolean
-  loop?: boolean
-}
-
-export interface TabsAPI {
-  generateId: (name: string) => string
-  selectedTab: Ref<string>
-  select: (name: string, el: HTMLElement) => void
-  autoSelect: boolean
-  id: Ref<string>
-  tabListAttributes: ReturnType<typeof useArrowNavigation>['attributes']
-  tabListRef: TemplRef
-}
-export type TabsAPIKey = InjectionKey<TabsAPI>
+import { useTabsOptions, TabsAPI, TabsAPIKey } from '../types'
 
 export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
 
