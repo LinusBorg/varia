@@ -1,5 +1,6 @@
 import { Ref } from 'vue'
 
+export type TemplRef<El = HTMLElement> = Ref<El | undefined>
 export type MaybeRef<T = any> = T | Ref<T>
 
 export interface FocusTrackerState {

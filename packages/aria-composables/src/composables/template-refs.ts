@@ -1,7 +1,6 @@
 import {
   computed,
   ref,
-  reactive,
   Ref,
   onBeforeUpdate,
   onMounted,
@@ -65,24 +64,13 @@ export function createTemplateRefProvider(
   }
 }
 
-export function createTemplateRefAPI<Item = any>() {
+export function createTemplateRefAPI() {
   const elements = ref(new Set<HTMLElement>())
-  const elementsToItems = reactive(new Map<HTMLElement, Item>())
-  const itemsToElements = reactive(new Map<Item, HTMLElement>())
-  const add = (el: HTMLElement, item?: Item) => {
+  const add = (el: HTMLElement) => {
     elements.value.add(el)
-    if (item) {
-      elementsToItems.set(el, item)
-      itemsToElements.set(item, el)
-    }
   }
   const remove = (el: HTMLElement) => {
     elements.value.delete(el)
-    if (elementsToItems.has(el)) {
-      const item = elementsToItems.get(el)
-      !!item && itemsToElements.delete(item)
-      elementsToItems.delete(el)
-    }
   }
 
   // When component updates, we slice the array
@@ -100,8 +88,6 @@ export function createTemplateRefAPI<Item = any>() {
     elements: sortedElements,
     add,
     remove,
-    elementsToItems: readonly(elementsToItems),
-    itemsToElements: readonly(itemsToElements),
   }
 }
 
@@ -157,6 +143,6 @@ function removeEl(elements: HTMLElement[] | undefined, el: HTMLElement) {
   i !== -1 && elements.splice(i, 1)
 }
 
-function sortByDocPosition(a: HTMLElement, b: HTMLElement) {
+export function sortByDocPosition(a: HTMLElement, b: HTMLElement) {
   return a.compareDocumentPosition(b) & 2 ? 1 : -1
 }
