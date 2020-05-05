@@ -26,7 +26,7 @@
     "vue-aria-composables": "0.0.0"
   },
   "peerDependencies": {
-    "vue": "^3.0.0-beta.7"
+    "vue": "^3.0.0-beta.9"
   },
   "devDependencies": {
     "@types/jest": "^25.2.1",
