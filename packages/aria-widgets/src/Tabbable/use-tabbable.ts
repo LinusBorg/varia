@@ -64,7 +64,7 @@ export function useTabbable(
 
   return computed(() => ({
     ref: el,
-    tabIndex: options.disabled && !options.focusable ? -1 : 0,
+    tabindex: options.disabled && !options.focusable ? -1 : 0,
     'aria-disabled': options.disabled || undefined,
   }))
 }
