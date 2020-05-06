@@ -109,7 +109,7 @@ export function useArrowNavigation(
 
     const nextEl = children[nextIdx]
     currentActiveElement.value = nextEl as HTMLElement
-    nextEl && hasFocus.value && nextEl.focus()
+    !virtual && nextEl && hasFocus.value && nextEl.focus()
   }
 
   const click = () => currentActiveElement.value?.click()
