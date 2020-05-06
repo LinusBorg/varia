@@ -7,8 +7,11 @@ import {
   PropType,
   h,
 } from 'vue'
+import { useArrowNavigationChild } from 'vue-aria-composables'
 import { nanoid } from 'nanoid/non-secure'
+
 import { injectTabsAPI } from './use-tabs'
+
 import { useClickable, ClickableProps } from '../Clickable'
 
 import { TabsAPI, TabsAPIKey } from '../types'
@@ -31,14 +34,22 @@ export const TabProps = {
 
 export function useTab(props: useTabOptions, api: TabsAPI) {
   const el = ref<HTMLElement>()
-  const id = 'tab_' + nanoid()
-  // const isTrulyDisabled = computed(() => props.disabled && !props.focusable)
+  api.arrowNavAPI.addToElNavigation(
+    el,
+    computed(() => !!props.disabled)
+  )
   const isSelected = computed(() => api.selectedTab.value === props.name)
-  const hasFocus = computed(() => id === api.id.value)
+
+  const id = 'tab_' + nanoid()
+  const hasFocus = computed(() => id === api.arrowNavAPI.currentActiveId.value)
   const select = () => {
     !props.disabled && props.name && api.select(props.name, el.value!)
   }
+
+  // Verify that this tab is a child of a role=tablist element
+  // TODO: Should run in __DEV__ only
   onMounted(() => {
+    el.value && isSelected.value && api.arrowNavAPI.select(el.value)
     // TODO: should set rover tabindex if this tab isSelected on mount
     if (el.value && !el.value?.closest('[role="tablist"]')) {
       console.warn('<Tab/> has to be nested inside of a `<TabList />`')
@@ -47,15 +58,15 @@ export function useTab(props: useTabOptions, api: TabsAPI) {
 
   // Element Attributes
   const clickableAttrs = useClickable(props, el)
+  const arrrowNavAttrs = useArrowNavigationChild(hasFocus, api.arrowNavAPI)
   const attributes = computed(() => ({
     ...clickableAttrs.value,
-    role: 'tab' as const,
+    ...arrrowNavAttrs.value,
     id,
-    tabindex: undefined, // reset tab index from clickable.
+    role: 'tab' as const,
     onClick: select,
     'aria-selected': isSelected.value,
     'aria-controls': api.generateId(props.name!),
-    'data-varia-focus': hasFocus.value ? 'true' : undefined,
   }))
 
   return { isSelected, attributes }

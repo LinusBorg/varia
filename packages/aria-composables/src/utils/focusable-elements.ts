@@ -30,11 +30,8 @@ export function getPreviousFocusableElement(
 }
 
 export function moveFocusToNextElement(el: HTMLElement) {
-  console.log('')
   if (el.matches(ALL_TABBABLE)) applyFocus(el)
-  console.log('no match on el')
   const nextEl = el.querySelector(ALL_TABBABLE)
-  console.log('nextEl:', nextEl)
   nextEl && applyFocus(nextEl as HTMLElement)
 }
 

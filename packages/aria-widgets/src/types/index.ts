@@ -1,5 +1,5 @@
 import { Ref, InjectionKey } from 'vue'
-import { TemplRef, ArrowNavigation } from 'vue-aria-composables'
+import { ArrowNavigation } from 'vue-aria-composables'
 import { Options as PopperOptions } from '@popperjs/core'
 /**
  *  Tabbable
@@ -25,8 +25,8 @@ export interface ButtonOptions extends ClickableOptions {}
 /**
  * Tabs
  */
-export interface TabsOptions {
-  initialValue: string
+export interface TabsOptions<States> {
+  initialValue: States
   customName?: string
   orientation?: 'vertical' | 'horizontal'
   autoSelect?: boolean
@@ -39,9 +39,7 @@ export interface TabsAPI {
   selectedTab: Ref<string>
   select: (name: string, el: HTMLElement) => void
   autoSelect: boolean
-  id: Ref<string>
-  tabListAttributes: ArrowNavigation['attributes']
-  tabListRef: TemplRef
+  arrowNavAPI: ArrowNavigation
 }
 export type TabsAPIKey = InjectionKey<TabsAPI>
 

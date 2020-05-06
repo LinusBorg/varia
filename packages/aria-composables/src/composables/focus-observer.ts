@@ -7,5 +7,7 @@ export function useElementFocusObserver(el: TemplRef) {
   const hasFocus = computed(
     () => !!el.value && tracker.currentEl.value === el.value
   )
-  return hasFocus
+  return {
+    hasFocus,
+  }
 }

@@ -1,63 +1,98 @@
-import { ref, computed, watch } from 'vue'
-import { TemplRef } from '../types'
+import { reactive, ref, computed, watch, Ref, onMounted, nextTick } from 'vue'
+import { TemplRef, MaybeRef, ArrowNavigation } from '../types'
 import { useElementFocusObserver } from './focus-observer'
 import { useArrowKeys, useKeyIf } from './keys'
+import { sortByDocPosition } from './template-refs'
+import { useFocusGroup } from './focus-group'
+
 import { ArrowNavigationOptions } from '../types'
 
-function getCurrentEl(el: HTMLElement) {
-  const currentId = el.getAttribute('aria-activedescendant')
-  if (!currentId) return
-
-  const currentEl = document.querySelector('#' + currentId)
-  /// TODO validate that element is descendant or id is in aria-owns
-  if (!currentEl) {
-    // TODO: throw error
-    console.error(`invalid id: no element with id ${currentId} found!`)
-  }
-
-  return currentEl
-}
-
-function getChildren(el: HTMLElement, role: string) {
-  const children = Array.from(el.querySelectorAll(`[role="${role}"]`))
-  const owns = el.getAttribute('aria-owns')
-  if (owns) {
-    const ownedChildren = owns
-      .split(' ')
-      .map(id => document.querySelector(id))
-      .filter(Boolean) as HTMLElement[]
-    children.push(...ownedChildren)
-  }
-  return children
-}
-
-function getFirstSelectedEl(el: Element, role: string) {
-  return el.querySelector(`[role="${role}"][aria-selected="true"]`)
+/**
+ * Utility to determine the first HTMLElement in an array
+ * which as 'aria-selected' set to true
+ *
+ * @param {Set<HTMLElement>} _elements
+ * @returns {HTMLElement | undefined}
+ */
+function getFirstSelectedEl(_elements: Set<HTMLElement>) {
+  const elements = Array.from(_elements).sort(sortByDocPosition)
+  return elements.find(el => el.getAttribute('aria-selected') === 'true')
 }
 
 export function useArrowNavigation(
   wrapperElRef: TemplRef,
-  roleofChildren: string,
   options: ArrowNavigationOptions
-) {
-  const hasFocus = useElementFocusObserver(wrapperElRef)
+): ArrowNavigation {
+  const { virtual = false } = options
+  const elements = reactive(new Set<HTMLElement>())
+  const elementsArray = computed(() => Array.from(elements))
 
-  const el: TemplRef = ref()
-  const id = computed(() => el.value?.id || '')
-  const attributes = computed(() => ({
-    tabindex: 0,
-    'aria-activedescendant': id.value,
-  }))
+  // Determine wether or not our element group has focus
+  // A. if virtual: true, we only need to watch the wrapper Element because we will be using active-descendant
+  // B. if virtual: false, we need to watch the individual elements because we will be using the roving tabindex pattern
+  const { hasFocus } = virtual
+    ? useElementFocusObserver(wrapperElRef)
+    : useFocusGroup(elementsArray)
 
+  /**
+   * @function
+   * Components can register their element as part of the arrow navigation
+   * @param el Ref<HTMLElement> - the element that should be part of the navigation
+   * @param disabled indicates wether or not this elemen is currently disabled
+   */
+  const addToElNavigation = (
+    el: TemplRef,
+    _disabled: MaybeRef<boolean> = false
+  ) => {
+    const disabled = ref(_disabled)
+    watch(
+      [el, disabled] as [TemplRef, Ref<boolean>],
+      ([nextEl, nextDisabled], [prevEl]) => {
+        if (nextEl && !nextDisabled) {
+          console.log('add', el)
+          elements.add(nextEl)
+          return
+        }
+        if (nextEl && nextDisabled) {
+          elements.delete(nextEl)
+          console.log('delete disabled', nextEl)
+          return
+        }
+        if (prevEl && !nextEl) {
+          elements.delete(prevEl)
+          console.log('delete unmounted', prevEl)
+        }
+      },
+      { immediate: true }
+    )
+  }
+  // This ref will contain the element which is currently
+  // "focused" by the arrow navigation
+  const currentActiveElement: TemplRef = ref()
+  const currentActiveId = computed(() => currentActiveElement.value?.id || '')
+
+  // These attributes need to be applied to the wrapper Element
+  // but only when using "virtual" mode
+  const wrapperAttributes = virtual
+    ? computed(() => ({
+        tabindex: 0,
+        'aria-activedescendant': currentActiveId.value,
+      }))
+    : ref({})
+
+  /**
+   * "moves" the aria-descendent focus by getting the next element to "focus"
+   * @param {string} to 'next' | 'prev' | 'start' | 'end'
+   */
   const moveto = (to: 'next' | 'prev' | 'start' | 'end') => {
     let nextIdx: number
-    const wrapperEl = wrapperElRef.value
-    if (!wrapperEl) return
-    const currentEl = getCurrentEl(wrapperEl)
-    const children = getChildren(wrapperEl, roleofChildren)
+    const children = Array.from(elements).sort(sortByDocPosition)
     const max = children.length - 1
 
-    const idx = currentEl ? children.indexOf(currentEl) : 0
+    const idx = currentActiveElement.value
+      ? children.indexOf(currentActiveElement.value)
+      : 0
+    console.log('children', children, idx)
 
     switch (to) {
       case 'next':
@@ -77,10 +112,11 @@ export function useArrowNavigation(
     }
 
     const nextEl = children[nextIdx]
-    el.value = nextEl as HTMLElement
+    currentActiveElement.value = nextEl as HTMLElement
+    nextEl && nextEl.focus()
   }
 
-  const click = () => el.value?.click()
+  const click = () => currentActiveElement.value?.click()
 
   const backDir = options.orientation === 'vertical' ? 'up' : 'left'
   const fwdDir = options.orientation === 'vertical' ? 'down' : 'right'
@@ -109,7 +145,8 @@ export function useArrowNavigation(
         break
       case 'Enter':
       case ' ':
-        click()
+        // when using virtual mode, we need to simulate a click on the "focused" argument
+        virtual && click()
         break
       default:
         return
@@ -117,22 +154,43 @@ export function useArrowNavigation(
   }) as EventListener)
 
   watch(hasFocus, hasFocus => {
-    if (!hasFocus) {
-      el.value = undefined
-      return
-    }
-    if (!wrapperElRef.value) return
+    if (!hasFocus) return
     if (options.startOnFirstSelected) {
-      const selectedEl = getFirstSelectedEl(wrapperElRef.value, roleofChildren)
-      selectedEl && (el.value = selectedEl as HTMLElement)
+      const selectedEl = getFirstSelectedEl(elements)
+      selectedEl && (currentActiveElement.value = selectedEl as HTMLElement)
     } else {
       moveto('start')
     }
   })
 
+  onMounted(() => {
+    nextTick(() => moveto('start'))
+  })
+
   return {
-    id,
-    attributes,
-    select: (newEl: HTMLElement) => void (el.value = newEl),
+    currentActiveElement,
+    currentActiveId,
+    virtual,
+    wrapperAttributes,
+    // Methods
+    addToElNavigation,
+    select: (nextEl: HTMLElement) => void (currentActiveElement.value = nextEl),
   }
+}
+
+export function useArrowNavigationChild(
+  hasFocus: Ref<boolean>,
+  { virtual }: ArrowNavigation
+): Ref<{
+  tabindex: string
+  'data-variant-focus'?: boolean
+}> {
+  return virtual
+    ? computed(() => ({
+        tabindex: '-1',
+        'data-variant-focus': hasFocus.value,
+      }))
+    : computed(() => ({
+        tabindex: hasFocus.value ? '0' : '-1',
+      }))
 }

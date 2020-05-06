@@ -1,5 +1,4 @@
-import { Ref, ComputedRef } from 'vue'
-
+import { Ref } from 'vue'
 export type MaybeRef<T = any> = T | Ref<T>
 
 /**
@@ -17,14 +16,21 @@ export interface ArrowNavigationOptions {
   loop?: boolean
   startOnFirstSelected?: boolean
   autoSelect?: boolean
+  virtual?: boolean
 }
 export interface ArrowNavigation {
-  id: TemplRef
-  attributes: ComputedRef<{
-    'aria-activedescendant': string
-    tabindex: number
-  }>
+  currentActiveElement: TemplRef
+  currentActiveId: Ref<string>
+  virtual: boolean
+  wrapperAttributes: Ref<
+    | {
+        'aria-activedescendant': string
+        tabindex: number
+      }
+    | {}
+  >
   select: (el: HTMLElement) => void
+  addToElNavigation: (el: TemplRef, disabled: MaybeRef<boolean>) => void
 }
 
 export type ArrowKeyHandlers = {
@@ -41,4 +47,4 @@ export interface FocusTrackerAPI {
   currentEl: Readonly<Ref<HTMLElement | undefined>>
 }
 
-export type TabDirection = ComputedRef<'forward' | 'backward' | undefined>
+export type TabDirection = Ref<'forward' | 'backward' | undefined>

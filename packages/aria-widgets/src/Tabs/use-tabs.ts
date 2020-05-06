@@ -10,7 +10,9 @@ import { TabsOptions, TabsAPI, TabsAPIKey } from '../types'
 
 export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
 
-export function useTabs(options: TabsOptions) {
+export function useTabs<States extends string | number>(
+  options: TabsOptions<States>
+) {
   const {
     initialValue,
     customName,
@@ -23,7 +25,7 @@ export function useTabs(options: TabsOptions) {
 
   // Keyboard Navigation
   const el: TemplRef = ref()
-  const arrowNavAPI = useArrowNavigation(el, 'tab', {
+  const arrowNavAPI = useArrowNavigation(el, {
     orientation,
     loop,
     autoSelect,
@@ -31,7 +33,7 @@ export function useTabs(options: TabsOptions) {
   })
 
   // Tab State
-  const selectedTab = ref<string>(initialValue)
+  const selectedTab = ref<string | number>(initialValue)
   const select = (name: string, el: HTMLElement) => {
     selectedTab.value = name
     arrowNavAPI.select(el)
@@ -46,14 +48,12 @@ export function useTabs(options: TabsOptions) {
     select,
     selectedTab: readonly(selectedTab),
     autoSelect,
-    id: arrowNavAPI.id,
-    tabListAttributes: arrowNavAPI.attributes,
-    tabListRef: el,
+    arrowNavAPI,
   })
 
   return {
     select,
-    id: arrowNavAPI.id,
+    id: arrowNavAPI.currentActiveId,
     generateId,
     tabsKey: tabsAPIKey,
     selectedTab: readonly(selectedTab),

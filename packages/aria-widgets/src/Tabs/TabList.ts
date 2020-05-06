@@ -15,15 +15,13 @@ export default defineComponent({
     },
   },
   setup(props, { slots }) {
-    const { tabListAttributes: attributes, tabListRef: ref } = injectTabsAPI(
-      props.tabsKey
-    )
+    const api = injectTabsAPI(props.tabsKey)
+    const { wrapperAttributes: attributes } = api.arrowNavAPI
     return () =>
       h(
         props.tag,
         {
           role: 'tablist',
-          ref,
           ...attributes.value,
         },
         slots.default?.()

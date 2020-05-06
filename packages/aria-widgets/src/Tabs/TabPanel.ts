@@ -31,7 +31,7 @@ export function useTabPanel(props: TabPanelOptions, api: TabsAPI) {
     hidden: !isSelected.value,
     style:
       props.hideContents && !isSelected.value ? { display: 'none' } : undefined,
-    tabIndex: isSelected.value ? -1 : undefined,
+    tabindex: isSelected.value ? -1 : undefined,
   }))
   return { isSelected, attributes }
 }
