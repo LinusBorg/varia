@@ -6,11 +6,11 @@ import {
 } from 'vue-aria-composables'
 import './index.css'
 
-import { useTabsOptions, TabsAPI, TabsAPIKey } from '../types'
+import { TabsOptions, TabsAPI, TabsAPIKey } from '../types'
 
 export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
 
-export function useTabs(options: useTabsOptions) {
+export function useTabs(options: TabsOptions) {
   const {
     initialValue,
     customName,

@@ -22,7 +22,7 @@ import {
   Instance as PopperInstance,
 } from '@popperjs/core'
 
-import { UsePopoverContentOptions, PopoverAPIKey, PopoverAPI } from '../types'
+import { PopoverContentOptions, PopoverAPIKey, PopoverAPI } from '../types'
 
 export const PopoverContentProps = {
   tag: {
@@ -50,7 +50,7 @@ export const PopoverContentProps = {
   },
 }
 
-const defaults: UsePopoverContentOptions = {
+const defaults: PopoverContentOptions = {
   closeOnBlur: true,
   closeOnEscape: true,
   closeOnClickOutside: true,
@@ -59,7 +59,7 @@ const defaults: UsePopoverContentOptions = {
 }
 
 export function usePopoverContent(
-  _options: Partial<UsePopoverContentOptions> = {},
+  _options: Partial<PopoverContentOptions> = {},
   api: PopoverAPI
 ) {
   const options = Object.assign({}, defaults, _options)
@@ -74,16 +74,15 @@ export function usePopoverContent(
     vm && vm.emit('closed')
     show.value = false
   }
-  options.closeOnEscape && useKeyIf(ref(true), ['Escape'], () => close())
+  options.closeOnEscape && useKeyIf(ref(true), ['Escape'], close)
   options.closeOnClickOutside && useClickOutside([el, triggerEl], close)
 
   // Focus Lifecycle
   options.focusOnOpen &&
     watch(api.show, show => {
       show && el.value && nextTick(() => moveFocusToNextElement(el.value!))
-      options.returnFocusOnClose && triggerEl.value?.focus()
+      !show && options.returnFocusOnClose && triggerEl.value?.focus()
     })
-  const returnFocusToTrigger = () => triggerEl.value?.focus()
 
   // Positioning the Popover using Popper.js
   let popperInstance: PopperInstance
@@ -94,6 +93,7 @@ export function usePopoverContent(
         el.value,
         options.popperOptions
       )
+      // TODO: Do we need this?
       nextTick(() => popperInstance?.forceUpdate())
     }
     onCleanup(() => {
@@ -101,18 +101,17 @@ export function usePopoverContent(
     })
   })
 
-  const update = () => popperInstance?.update()
-  const forceUpdate = () => popperInstance?.forceUpdate()
-  const destroy = () => popperInstance?.destroy()
+  // const update = () => popperInstance?.update()
+  // const forceUpdate = () => popperInstance?.forceUpdate()
+  // const destroy = () => popperInstance?.destroy()
   return {
     show,
     close,
-    returnFocusToTrigger,
     attributes,
     focusFirstElement: () => el.value && moveFocusToNextElement(el.value),
-    update,
-    forceUpdate,
-    destroy,
+    // update,
+    // forceUpdate,
+    // destroy,
   }
 }
 

@@ -1,8 +1,10 @@
-import { computed, Ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useFocusTracker } from './focus-tracker'
 import { applyFocus } from '../utils'
+import { MaybeRef } from '../types'
 
-export function useFocusGroup(elements: Ref<readonly HTMLElement[]>) {
+export function useFocusGroup(_elements: MaybeRef<readonly HTMLElement[]>) {
+  const elements = ref(_elements)
   const { currentEl: currentElGlobal } = useFocusTracker()
 
   const currentIndex = computed(() =>

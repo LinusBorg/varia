@@ -25,7 +25,7 @@ export interface ButtonOptions extends ClickableOptions {}
 /**
  * Tabs
  */
-export interface useTabsOptions {
+export interface TabsOptions {
   initialValue: string
   customName?: string
   orientation?: 'vertical' | 'horizontal'
@@ -57,7 +57,7 @@ export type DisclosureAPIKey = InjectionKey<DisclosureAPI>
 /**
  * Popover
  */
-export interface UsePopoverContentOptions {
+export interface PopoverContentOptions {
   returnFocusOnClose: boolean
   closeOnBlur: boolean
   closeOnEscape: boolean
@@ -75,4 +75,11 @@ export interface PopoverOptions {
   position?: string
   flip?: boolean
   autofocus?: boolean
+}
+
+/**
+ * Teleport
+ */
+export interface TeleportProps extends Record<string, any> {
+  tag: string
 }

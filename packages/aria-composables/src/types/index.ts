@@ -21,8 +21,8 @@ export interface ArrowNavigationOptions {
 export interface ArrowNavigation {
   id: TemplRef
   attributes: ComputedRef<{
-    'aria-descendant': string
-    id: string
+    'aria-activedescendant': string
+    tabindex: number
   }>
   select: (el: HTMLElement) => void
 }

@@ -1,9 +1,9 @@
 import { defineComponent, h, PropType, computed } from 'vue'
 import { useDisclosureTrigger } from '../Disclosure'
 import { ButtonProps } from '../Button'
-import { injectPopoverAPI, PopoverAPI, PopoverAPIKey } from './usePopover'
+import { injectPopoverAPI } from './usePopover'
 
-import { ButtonOptions } from '../types'
+import { ButtonOptions, PopoverAPI, PopoverAPIKey } from '../types'
 
 export function usePopoverTrigger(props: ButtonOptions, api: PopoverAPI) {
   const disclosureAttrs = useDisclosureTrigger(props, api, api.triggerEl)

@@ -9,11 +9,12 @@ import {
 interface AccordionOptions {
   multiple?: boolean
   orientation?: 'horizontal' | 'vertical'
+  customName?: string
 }
 
 export type AccordionState = Record<string, boolean>
 
-export interface AccordionContext {
+export interface AccordionAPI {
   genHeaderAttrs: typeof genHeaderAttrs
   genPanelAttrs: typeof genPanelAttrs
   generateId: (n: string) => string
@@ -21,7 +22,7 @@ export interface AccordionContext {
   state: AccordionState
 }
 
-export type AccordionKey = InjectionKey<AccordionContext>
+export type AccordionKey = InjectionKey<AccordionAPI>
 
 export const accordionKey = Symbol('disclosure') as AccordionKey
 
@@ -54,8 +55,8 @@ export function useAccordion(options: AccordionOptions = {}) {
     orientation: options.orientation,
   })
   const generateId = useIdGenerator('accordion')
-
-  provide(accordionKey, {
+  const key = options.customName ? Symbol('accordionCustom') : accordionKey
+  provide(key, {
     genHeaderAttrs,
     generateId,
     genPanelAttrs,
@@ -71,6 +72,6 @@ export function useAccordion(options: AccordionOptions = {}) {
   }
 }
 
-export function useAccordionInjection() {
-  return inject(accordionKey)
+export function useAccordionInjection(key: AccordionKey = accordionKey) {
+  return inject(key)
 }

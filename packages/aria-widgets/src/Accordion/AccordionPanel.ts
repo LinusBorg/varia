@@ -1,4 +1,4 @@
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, h } from 'vue'
 import { useAccordionInjection } from './use-accordion'
 
 export const AccodionPanel = defineComponent({

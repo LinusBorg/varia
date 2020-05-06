@@ -1,31 +1,34 @@
 import {
-  createTemplateRefProvider,
   TemplateRefKey,
   useFocusGroup,
   useRovingTabIndex,
   useArrowKeys,
   useKeyIf,
+  createTemplateRefAPI,
 } from 'vue-aria-composables'
 import {
   ExtractPropTypes,
   reactive,
   provide,
+  inject,
   InjectionKey,
   readonly,
   Ref,
   ComputedRef,
 } from 'vue'
 
-export type ListboxAPIKey<Item = any> = InjectionKey<{
+export interface ListBoxAPI<Item> {
   selected: Set<Item>
   select: (item: Item) => void
   deselect: (item: Item) => void
-  addToMap: (el: HTMLElement, item: Item) => void
-  removeFromMap: (el: HTMLElement) => boolean
-}>
+  currentFocusEl: Ref<HTMLElement | undefined>
+  addElToArrowSequence: (el: HTMLElement, item: Item) => void
+  removeElFromArrowSequence: (el: HTMLElement) => void
+}
+export type ListBoxAPIKey<Item = any> = InjectionKey<ListBoxAPI<Item>>
 export type ListBoxOptions = ExtractPropTypes<typeof props>
 
-export const apiKey = Symbol('listBoxAPI') as ListboxAPIKey
+export const listBoxAPIKey = Symbol('listBoxAPI') as ListBoxAPIKey
 export const elsKey = Symbol('listBoxEls') as TemplateRefKey
 
 export const props = {
@@ -39,8 +42,6 @@ export function useListbox<Item = any>(
   options: ListBoxOptions = {}
 ) {
   const { multiple } = options
-  // Collect Elements
-  const { elements, refFn } = createTemplateRefProvider(elsKey)
 
   // State
   const selected = reactive(new Set<Item>())
@@ -50,19 +51,17 @@ export function useListbox<Item = any>(
   }
   const deselect = (item: Item) => selected.delete(item)
 
-  /**
-   * We need to map the elements of the ListBoxItems to the actual items they represent
-   * With this mapping, we can e.g. get the Item represented by the DOM element that has focus
-   * This this essential for the keyboard navigation features we implement further down.
-   */
-  const itemsElsMap = reactive(new Map<HTMLElement, Item>())
-  const addToMap = (el: HTMLElement, item: Item) =>
-    void itemsElsMap.set(el, item)
-  const removeFromMap = (el: HTMLElement) => itemsElsMap.delete(el)
-
   // Keyboard navigation
-  const { hasFocus, currentEl } = useFocusGroup(elements)
-  const rover = useRovingTabIndex(elements, hasFocus)
+  const {
+    elements,
+    add: addElToArrowSequence,
+    remove: removeElFromArrowSequence,
+    elementsToItems,
+  } = createTemplateRefAPI()
+  const { hasFocus, currentEl: currentFocusEl } = useFocusGroup(elements)
+  const rover = useRovingTabIndex(elements, hasFocus, {
+    orientation: 'vertical',
+  })
 
   if (multiple) {
     const handleArrowKeys = (
@@ -73,7 +72,8 @@ export function useListbox<Item = any>(
       if (event.shiftKey) {
         moveFocus()
         // TODO: Do I need to wait for the next Tick here?
-        const currentItem = currentEl.value && itemsElsMap.get(currentEl.value)!
+        const currentItem =
+          currentFocusEl.value && elementsToItems.get(currentFocusEl.value)!
         if (!currentItem) return
         selected.has(currentItem) ? select(currentItem) : deselect(currentItem)
       }
@@ -88,14 +88,19 @@ export function useListbox<Item = any>(
     useKeyIf(
       hasFocus,
       ['Home', 'End'],
-      handleHomeEndKeys<Item>(currentEl, itemsElsMap, readonly(items), select)
+      handleHomeEndKeys<Item>(
+        currentFocusEl,
+        elementsToItems,
+        readonly(items),
+        select
+      )
     )
     useKeyIf(
       hasFocus,
       [' '],
       handleSpace<Item>(
-        currentEl,
-        itemsElsMap,
+        currentFocusEl,
+        elementsToItems,
         selected,
         readonly(items),
         select
@@ -104,32 +109,42 @@ export function useListbox<Item = any>(
   }
 
   // API
-  provide(apiKey as ListboxAPIKey<Item>, {
+  provide(listBoxAPIKey as ListBoxAPIKey<Item>, {
     selected,
     select,
     deselect,
-    addToMap,
-    removeFromMap,
+    currentFocusEl,
+    addElToArrowSequence,
+    removeElFromArrowSequence,
   })
 
   return {
-    ref: refFn,
-    selected,
+    selected: readonly(selected),
     select,
     deselect,
   }
 }
 
+export function injectListBoxAPI(key: ListBoxAPIKey = listBoxAPIKey) {
+  const api = inject(key)
+  if (!api) {
+    console.warn('<Tab />: useTabs() was not called in parent component')
+    throw new Error('Missing TabsAPI Injection from parent component')
+  }
+  return api
+}
+
 function handleHomeEndKeys<Item = any>(
-  currentEl: Ref<HTMLElement | undefined>,
-  itemsElsMap: Map<HTMLElement, Item>,
+  currentFocusEl: Ref<HTMLElement | undefined>,
+  itemsElsMap: Readonly<Map<HTMLElement, Item>>,
   sortedItems: readonly Item[],
   select: (item: Item) => void
 ): (event: KeyboardEvent) => void {
   return event => {
     if (!event.shiftKey || !event.ctrlKey) return
 
-    const currentItem = currentEl.value && itemsElsMap.get(currentEl.value)
+    const currentItem =
+      currentFocusEl.value && itemsElsMap.get(currentFocusEl.value)
 
     if (!currentItem) return
 
@@ -144,8 +159,8 @@ function handleHomeEndKeys<Item = any>(
 }
 
 function handleSpace<Item = any>(
-  currentEl: ComputedRef<HTMLElement | undefined>,
-  itemsElsMap: Map<HTMLElement, Item>,
+  currentFocusEl: ComputedRef<HTMLElement | undefined>,
+  itemsElsMap: Readonly<Map<HTMLElement, Item>>,
   selected: Set<Item>,
   sortedItems: readonly Item[],
   select: (item: Item) => void
@@ -153,7 +168,8 @@ function handleSpace<Item = any>(
   return event => {
     if (!event.shiftKey) return
 
-    const currentItem = currentEl.value && itemsElsMap.get(currentEl.value)
+    const currentItem =
+      currentFocusEl.value && itemsElsMap.get(currentFocusEl.value)
     const prevSelectedItem = Array.from(selected).pop()
 
     if (!currentItem || !prevSelectedItem) return
