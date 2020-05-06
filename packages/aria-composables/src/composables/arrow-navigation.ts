@@ -49,18 +49,15 @@ export function useArrowNavigation(
       [el, disabled] as [TemplRef, Ref<boolean>],
       ([nextEl, nextDisabled], [prevEl]) => {
         if (nextEl && !nextDisabled) {
-          console.log('add', el)
           elements.add(nextEl)
           return
         }
         if (nextEl && nextDisabled) {
           elements.delete(nextEl)
-          console.log('delete disabled', nextEl)
           return
         }
         if (prevEl && !nextEl) {
           elements.delete(prevEl)
-          console.log('delete unmounted', prevEl)
         }
       },
       { immediate: true }
@@ -92,7 +89,6 @@ export function useArrowNavigation(
     const idx = currentActiveElement.value
       ? children.indexOf(currentActiveElement.value)
       : 0
-    console.log('children', children, idx)
 
     switch (to) {
       case 'next':
@@ -113,7 +109,7 @@ export function useArrowNavigation(
 
     const nextEl = children[nextIdx]
     currentActiveElement.value = nextEl as HTMLElement
-    nextEl && nextEl.focus()
+    nextEl && hasFocus.value && nextEl.focus()
   }
 
   const click = () => currentActiveElement.value?.click()
@@ -124,7 +120,6 @@ export function useArrowNavigation(
   useArrowKeys(hasFocus, {
     [backDir]: (event: KeyboardEvent) => {
       if (event.shiftKey || event.ctrlKey) return
-      console.log('arrow key')
       moveto('prev')
       options.autoSelect && click()
     },
@@ -153,18 +148,28 @@ export function useArrowNavigation(
     }
   }) as EventListener)
 
-  watch(hasFocus, hasFocus => {
-    if (!hasFocus) return
+  const determineFirstFocus = () => {
     if (options.startOnFirstSelected) {
       const selectedEl = getFirstSelectedEl(elements)
-      selectedEl && (currentActiveElement.value = selectedEl as HTMLElement)
+      selectedEl
+        ? (currentActiveElement.value = selectedEl as HTMLElement)
+        : moveto('start')
     } else {
       moveto('start')
     }
+  }
+
+  watch(hasFocus, hasFocus => {
+    console.log('hasFocus Watch', hasFocus)
+    if (!hasFocus) return
+    determineFirstFocus()
   })
 
+  // TODO: This could be buggy when tabs are transitioned in?
   onMounted(() => {
-    nextTick(() => moveto('start'))
+    nextTick(() => {
+      determineFirstFocus()
+    })
   })
 
   return {
