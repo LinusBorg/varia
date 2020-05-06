@@ -52,9 +52,8 @@
         <TabPanel :tabsKey="tabs2.tabsKey" name="C">Panel C</TabPanel>
       </div>
     </div>
-    <!--<div class="mb-3 mt-6 py-2" ref="tab3.ref" v-bind="tabs3.attributes">
+    <div class="mb-3 mt-6 py-2" ref="tab3.ref" v-bind="tabs3.attributes">
       <h2 class="text-xl font-bold mb-2">Disabled Tab</h2>
-      <p>This is still buggy</p>
       <TabList class="border-b border-gray-500">
         <Tab
           :tabsKey="tabs3.tabsKey"
@@ -79,7 +78,7 @@
       <TabPanel :tabsKey="tabs3.tabsKey" name="A">Panel A</TabPanel>
       <TabPanel :tabsKey="tabs3.tabsKey" name="B">Panel B</TabPanel>
       <TabPanel :tabsKey="tabs3.tabsKey" name="C">Panel C</TabPanel>
-    </div> -->
+    </div>
   </div>
 </template>
 
@@ -107,14 +106,14 @@ export default defineComponent({
       customName: 'TabsWithAutoSelect',
     })
 
-    // const tabsAPI3 = useTabs({
-    //   customName: 'TabsWithDisabled',
-    //   initialValue: 'C',
-    // })
+    const tabsAPI3 = useTabs({
+      customName: 'TabsWithDisabled',
+      initialValue: 'C',
+    })
     return {
       tabs1: tabsAPI1,
       tabs2: tabsAPI2,
-      // tabs3: tabsAPI3,
+      tabs3: tabsAPI3,
     }
   },
 })
