@@ -10,8 +10,11 @@ export function useClickable(
   el?: Ref<HTMLElement | undefined>
 ) {
   const tabbableAttrs = useTabbable(options, el)
-  useEvent(el, 'keyup', ((e: KeyboardEvent) => {
-    if (el?.value?.tagName === 'BUTTON') return
+  useEvent(document, 'keyup', ((e: KeyboardEvent) => {
+    const el = tabbableAttrs.value.ref
+    if (e.target !== el.value) return
+    console.log('watch for enter triggered')
+    // if (el?.value?.tagName === 'BUTTON') return
     if (e.key === 'Enter' || e.key === ' ') {
       el?.value?.click()
     }
