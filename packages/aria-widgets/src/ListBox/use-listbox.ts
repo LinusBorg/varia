@@ -14,7 +14,6 @@ import {
   InjectionKey,
   readonly,
   Ref,
-  ComputedRef,
 } from 'vue'
 
 export interface ListBoxAPI<Item> {
@@ -159,7 +158,7 @@ function handleHomeEndKeys<Item = any>(
 }
 
 function handleSpace<Item = any>(
-  currentFocusEl: ComputedRef<HTMLElement | undefined>,
+  currentFocusEl: Ref<HTMLElement | undefined>,
   itemsElsMap: Readonly<Map<HTMLElement, Item>>,
   selected: Set<Item>,
   sortedItems: readonly Item[],
