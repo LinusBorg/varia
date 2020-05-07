@@ -34,13 +34,13 @@ export const TabProps = {
 
 export function useTab(props: useTabOptions, api: TabsAPI) {
   const el = ref<HTMLElement>()
+  const id = 'tab_' + nanoid()
   api.arrowNavAPI.addToElNavigation(
-    el,
+    id,
     computed(() => !!props.disabled)
   )
   const isSelected = computed(() => api.selectedTab.value === props.name)
 
-  const id = 'tab_' + nanoid()
   const hasFocus = computed(() => id === api.arrowNavAPI.currentActiveId.value)
   const select = () => {
     !props.disabled && props.name && api.select(props.name, el.value!)

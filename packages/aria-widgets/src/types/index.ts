@@ -32,6 +32,7 @@ export interface TabsOptions<States> {
   autoSelect?: boolean
   startOnFirstSelected?: boolean
   loop?: boolean
+  virtual?: boolean
 }
 
 export interface TabsAPI {

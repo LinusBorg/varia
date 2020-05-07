@@ -21,16 +21,21 @@ export function useTabs<States extends string | number>(
     loop,
     startOnFirstSelected,
     autoSelect = false,
+    virtual = false,
   } = options
 
   // Keyboard Navigation
   const el: TemplRef = ref()
-  const arrowNavAPI = useArrowNavigation(el, {
-    orientation,
-    loop,
-    autoSelect,
-    startOnFirstSelected,
-  })
+  const arrowNavAPI = useArrowNavigation(
+    {
+      orientation,
+      loop,
+      autoSelect,
+      startOnFirstSelected,
+      virtual,
+    },
+    el
+  )
 
   // Tab State
   const selectedTab = ref<string | number>(initialValue)

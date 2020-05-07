@@ -4,6 +4,6 @@
 [role='tablist'] {
   outline: none;
 }
-[role='tablist']:focus [role='tab'][data-varia-focus] {
+[role='tablist']:focus [role='tab'][data-varia-focus='true'] {
   outline: 2px solid red;
 }

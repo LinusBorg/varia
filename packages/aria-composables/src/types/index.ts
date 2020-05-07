@@ -30,7 +30,7 @@ export interface ArrowNavigation {
     | {}
   >
   select: (el: HTMLElement) => void
-  addToElNavigation: (el: TemplRef, disabled: MaybeRef<boolean>) => void
+  addToElNavigation: (id: string, disabled: MaybeRef<boolean>) => void
 }
 
 export type ArrowKeyHandlers = {

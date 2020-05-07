@@ -54,7 +54,7 @@
     </div>
     <div class="mb-3 mt-6 py-2" ref="tab3.ref" v-bind="tabs3.attributes">
       <h2 class="text-xl font-bold mb-2">Disabled Tab</h2>
-      <TabList class="border-b border-gray-500">
+      <TabList class="border-b border-gray-500" :tabsKey="tabs3.tabsKey">
         <Tab
           :tabsKey="tabs3.tabsKey"
           name="A"
@@ -96,9 +96,9 @@ export default defineComponent({
     const tabsAPI1 = useTabs({
       initialValue: 'A',
       loop: true,
+      virtual: true,
     })
 
-    // Auto-Select
     const tabsAPI2 = useTabs({
       initialValue: 'B',
       autoSelect: true,
@@ -110,6 +110,7 @@ export default defineComponent({
       customName: 'TabsWithDisabled',
       initialValue: 'C',
     })
+
     return {
       tabs1: tabsAPI1,
       tabs2: tabsAPI2,
