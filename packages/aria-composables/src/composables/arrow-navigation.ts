@@ -23,13 +23,35 @@ export function useArrowNavigation(
   wrapperElRef: TemplRef,
   options: ArrowNavigationOptions
 ): ArrowNavigation {
-  const { virtual = false } = options
+  const {
+    autoSelect,
+    loop,
+    orientation,
+    startOnFirstSelected,
+    virtual = false,
+  } = options
+
+  /**
+   * `elements` is a set containing all elements that we want to control with arrow keys
+   */
   const elements = reactive(new Set<HTMLElement>())
   const elementsArray = computed(() => Array.from(elements))
+  // `currentActiveElement` will contain the element which is currently
+  // "focused" by the arrow navigation
+  const currentActiveElement: TemplRef = ref()
+  const currentActiveId = computed(() => currentActiveElement.value?.id || '')
 
+  // wrapperAttributes need to be applied to the wrapper Element
+  // but only when using "virtual" mode
+  const wrapperAttributes = virtual
+    ? computed(() => ({
+        tabindex: 0,
+        'aria-activedescendant': currentActiveId.value,
+      }))
+    : ref({})
   // Determine wether or not our element group has focus
-  // A. if virtual: true, we only need to watch the wrapper Element because we will be using active-descendant
-  // B. if virtual: false, we need to watch the individual elements because we will be using the roving tabindex pattern
+  //  A. if virtual: true, we only need to watch the wrapper Element because we will be using active-descendant
+  //  B. if virtual: false, we need to watch the individual elements because we will be using the roving tabindex pattern
   const { hasFocus } = virtual
     ? useElementFocusObserver(wrapperElRef)
     : useFocusGroup(elementsArray)
@@ -37,6 +59,7 @@ export function useArrowNavigation(
   /**
    * @function
    * Components can register their element as part of the arrow navigation
+   * This function controls the content of `elements`
    * @param el Ref<HTMLElement> - the element that should be part of the navigation
    * @param disabled indicates wether or not this elemen is currently disabled
    */
@@ -63,22 +86,9 @@ export function useArrowNavigation(
       { immediate: true }
     )
   }
-  // This ref will contain the element which is currently
-  // "focused" by the arrow navigation
-  const currentActiveElement: TemplRef = ref()
-  const currentActiveId = computed(() => currentActiveElement.value?.id || '')
-
-  // These attributes need to be applied to the wrapper Element
-  // but only when using "virtual" mode
-  const wrapperAttributes = virtual
-    ? computed(() => ({
-        tabindex: 0,
-        'aria-activedescendant': currentActiveId.value,
-      }))
-    : ref({})
 
   /**
-   * "moves" the aria-descendent focus by getting the next element to "focus"
+   * - Determines the next element to focus within the group of `elements`
    * @param {string} to 'next' | 'prev' | 'start' | 'end'
    */
   const moveto = (to: 'next' | 'prev' | 'start' | 'end') => {
@@ -92,10 +102,10 @@ export function useArrowNavigation(
 
     switch (to) {
       case 'next':
-        nextIdx = idx >= max ? (options.loop ? 0 : idx) : idx + 1
+        nextIdx = idx >= max ? (loop ? 0 : idx) : idx + 1
         break
       case 'prev':
-        nextIdx = idx <= 0 ? (options.loop ? max : idx) : idx - 1
+        nextIdx = idx <= 0 ? (loop ? max : idx) : idx - 1
         break
       case 'start':
         nextIdx = 0
@@ -112,21 +122,23 @@ export function useArrowNavigation(
     !virtual && nextEl && hasFocus.value && nextEl.focus()
   }
 
+  /**
+   * Listeners for the actual arrow Navigation
+   */
+  const backDir = orientation === 'vertical' ? 'up' : 'left'
+  const fwdDir = orientation === 'vertical' ? 'down' : 'right'
   const click = () => currentActiveElement.value?.click()
-
-  const backDir = options.orientation === 'vertical' ? 'up' : 'left'
-  const fwdDir = options.orientation === 'vertical' ? 'down' : 'right'
 
   useArrowKeys(hasFocus, {
     [backDir]: (event: KeyboardEvent) => {
       if (event.shiftKey || event.ctrlKey) return
       moveto('prev')
-      options.autoSelect && click()
+      autoSelect && click()
     },
     [fwdDir]: (event: KeyboardEvent) => {
       if (event.shiftKey || event.ctrlKey) return
       moveto('next')
-      options.autoSelect && click()
+      autoSelect && click()
     },
   })
 
@@ -134,9 +146,11 @@ export function useArrowNavigation(
     switch (event.key) {
       case 'Home':
         moveto('start')
+        autoSelect && click()
         break
       case 'End':
         moveto('end')
+        autoSelect && click()
         break
       case 'Enter':
       case ' ':
@@ -148,8 +162,12 @@ export function useArrowNavigation(
     }
   }) as EventListener)
 
+  /**
+   * Determines which of the `elements` should be the first one to receive focus
+   * when the tab sequence reaches out composite widge
+   */
   const determineFirstFocus = () => {
-    if (options.startOnFirstSelected) {
+    if (startOnFirstSelected) {
       const selectedEl = getFirstSelectedEl(elements)
       selectedEl
         ? (currentActiveElement.value = selectedEl as HTMLElement)
@@ -159,13 +177,11 @@ export function useArrowNavigation(
     }
   }
 
-  watch(hasFocus, hasFocus => {
-    console.log('hasFocus Watch', hasFocus)
-    if (!hasFocus) return
+  watch(hasFocus, active => {
+    if (active) return
     determineFirstFocus()
   })
 
-  // TODO: This could be buggy when tabs are transitioned in?
   onMounted(() => {
     nextTick(() => {
       determineFirstFocus()
