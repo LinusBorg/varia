@@ -1,5 +1,5 @@
-import { computed, reactive, ref, Ref, toRaw, PropType, watchEffect } from 'vue'
-import { useEvent } from 'vue-aria-composables'
+import { computed, reactive, ref, toRaw, PropType, watchEffect } from 'vue'
+import { useEvent, TemplRef } from 'vue-aria-composables'
 import { isNativeTabbable } from '../utils/elements'
 import { TabbableOptions } from '../types'
 
@@ -17,10 +17,7 @@ const defaults = {
   focusable: undefined,
 }
 
-export function useTabbable(
-  _options: TabbableOptions = {},
-  _el?: Ref<HTMLElement | undefined>
-) {
+export function useTabbable(_options: TabbableOptions = {}, _el?: TemplRef) {
   const options = reactive(Object.assign({}, defaults, _options))
 
   const el = _el || ref<HTMLElement>()
@@ -37,7 +34,7 @@ export function useTabbable(
   }
   const onClick = (event: Event) => {
     if (event.target !== toRaw(el.value)) return
-    preventDefaults(event) || el.value?.focus()
+    preventDefaults(event) || (el.value!.tabIndex > -1 && el.value?.focus())
   }
   useEvent(document, 'mouseDown', preventDefaults, { capture: true })
   useEvent(document, 'mouseOver', preventDefaults, { capture: true })
