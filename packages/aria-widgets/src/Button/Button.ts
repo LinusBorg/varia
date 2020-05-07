@@ -22,7 +22,6 @@ export const Button = defineComponent({
   name: 'Button',
   props: ButtonProps,
   setup(props, { slots }) {
-    console.log(toRaw(props))
     const attributes = useButton(props)
 
     return () => {
