@@ -5,6 +5,7 @@
     <p>
       <span>Count is: {{ count }}</span>
       <button @click="count++">increment</button>
+      <button @click="$router.push('/buttons')">go to buttons</button>
     </p>
   </div>
 </template>
