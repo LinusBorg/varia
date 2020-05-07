@@ -50,8 +50,7 @@ export default defineComponent({
     Button,
   },
   setup() {
-    const alert = (event: Event) => {
-      console.log(event)
+    const alert = () => {
       window.alert('Button clicked!')
     }
     return {
