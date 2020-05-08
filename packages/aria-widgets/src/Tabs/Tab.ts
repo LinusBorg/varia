@@ -35,21 +35,24 @@ export const TabProps = {
 export function useTab(props: useTabOptions, api: TabsAPI) {
   const el = ref<HTMLElement>()
   const id = 'tab_' + nanoid()
-  api.arrowNavAPI.addToElNavigation(
+  api.arrowNav.addToElNavigation(
     id,
     computed(() => !!props.disabled)
   )
-  const isSelected = computed(() => api.selectedTab.value === props.name)
+  const isSelected = computed(() => api.state.selected.value === props.name)
 
-  const hasFocus = computed(() => id === api.arrowNavAPI.currentActiveId.value)
+  const hasFocus = computed(() => id === api.arrowNav.currentActiveId.value)
   const select = () => {
-    !props.disabled && props.name && api.select(props.name, el.value!)
+    // TODO: maybe the removal of `el` below breaks tabs?
+    !props.disabled &&
+      props.name &&
+      api.state.select(props.name /*, el.value!*/)
   }
 
   // Verify that this tab is a child of a role=tablist element
   // TODO: Should run in __DEV__ only
   onMounted(() => {
-    el.value && isSelected.value && api.arrowNavAPI.select(el.value)
+    el.value && isSelected.value && api.arrowNav.select(el.value)
     // TODO: should set rover tabindex if this tab isSelected on mount
     if (el.value && !el.value?.closest('[role="tablist"]')) {
       console.warn('<Tab/> has to be nested inside of a `<TabList />`')
@@ -58,7 +61,7 @@ export function useTab(props: useTabOptions, api: TabsAPI) {
 
   // Element Attributes
   const clickableAttrs = useClickable(props, el)
-  const arrrowNavAttrs = useArrowNavigationChild(hasFocus, api.arrowNavAPI)
+  const arrrowNavAttrs = useArrowNavigationChild(hasFocus, api.arrowNav)
   const attributes = computed(() => ({
     ...clickableAttrs.value,
     ...arrrowNavAttrs.value,

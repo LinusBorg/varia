@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper divide-y divide-gray-300">
-    <div class="mb-3 mt-6 py-2">
+    <Tabs class="mb-3 mt-6 py-2" v-model="state1" loop virtual>
       <h2 class="text-xl font-bold mb-2">Basic</h2>
       <TabList class="border-b border-gray-500">
         <Tab
@@ -19,102 +19,94 @@
           >Tab C</Tab
         >
       </TabList>
-      {{ tabs1.id }}
+      {{ state1 }}
       <TabPanel name="A">Panel A</TabPanel>
       <TabPanel name="B">Panel B</TabPanel>
       <TabPanel name="C">Panel C</TabPanel>
-    </div>
-    <div class="mb-3 mt-6 py-2" ref="tab2.ref" v-bind="tabs2.attributes">
+    </Tabs>
+    <Tabs
+      class="mb-3 mt-6 py-2"
+      v-model="state2"
+      autoSelect
+      startOnFirstSelected
+    >
       <h2 class="text-xl font-bold mb-2">Arrow Keys auto-select</h2>
-      <TabList class="border-b border-gray-500" :tabsKey="tabs2.tabsKey">
+      <TabList class="border-b border-gray-500">
         <Tab
-          :tabsKey="tabs2.tabsKey"
           name="A"
           class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab A</Tab
         >
         <Tab
-          :tabsKey="tabs2.tabsKey"
           name="B"
           class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab B</Tab
         >
         <Tab
-          :tabsKey="tabs2.tabsKey"
           name="C"
           class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab C</Tab
         >
       </TabList>
       <div class="p-2">
-        <TabPanel :tabsKey="tabs2.tabsKey" name="A">Panel A</TabPanel>
-        <TabPanel :tabsKey="tabs2.tabsKey" name="B">Panel B</TabPanel>
-        <TabPanel :tabsKey="tabs2.tabsKey" name="C">Panel C</TabPanel>
+        <TabPanel name="A">Panel A</TabPanel>
+        <TabPanel name="B">Panel B</TabPanel>
+        <TabPanel name="C">Panel C</TabPanel>
       </div>
-    </div>
-    <div class="mb-3 mt-6 py-2" ref="tab3.ref" v-bind="tabs3.attributes">
+    </Tabs>
+    <Tabs class="mb-3 mt-6 py-2" v-model="state3">
       <h2 class="text-xl font-bold mb-2">Disabled Tab</h2>
-      <TabList class="border-b border-gray-500" :tabsKey="tabs3.tabsKey">
+      <TabList class="border-b border-gray-500">
         <Tab
-          :tabsKey="tabs3.tabsKey"
           name="A"
           class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab A</Tab
         >
         <Tab
-          :tabsKey="tabs3.tabsKey"
           name="B"
           disabled
           class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab B</Tab
         >
         <Tab
-          :tabsKey="tabs3.tabsKey"
           name="C"
           class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
           >Tab C</Tab
         >
+        <Tab
+          name="D"
+          class="px-3 py-1 rounded-sm border border-b-0 border-gray-500 rounded-b-none inline-block mr-1"
+          >Tab D</Tab
+        >
       </TabList>
-      <TabPanel :tabsKey="tabs3.tabsKey" name="A">Panel A</TabPanel>
-      <TabPanel :tabsKey="tabs3.tabsKey" name="B">Panel B</TabPanel>
-      <TabPanel :tabsKey="tabs3.tabsKey" name="C">Panel C</TabPanel>
-    </div>
+      <TabPanel name="A">Panel A</TabPanel>
+      <TabPanel name="B">Panel B</TabPanel>
+      <TabPanel name="C">Panel C</TabPanel>
+      <TabPanel name="D">Panel D</TabPanel>
+    </Tabs>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { Tab, TabList, TabPanel, useTabs } from 'vue-aria-widgets'
+import { defineComponent, ref } from 'vue'
+import { Tabs, Tab, TabList, TabPanel /*, useTabs*/ } from 'vue-aria-widgets'
 
 export default defineComponent({
   components: {
     Tab,
+    Tabs,
     TabList,
     TabPanel,
   },
   setup() {
-    const tabsAPI1 = useTabs({
-      initialValue: 'A',
-      loop: true,
-      virtual: true,
-    })
-
-    const tabsAPI2 = useTabs({
-      initialValue: 'B',
-      autoSelect: true,
-      startOnFirstSelected: true,
-      customName: 'TabsWithAutoSelect',
-    })
-
-    const tabsAPI3 = useTabs({
-      customName: 'TabsWithDisabled',
-      initialValue: 'C',
-    })
+    const state1 = ref('A')
+    const state2 = ref('B')
+    const state3 = ref('C')
 
     return {
-      tabs1: tabsAPI1,
-      tabs2: tabsAPI2,
-      tabs3: tabsAPI3,
+      state1,
+      state2,
+      state3,
     }
   },
 })

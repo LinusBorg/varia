@@ -24,7 +24,7 @@ export const TabPanelProps = {
 }
 
 export function useTabPanel(props: TabPanelOptions, api: TabsAPI) {
-  const isSelected = computed(() => api.selectedTab.value === props.name)
+  const isSelected = computed(() => api.state.selected.value === props.name)
   const attributes = computed(() => ({
     role: 'tabpanel' as const,
     id: api.generateId(props.name!),

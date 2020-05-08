@@ -16,7 +16,7 @@ export default defineComponent({
   },
   setup(props, { slots }) {
     const api = injectTabsAPI(props.tabsKey)
-    const { wrapperAttributes: attributes } = api.arrowNavAPI
+    const { wrapperAttributes: attributes } = api.arrowNav
     return () =>
       h(
         props.tag,

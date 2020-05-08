@@ -1,6 +1,50 @@
 import { Ref, InjectionKey } from 'vue'
-import { ArrowNavigation } from 'vue-aria-composables'
+import { ArrowNavigation, TemplRefType } from 'vue-aria-composables'
 import { Options as PopperOptions } from '@popperjs/core'
+
+/**
+ * Base Interfaces for the composite widgets APIs
+ * Those are usually provided by a wrapper component to children
+ */
+type OptionsBase = Record<string, any>
+
+export interface BaseAPI<
+  // StateAPI extends StateAPIBase,
+  Options extends OptionsBase = Record<string, any>
+> {
+  generateId: (name: string) => string
+  state?: StateAPIBase
+  arrowNav?: ArrowNavigation
+  elements?: ElementsAPI
+  options: Options
+  // [key: string]: any
+}
+
+export type StateAPIBase = BooleanStateAPI | SingleStateAPI | SetStateAPI
+
+export interface BooleanStateAPI {
+  selected: Ref<boolean>
+  select: () => void
+  unselect: () => void
+  toggle: () => void
+}
+export interface SingleStateAPI<Item = string> {
+  selected: Ref<Item>
+  select: (item: Item) => void
+  unselect?: () => void
+}
+
+export interface SetStateAPI<Item = string> {
+  selected: Set<Item>
+  select: (item: Item) => void
+  unselect: (item: Item) => void
+}
+
+export interface ElementsAPI<El = TemplRefType> {
+  triggerEl: Ref<El>
+  contentEl: Ref<El>
+}
+
 /**
  *  Tabbable
  */
@@ -23,10 +67,27 @@ export interface ClickableOptions extends TabbableOptions {}
 export interface ButtonOptions extends ClickableOptions {}
 
 /**
+ * Listbox
+ */
+
+export type ListBoxOptions = {
+  multiple?: boolean
+}
+
+export interface ListBoxAPI<Item> {
+  genId: (name: string) => string
+  selected: Set<Item>
+  select: (item: Item) => void
+  deselect: (item: Item) => void
+  arrowNavAPI: ArrowNavigation
+}
+
+export type ListBoxAPIKey<Item = any> = InjectionKey<ListBoxAPI<Item>>
+
+/**
  * Tabs
  */
-export interface TabsOptions<States> {
-  initialValue: States
+export interface TabsOptions {
   customName?: string
   orientation?: 'vertical' | 'horizontal'
   autoSelect?: boolean
@@ -35,13 +96,13 @@ export interface TabsOptions<States> {
   virtual?: boolean
 }
 
-export interface TabsAPI {
+export interface TabsAPI extends BaseAPI {
   generateId: (name: string) => string
-  selectedTab: Ref<string>
-  select: (name: string, el: HTMLElement) => void
-  autoSelect: boolean
-  arrowNavAPI: ArrowNavigation
+  state: SingleStateAPI
+  arrowNav: ArrowNavigation
+  options: TabsOptions
 }
+
 export type TabsAPIKey = InjectionKey<TabsAPI>
 
 /**

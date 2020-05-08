@@ -1,20 +1,29 @@
-import { InjectionKey, inject, provide, ref, readonly } from 'vue'
+import {
+  InjectionKey,
+  inject,
+  provide,
+  ref,
+  readonly,
+  defineComponent,
+  h,
+  PropType,
+  Ref,
+} from 'vue'
 import {
   useIdGenerator,
   useArrowNavigation,
   TemplRef,
+  wrapProp,
 } from 'vue-aria-composables'
 import './index.css'
+import omit from 'object.omit'
 
 import { TabsOptions, TabsAPI, TabsAPIKey } from '../types'
 
 export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
 
-export function useTabs<States extends string | number>(
-  options: TabsOptions<States>
-) {
+export function useTabs(_state: Ref<string | undefined>, options: TabsOptions) {
   const {
-    initialValue,
     customName,
     // Options for ArrowNavigation
     orientation = 'horizontal',
@@ -24,9 +33,15 @@ export function useTabs<States extends string | number>(
     virtual = false,
   } = options
 
+  // Tab State
+  const selectedTab = _state
+  const select = (name: string) => {
+    selectedTab.value = name
+  }
+
   // Keyboard Navigation
   const el: TemplRef = ref()
-  const arrowNavAPI = useArrowNavigation(
+  const arrowNav = useArrowNavigation(
     {
       orientation,
       loop,
@@ -37,31 +52,22 @@ export function useTabs<States extends string | number>(
     el
   )
 
-  // Tab State
-  const selectedTab = ref<string | number>(initialValue)
-  const select = (name: string, el: HTMLElement) => {
-    selectedTab.value = name
-    arrowNavAPI.select(el)
+  // API
+  const tabsAPI = {
+    generateId: useIdGenerator(options.customName || 'tabs'),
+    state: {
+      select,
+      selected: readonly(selectedTab),
+    },
+    arrowNav,
+    options,
   }
-
-  // Attribute generator functions
-  const generateId = useIdGenerator(options.customName || 'tabs')
-
   const tabsAPIKey = customName ? Symbol('customTabAPIKey') : _tabsAPIKey
-  provide(tabsAPIKey, {
-    generateId,
-    select,
-    selectedTab: readonly(selectedTab),
-    autoSelect,
-    arrowNavAPI,
-  })
+  provide(tabsAPIKey, tabsAPI)
 
   return {
-    select,
-    id: arrowNavAPI.currentActiveId,
-    generateId,
+    ...tabsAPI,
     tabsKey: tabsAPIKey,
-    selectedTab: readonly(selectedTab),
   }
 }
 
@@ -73,3 +79,29 @@ export function injectTabsAPI(key: TabsAPIKey = _tabsAPIKey) {
   }
   return api
 }
+
+export const tabsProps = {
+  tag: {
+    type: String,
+    default: 'DIV',
+  },
+  modelValue: {
+    type: String,
+    required: true,
+  },
+  orientation: String as PropType<'horizontal' | 'vertical'>,
+  loop: Boolean as PropType<boolean>,
+  startOnFirstSelected: Boolean as PropType<boolean>,
+  autoSelect: Boolean as PropType<boolean>,
+  virtual: Boolean as PropType<boolean>,
+}
+
+export const Tabs = defineComponent({
+  name: 'Tabs',
+  props: tabsProps,
+  setup(props, { slots }) {
+    const state = wrapProp(props, 'modelValue')
+    useTabs(state, omit(props, ['tag', 'modelValue']))
+    return () => h(props.tag, slots.default?.())
+  },
+})
