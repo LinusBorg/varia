@@ -1,6 +1,7 @@
 {
   "extends": "../../config/typescript/tsconfig.build.json",
   "include": ["./src"],
+  "files": ["./shims.d.ts"],
   "compilerOptions": {
     "outDir": "dist"
   }
