@@ -6,21 +6,22 @@ import { DisclosureAPIKey } from '../types'
 export const disclosureAPIKey = Symbol('disclosure') as DisclosureAPIKey
 
 export function useDisclosure(
-  show: Ref<boolean>,
+  selected: Ref<boolean>,
   { skipProvide }: { skipProvide?: boolean } = {}
 ) {
   const id = useIdGenerator()('disclosure')
-
-  !skipProvide &&
-    provide(disclosureAPIKey, {
-      show,
+  const api = {
+    state: {
+      selected,
+      toggle: () => (selected.value = !selected.value),
+    },
+    options: {
       id,
-    })
-
-  return {
-    show,
-    id,
+    },
   }
+  !skipProvide && provide(disclosureAPIKey, api)
+
+  return api
 }
 
 export function injectDisclosureAPI(key: DisclosureAPIKey = disclosureAPIKey) {

@@ -67,27 +67,30 @@ export function usePopoverContent(
 
   const el = ref<HTMLElement | undefined>()
   const { attributes } = useDisclosureContent(api, el)
-  const { show, triggerEl } = api
+  const {
+    state: { selected: isOpen },
+    elements: { triggerEl },
+  } = api
 
   // Closing Behaviours
   const close = () => {
     vm && vm.emit('closed')
-    show.value = false
+    isOpen.value = false
   }
   options.closeOnEscape && useKeyIf(ref(true), ['Escape'], close)
   options.closeOnClickOutside && useClickOutside([el, triggerEl], close)
 
   // Focus Lifecycle
   options.focusOnOpen &&
-    watch(api.show, show => {
-      show && el.value && nextTick(() => moveFocusToNextElement(el.value!))
-      !show && options.returnFocusOnClose && triggerEl.value?.focus()
+    watch(isOpen, isOpen => {
+      isOpen && el.value && nextTick(() => moveFocusToNextElement(el.value!))
+      !isOpen && options.returnFocusOnClose && triggerEl.value?.focus()
     })
 
   // Positioning the Popover using Popper.js
   let popperInstance: PopperInstance
   watchEffect(onCleanup => {
-    if (show.value && el.value && triggerEl.value) {
+    if (isOpen.value && el.value && triggerEl.value) {
       popperInstance = createPopper(
         triggerEl.value,
         el.value,
@@ -97,7 +100,7 @@ export function usePopoverContent(
       nextTick(() => popperInstance?.forceUpdate())
     }
     onCleanup(() => {
-      if (!show.value && popperInstance) popperInstance.destroy()
+      if (!isOpen.value && popperInstance) popperInstance.destroy()
     })
   })
 
@@ -105,7 +108,7 @@ export function usePopoverContent(
   // const forceUpdate = () => popperInstance?.forceUpdate()
   // const destroy = () => popperInstance?.destroy()
   return {
-    show,
+    isOpen,
     close,
     attributes,
     focusFirstElement: () => el.value && moveFocusToNextElement(el.value),
@@ -122,7 +125,7 @@ export const PopoverContent = defineComponent({
     const api = injectPopoverAPI(props.apiKey)
     const state = usePopoverContent(props, api)
     return () =>
-      state.show.value
+      state.isOpen.value
         ? h(props.tag, state.attributes.value, slots.default?.(reactive(state)))
         : null
   },

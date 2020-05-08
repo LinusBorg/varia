@@ -4,18 +4,21 @@ import { injectDisclosureAPI } from './use-disclosure'
 import { DisclosureAPIKey, DisclosureAPI } from '../types'
 
 export function useDisclosureContent(
-  disclosureAPI: DisclosureAPI,
+  api: DisclosureAPI,
   el?: Ref<HTMLElement | undefined>
 ) {
-  const { id, show } = disclosureAPI
+  const {
+    state: { selected: isOpen },
+    options: { id },
+  } = api
   const attributes = computed(() => ({
     ref: el,
     id,
-    style: !show.value ? 'display: none' : undefined,
-    'aria-hidden': !show.value,
+    style: !isOpen.value ? 'display: none' : undefined,
+    'aria-hidden': !isOpen.value,
   }))
 
-  return { show, attributes }
+  return { isOpen, attributes }
 }
 
 export const DisclosureContent = defineComponent({
@@ -31,12 +34,12 @@ export const DisclosureContent = defineComponent({
   },
   setup(props, { slots }) {
     const api = injectDisclosureAPI(props.apiKey)
-    const { show, attributes } = useDisclosureContent(api)
+    const { isOpen, attributes } = useDisclosureContent(api)
     return () => {
       return h(
         props.tag,
         attributes.value,
-        slots.default?.({ attributes: attributes.value, show: show.value })
+        slots.default?.({ attributes: attributes.value, isOpen: isOpen.value })
       )
     }
   },

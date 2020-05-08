@@ -9,15 +9,18 @@ export function useDisclosureTrigger(
   api: DisclosureAPI,
   el?: Ref<HTMLElement | undefined>
 ) {
-  const { show, id } = api
+  const {
+    state: { selected: isOpen },
+    options: { id },
+  } = api
 
   const onClick = () => {
-    show.value = !show.value
+    isOpen.value = !isOpen.value
   }
   const btnAttrs = useButton(props, el)
   const attributes = computed(() => ({
     ...btnAttrs.value,
-    'aria-expanded': show.value,
+    'aria-expanded': isOpen.value,
     'aria-controls': id,
     onClick,
   }))

@@ -1,5 +1,5 @@
 import { Ref, InjectionKey } from 'vue'
-import { ArrowNavigation, TemplRefType } from 'vue-aria-composables'
+import { ArrowNavigation, TemplRefType, TemplRef } from 'vue-aria-composables'
 import { Options as PopperOptions } from '@popperjs/core'
 
 /**
@@ -8,11 +8,8 @@ import { Options as PopperOptions } from '@popperjs/core'
  */
 type OptionsBase = Record<string, any>
 
-export interface BaseAPI<
-  // StateAPI extends StateAPIBase,
-  Options extends OptionsBase = Record<string, any>
-> {
-  generateId: (name: string) => string
+export interface BaseAPI<Options extends OptionsBase = Record<string, any>> {
+  generateId?: (name: string) => string
   state?: StateAPIBase
   arrowNav?: ArrowNavigation
   elements?: ElementsAPI
@@ -24,9 +21,9 @@ export type StateAPIBase = BooleanStateAPI | SingleStateAPI | SetStateAPI
 
 export interface BooleanStateAPI {
   selected: Ref<boolean>
-  select: () => void
-  unselect: () => void
-  toggle: () => void
+  select?: () => void
+  unselect?: () => void
+  toggle?: () => void
 }
 export interface SingleStateAPI<Item = string> {
   selected: Ref<Item>
@@ -108,9 +105,11 @@ export type TabsAPIKey = InjectionKey<TabsAPI>
 /**
  * Disclosure
  */
-export interface DisclosureAPI extends Record<string, any> {
-  show: Ref<boolean>
-  id: string
+export interface DisclosureAPI extends BaseAPI {
+  state: BooleanStateAPI
+  options: {
+    id: string
+  }
 }
 export type DisclosureAPIKey = InjectionKey<DisclosureAPI>
 
@@ -127,7 +126,10 @@ export interface PopoverContentOptions {
 }
 
 export interface PopoverAPI extends DisclosureAPI {
-  triggerEl: Ref<HTMLElement | undefined>
+  elements: {
+    triggerEl: TemplRef
+    contentEl: TemplRef
+  }
 }
 export type PopoverAPIKey = InjectionKey<PopoverAPI>
 
