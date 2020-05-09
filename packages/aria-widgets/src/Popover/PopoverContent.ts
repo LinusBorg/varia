@@ -104,17 +104,11 @@ export function usePopoverContent(
     })
   })
 
-  // const update = () => popperInstance?.update()
-  // const forceUpdate = () => popperInstance?.forceUpdate()
-  // const destroy = () => popperInstance?.destroy()
   return {
     isOpen,
     close,
     attributes,
     focusFirstElement: () => el.value && moveFocusToNextElement(el.value),
-    // update,
-    // forceUpdate,
-    // destroy,
   }
 }
 
