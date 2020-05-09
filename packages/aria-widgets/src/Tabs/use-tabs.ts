@@ -19,6 +19,7 @@ import './index.css'
 import omit from 'object.omit'
 
 import { TabsOptions, TabsAPI, TabsAPIKey } from '../types'
+import { createInjector } from '../utils/inject'
 
 export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
 
@@ -71,14 +72,7 @@ export function useTabs(_state: Ref<string | undefined>, options: TabsOptions) {
   }
 }
 
-export function injectTabsAPI(key: TabsAPIKey = _tabsAPIKey) {
-  const api = inject(key)
-  if (!api) {
-    console.warn('<Tab />: useTabs() was not called in parent component')
-    throw new Error('Missing TabsAPI Injection from parent component')
-  }
-  return api
-}
+export const injectTabsAPI = createInjector(_tabsAPIKey, `injectTabsAPI()`)
 
 export const tabsProps = {
   tag: {

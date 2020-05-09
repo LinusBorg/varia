@@ -2,6 +2,7 @@ import { inject, provide, ref } from 'vue'
 import { useDisclosure } from '../Disclosure'
 import { PopoverAPIKey } from '../types'
 import { TemplRef } from 'vue-aria-composables'
+import { createInjector } from '../utils/inject'
 
 export const popoverAPIKey = Symbol('popoverAPI') as PopoverAPIKey
 
@@ -28,12 +29,7 @@ export function usePopover({ skipProvide }: { skipProvide?: boolean } = {}) {
   }
 }
 
-export function injectPopoverAPI(key: PopoverAPIKey = popoverAPIKey) {
-  const api = inject(key)
-  if (!api) {
-    throw new Error(
-      'injectPopoverAPI(): usePopover() needs to be called in a parent component'
-    )
-  }
-  return api
-}
+export const injectPopoverAPI = createInjector(
+  popoverAPIKey,
+  `injectPopoverAPI()`
+)
