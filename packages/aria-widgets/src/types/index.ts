@@ -13,7 +13,7 @@ export interface BaseAPI<Options extends OptionsBase = Record<string, any>> {
   state?: StateAPIBase
   arrowNav?: ArrowNavigation
   elements?: ElementsAPI
-  options: Options
+  options?: Options
   // [key: string]: any
 }
 
