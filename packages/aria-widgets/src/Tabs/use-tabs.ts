@@ -18,7 +18,7 @@ import {
 import './index.css'
 import omit from 'object.omit'
 
-import { TabsOptions, TabsAPI, TabsAPIKey } from '../types'
+import { TabsOptions, TabsAPI } from '../types'
 import { createInjector } from '../utils/inject'
 
 export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
