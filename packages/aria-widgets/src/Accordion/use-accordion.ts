@@ -1,77 +1,80 @@
-import { inject, InjectionKey, provide, reactive, Ref } from 'vue'
-import {
-  createTemplateRefList,
-  useFocusGroup,
-  useRovingTabIndex,
-  useIdGenerator,
-} from 'vue-aria-composables'
+import { provide, reactive, defineComponent, PropType } from 'vue'
+import { useIdGenerator, useArrowNavigation } from 'vue-aria-composables'
+import { createInjector } from '../utils/inject'
+import { AccordionOptions, AccordionAPIKey } from '../types'
+import { ClickableProps } from '../Clickable'
 
-interface AccordionOptions {
-  multiple?: boolean
-  orientation?: 'horizontal' | 'vertical'
-  customName?: string
-}
+export type AccordionState = Set<string>
 
-export type AccordionState = Record<string, boolean>
+export const accordionKey = Symbol('disclosure') as AccordionAPIKey
 
-export interface AccordionAPI {
-  genHeaderAttrs: typeof genHeaderAttrs
-  genPanelAttrs: typeof genPanelAttrs
-  generateId: (n: string) => string
-  set: (name: string, isActive: boolean) => void
-  state: AccordionState
-}
+export function useAccordion(
+  options: AccordionOptions = {},
+  _state: AccordionState
+) {
+  const {
+    orientation = 'vertical',
+    multiple = false,
+    loop = false,
+    customName,
+  } = options
 
-export type AccordionKey = InjectionKey<AccordionAPI>
-
-export const accordionKey = Symbol('disclosure') as AccordionKey
-
-const genHeaderAttrs = (id: string, expanded: boolean, disabled: boolean) => {
-  return {
-    'aria-expanded': expanded,
-    'aria-controls': id,
-    'aria-disabled': disabled || undefined,
-  }
-}
-
-const genPanelAttrs = (id: string) => {
-  return {
-    id: id,
-  }
-}
-export function useAccordion(options: AccordionOptions = {}) {
   //Accordion State
-  const state = reactive<AccordionState>({})
-  const set = (name: string, isActive: boolean) => {
-    if (!options.multiple) {
-      Object.keys(state).forEach((key: string) => void (state[key] = false))
+  // TODO: We should come up with a good interface to leave state updates to the parent.
+  // this peaves consumers of this widget the freedom to implement `multiple`, or `always-one-open` etc on their own.
+  const selected: AccordionState = _state ?? reactive(new Set())
+  const select = (item: string) => {
+    if (!multiple) {
+      selected.clear()
     }
-    state[name] = isActive
+    selected.add(item)
   }
-  // A11y: Keyboard Control
-  const { elements, refFn } = createTemplateRefList()
-  const focusGroup = useFocusGroup(elements)
-  const rovingTabIndex = useRovingTabIndex(elements, focusGroup.hasFocus, {
-    orientation: options.orientation,
+  const unselect = (item: string) => {
+    selected.delete(item)
+  }
+
+  const arrowNav = useArrowNavigation({
+    orientation,
+    loop,
   })
+
   const generateId = useIdGenerator('accordion')
-  const key = options.customName ? Symbol('accordionCustom') : accordionKey
-  provide(key, {
-    genHeaderAttrs,
+  const key = customName ? Symbol('accordionCustom') : accordionKey
+  const api = {
     generateId,
-    genPanelAttrs,
-    set,
-    state,
-  })
-
-  return {
-    refFn,
-    genHeaderAttrs,
-    genPanelAttrs,
-    ...rovingTabIndex,
+    state: {
+      selected,
+      select,
+      unselect,
+    },
+    arrowNav,
+    options,
   }
+  provide(key, api)
+
+  return api
 }
 
-export function useAccordionInjection(key: AccordionKey = accordionKey) {
-  return inject(key)
+export const injectAccordionAPI = createInjector(
+  accordionKey,
+  'injectAccordionAPI()'
+)
+
+export const AccordionProps = {
+  multiple: {
+    type: Boolean,
+    required: true,
+  },
+  modelValue: {
+    type: Set as PropType<AccordionState>,
+  },
+  ...ClickableProps,
 }
+export const Accordion = defineComponent({
+  name: 'Accordion',
+  props: AccordionProps,
+  setup(props, { slots }) {
+    useAccordion(props as AccordionOptions, props.modelValue!)
+    return () => slots.default?.()
+  },
+})
