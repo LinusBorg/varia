@@ -9,7 +9,10 @@ import {
   nextTick,
 } from 'vue'
 import { TemplRef, MaybeRef, ArrowNavigation } from '../types'
-import { useElementFocusObserver } from './focus-observer'
+import {
+  useElementFocusObserver,
+  useSelectorFocusObserver,
+} from './focus-observer'
 import { useFocusTracker } from './focus-tracker'
 import { useArrowKeys, useKeyIf } from './keys'
 import { sortByDocPosition } from './template-refs'
@@ -26,17 +29,6 @@ import { ArrowNavigationOptions } from '../types'
 function getFirstSelectedEl(_elementIds: Array<HTMLElement>) {
   const elementIds = _elementIds.slice().sort(sortByDocPosition)
   return elementIds.find(el => el.getAttribute('aria-selected') === 'true')
-}
-
-function observeFocusWithSelector(selector: Ref<string>) {
-  const tracker = useFocusTracker()
-  const hasFocus = computed(() => {
-    if (selector.value.length === 0) return false
-    return !!tracker.currentEl.value?.matches(selector.value)
-  })
-  return {
-    hasFocus,
-  }
 }
 
 export function useArrowNavigation(
@@ -85,6 +77,11 @@ export function useArrowNavigation(
         ref: wrapperElRef,
         tabindex: 0,
         'aria-activedescendant': currentActiveId.value,
+        onClick: ({ target }: { target: Element }) =>
+          target &&
+          target.id &&
+          elementIds.has(target.id) &&
+          (currentActiveId.value = target.id),
       }))
     : ref({})
   // Determine wether or not our element group has focus
@@ -92,7 +89,7 @@ export function useArrowNavigation(
   //  B. if virtual: false, we need to watch the individual elementIds because we will be using the roving tabindex pattern
   const { hasFocus } = virtual
     ? useElementFocusObserver(wrapperElRef)
-    : observeFocusWithSelector(elementIdSelector)
+    : useSelectorFocusObserver(elementIdSelector)
 
   /**
    * @function
@@ -234,12 +231,12 @@ export function useArrowNavigationChild(
   hasFocus: Ref<boolean>,
   { virtual }: ArrowNavigation
 ): Ref<{
-  tabindex: string
+  tabindex: string | undefined
   'data-varia-focus'?: boolean
 }> {
   return virtual
     ? computed(() => ({
-        tabindex: '-1',
+        tabindex: undefined,
         'data-varia-focus': hasFocus.value,
       }))
     : computed(() => ({
