@@ -16,7 +16,7 @@ import {
   wrapProp,
 } from 'vue-aria-composables'
 import './index.css'
-import omit from 'object.omit'
+import { omit } from '../utils/pick'
 
 import { TabsOptions, TabsAPI } from '../types'
 import { createInjector } from '../utils/inject'

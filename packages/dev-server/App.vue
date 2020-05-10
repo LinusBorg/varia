@@ -1,12 +1,15 @@
 <template>
-  <div>
-    <h1>Hello Vite + Vue 3!</h1>
-    <p>Edit ./App.vue to test hot module replacement (HMR).</p>
-    <p>
-      <span>Count is: {{ count }}</span>
-      <button @click="count++">increment</button>
-      <button @click="$router.push('/buttons')">go to buttons</button>
-    </p>
+  <div id="_wrapper">
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/buttons">Buttons</router-link> |
+      <router-link to="/disclosures">Disclosures</router-link> |
+      <router-link to="/popovers">Popovers</router-link> |
+      <router-link to="/tabs">Tabs</router-link>
+    </div>
+    <main id="main" class="text-left mx-auto">
+      <router-view />
+    </main>
   </div>
 </template>
 

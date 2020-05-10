@@ -1,8 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router'
+// Views
 import Home from '../views/Home.vue'
 import ButtonsView from '../views/Buttons.vue'
+import { RouteRecordRaw } from 'vue-router'
 import DisclosuresView from '../views/Disclosures.vue'
-const routes = [
+
+export const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'Home',
@@ -21,10 +23,3 @@ const routes = [
     component: DisclosuresView,
   },
 ]
-
-const router = createRouter({
-  history: createWebHistory(),
-  routes,
-})
-
-export default router
