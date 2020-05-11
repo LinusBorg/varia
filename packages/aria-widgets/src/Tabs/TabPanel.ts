@@ -36,7 +36,7 @@ export function useTabPanel(props: TabPanelOptions, api: TabsAPI) {
   return { isSelected, attributes }
 }
 
-export default defineComponent({
+export const TabPanel = defineComponent({
   name: 'TabPanel',
   props: TabPanelProps,
   setup(props, { slots }) {

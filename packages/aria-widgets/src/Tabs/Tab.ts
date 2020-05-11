@@ -75,7 +75,7 @@ export function useTab(props: useTabOptions, api: TabsAPI) {
   return { isSelected, attributes }
 }
 
-export default defineComponent({
+export const Tab = defineComponent({
   name: 'Tab',
   props: TabProps,
   setup(props, { slots }) {

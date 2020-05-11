@@ -3,7 +3,7 @@ import { injectTabsAPI } from './use-tabs'
 
 import { TabsAPIKey } from '../types'
 
-export default defineComponent({
+export const TabList = defineComponent({
   name: 'TabList',
   props: {
     tag: {
