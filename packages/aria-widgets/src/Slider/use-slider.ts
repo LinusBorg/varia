@@ -1,5 +1,11 @@
-import { computed, ref, Ref, toRefs } from 'vue'
-import { useArrowKeys, useKeyIf, useFocusGroup } from 'vue-aria-composables'
+import { computed, reactive, ref, Ref, toRefs, defineComponent, h } from 'vue'
+import {
+  useArrowKeys,
+  useKeyIf,
+  wrapProp,
+  TemplRef,
+  useElementFocusObserver,
+} from 'vue-aria-composables'
 
 interface useSliderValues {
   min: number
@@ -12,6 +18,35 @@ interface useSliderOptions {
   presenter?: (value: number) => string
 }
 
+interface MouseState {
+  active: boolean
+  x: number
+  y: number
+  dx: number
+  dy: number
+}
+
+const defaultMouseState: MouseState = {
+  active: false,
+  x: 0,
+  y: 0,
+  dx: 0,
+  dy: 0,
+}
+
+const onMousedownFactory = (state: MouseState) => (event: MouseEvent) => {
+  state.active = true
+  state.x = event.pageX
+  state.y = event.pageY
+}
+const onMousemoveFactory = (state: MouseState) => (event: MouseEvent) => {
+  state.dx = state.x - event.pageX
+  state.dy = state.y - event.pageY
+}
+const onMouseupFactory = (state: MouseState) => (event: MouseEvent) => {
+  Object.assign(state, defaultMouseState)
+}
+
 const defaultValues = {
   min: 0,
   max: 100,
@@ -21,22 +56,29 @@ const defaultValues = {
 
 export function useSlider(
   valueRef: Ref<number>,
-  values: Partial<useSliderValues> = {},
+  _values: Partial<useSliderValues> = {},
   options: useSliderOptions = {}
 ) {
-  const { min, max, jump, step } = toRefs(Object.assign(defaultValues, values))
+  const vals = computed(() => Object.assign({}, defaultValues, _values))
   const { orientation, presenter } = options
 
-  const element = ref<HTMLElement | null>(null)
-  const { hasFocus } = useFocusGroup(
-    computed(() => (element.value ? [element.value] : []))
-  )
+  const el: TemplRef = ref()
+  const { hasFocus } = useElementFocusObserver(el)
+
   const inc = () =>
-    valueRef.value < max.value &&
-    (valueRef.value = Math.min(valueRef.value + step.value, max.value))
+    valueRef.value < vals.value.max &&
+    (valueRef.value = Math.min(
+      valueRef.value + vals.value.step,
+      vals.value.max
+    ))
   const dec = () =>
-    valueRef.value > min.value &&
-    (valueRef.value = Math.max(min.value, valueRef.value - step.value))
+    valueRef.value > vals.value.min &&
+    (valueRef.value = Math.max(
+      vals.value.min,
+      valueRef.value - vals.value.step
+    ))
+  const set = (v: number) =>
+    Math.max(vals.value.min, Math.min(v, vals.value.max))
 
   useArrowKeys(hasFocus, {
     up: inc,
@@ -48,35 +90,66 @@ export function useSlider(
   useKeyIf(hasFocus, ['Home', 'End'], ((event: KeyboardEvent) => {
     switch (event.key) {
       case 'Home':
-        valueRef.value = max.value
+        valueRef.value = vals.value.max
         break
       case 'End':
-        valueRef.value = min.value
+        valueRef.value = vals.value.min
         break
       default:
         return
     }
   }) as EventListener)
 
-  if (jump) {
+  if (vals.value.jump) {
     useKeyIf(hasFocus, ['PageUp'], () => {
-      valueRef.value < max.value &&
-        (valueRef.value = Math.min(max.value, valueRef.value + jump.value))
+      valueRef.value < vals.value.max &&
+        (valueRef.value = Math.min(
+          vals.value.max,
+          valueRef.value + vals.value.jump
+        ))
     })
     useKeyIf(hasFocus, ['PageDown'], () => {
-      valueRef.value > min.value &&
-        (valueRef.value = Math.max(min.value, valueRef.value + jump.value))
+      valueRef.value > vals.value.min &&
+        (valueRef.value = Math.max(
+          vals.value.min,
+          valueRef.value - vals.value.jump
+        ))
     })
   }
 
-  return {
-    element,
-    attrs: computed(() => ({
-      ariaValuenow: valueRef.value,
-      ariaValuemin: min,
-      ariaValuemax: max,
-      ariaOrientation: orientation,
-      ariaValueText: presenter ? presenter(valueRef.value) : undefined,
-    })),
-  }
+  const state = reactive<MouseState>({
+    active: false,
+    x: 0,
+    y: 0,
+    dx: 0,
+    dy: 0,
+  })
+  const onMousedown = onMousedownFactory(state)
+  const onMousemove = onMousemoveFactory(state)
+  const onMouseup = onMouseupFactory(state)
+
+  return computed(() => ({
+    ref: el,
+    onMousedown,
+    onMousemove,
+    onMouseup,
+    'aria-valuenow': valueRef.value,
+    'aria-valuemin': vals.value.min,
+    'aria-valuemax': vals.value.max,
+    'aria-orientation': orientation,
+    'aria-value-text': presenter ? presenter(valueRef.value) : undefined,
+  }))
 }
+
+type Props = {
+  tag?: string
+  modelValue: number
+}
+export const Slider = defineComponent<Props>({
+  name: 'Slider',
+  setup(props) {
+    const state = wrapProp(props, 'modelValue')
+    const attributes = useSlider(state)
+    return () => h(props.tag || 'DIV', attributes.value)
+  },
+})
