@@ -1,11 +1,4 @@
-import {
-  TemplateRefKey,
-  useFocusGroup,
-  useRovingTabIndex,
-  useArrowKeys,
-  useKeyIf,
-  createTemplateRefAPI,
-} from 'vue-aria-composables'
+import { ArrowNavigation, useIdGenerator } from 'vue-aria-composables'
 import {
   ExtractPropTypes,
   reactive,
@@ -15,20 +8,11 @@ import {
   readonly,
   Ref,
 } from 'vue'
+import { useArrowNavigation } from 'packages/aria-composables/dist'
 
-export interface ListBoxAPI<Item> {
-  selected: Set<Item>
-  select: (item: Item) => void
-  deselect: (item: Item) => void
-  currentFocusEl: Ref<HTMLElement | undefined>
-  addElToArrowSequence: (el: HTMLElement, item: Item) => void
-  removeElFromArrowSequence: (el: HTMLElement) => void
-}
-export type ListBoxAPIKey<Item = any> = InjectionKey<ListBoxAPI<Item>>
-export type ListBoxOptions = ExtractPropTypes<typeof props>
+import { ListBoxOptions, ListBoxAPIKey } from '../types'
 
 export const listBoxAPIKey = Symbol('listBoxAPI') as ListBoxAPIKey
-export const elsKey = Symbol('listBoxEls') as TemplateRefKey
 
 export const props = {
   multiple: {
@@ -37,84 +21,32 @@ export const props = {
 }
 
 export function useListbox<Item = any>(
-  items: Item[],
+  initial: Item[] | Set<Item>,
   options: ListBoxOptions = {}
 ) {
   const { multiple } = options
 
   // State
-  const selected = reactive(new Set<Item>())
+  const selected = reactive(new Set<Item>(initial))
   const select = (item: Item) => {
     !multiple && selected.clear()
     selected.add(item)
   }
   const deselect = (item: Item) => selected.delete(item)
-
+  const toggle = (item: Item) =>
+    selected.has(item) ? selected.delete(item) : selected.add(item)
   // Keyboard navigation
-  const {
-    elements,
-    add: addElToArrowSequence,
-    remove: removeElFromArrowSequence,
-    elementsToItems,
-  } = createTemplateRefAPI()
-  const { hasFocus, currentEl: currentFocusEl } = useFocusGroup(elements)
-  const rover = useRovingTabIndex(elements, hasFocus, {
+  const arrowNavAPI = useArrowNavigation({
     orientation: 'vertical',
   })
 
-  if (multiple) {
-    const handleArrowKeys = (
-      event: KeyboardEvent,
-      direction: 'up' | 'down'
-    ) => {
-      const moveFocus = direction === 'up' ? rover.backward : rover.forward
-      if (event.shiftKey) {
-        moveFocus()
-        // TODO: Do I need to wait for the next Tick here?
-        const currentItem =
-          currentFocusEl.value && elementsToItems.get(currentFocusEl.value)!
-        if (!currentItem) return
-        selected.has(currentItem) ? select(currentItem) : deselect(currentItem)
-      }
-      if (event.ctrlKey) {
-      }
-    }
-    useArrowKeys(hasFocus, {
-      up: (event: KeyboardEvent) => handleArrowKeys(event, 'up'),
-      down: (event: KeyboardEvent) => handleArrowKeys(event, 'up'),
-    })
-
-    useKeyIf(
-      hasFocus,
-      ['Home', 'End'],
-      handleHomeEndKeys<Item>(
-        currentFocusEl,
-        elementsToItems,
-        readonly(items),
-        select
-      )
-    )
-    useKeyIf(
-      hasFocus,
-      [' '],
-      handleSpace<Item>(
-        currentFocusEl,
-        elementsToItems,
-        selected,
-        readonly(items),
-        select
-      )
-    )
-  }
-
   // API
   provide(listBoxAPIKey as ListBoxAPIKey<Item>, {
+    genId: useIdGenerator('listbox'),
     selected,
     select,
     deselect,
-    currentFocusEl,
-    addElToArrowSequence,
-    removeElFromArrowSequence,
+    arrowNavAPI,
   })
 
   return {
@@ -131,58 +63,4 @@ export function injectListBoxAPI(key: ListBoxAPIKey = listBoxAPIKey) {
     throw new Error('Missing TabsAPI Injection from parent component')
   }
   return api
-}
-
-function handleHomeEndKeys<Item = any>(
-  currentFocusEl: Ref<HTMLElement | undefined>,
-  itemsElsMap: Readonly<Map<HTMLElement, Item>>,
-  sortedItems: readonly Item[],
-  select: (item: Item) => void
-): (event: KeyboardEvent) => void {
-  return event => {
-    if (!event.shiftKey || !event.ctrlKey) return
-
-    const currentItem =
-      currentFocusEl.value && itemsElsMap.get(currentFocusEl.value)
-
-    if (!currentItem) return
-
-    const index = sortedItems.findIndex(item => item === currentItem)
-    const itemsToSelect =
-      event.key === 'Home'
-        ? sortedItems.slice(0, index)
-        : sortedItems.slice(index, sortedItems.length - 1)
-
-    itemsToSelect.forEach(item => item && select(item))
-  }
-}
-
-function handleSpace<Item = any>(
-  currentFocusEl: Ref<HTMLElement | undefined>,
-  itemsElsMap: Readonly<Map<HTMLElement, Item>>,
-  selected: Set<Item>,
-  sortedItems: readonly Item[],
-  select: (item: Item) => void
-): (event: KeyboardEvent) => void {
-  return event => {
-    if (!event.shiftKey) return
-
-    const currentItem =
-      currentFocusEl.value && itemsElsMap.get(currentFocusEl.value)
-    const prevSelectedItem = Array.from(selected).pop()
-
-    if (!currentItem || !prevSelectedItem) return
-    const indexA = sortedItems.findIndex(item => item === currentItem)
-    const indexB = sortedItems.findIndex(item => item === prevSelectedItem)
-
-    if (indexA === indexB) return
-    if (indexA === -1 || indexB === -1) return
-
-    const itemsToSelect =
-      indexA < indexB
-        ? sortedItems.slice(indexB, indexA)
-        : sortedItems.slice(indexB, indexA)
-
-    itemsToSelect.forEach(item => item && select(item))
-  }
 }
