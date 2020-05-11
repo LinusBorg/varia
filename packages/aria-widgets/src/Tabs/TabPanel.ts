@@ -17,10 +17,6 @@ export const TabPanelProps = {
   tabsKey: {
     type: Symbol as PropType<TabsAPIKey>,
   },
-  hideContents: {
-    type: Boolean as PropType<boolean>,
-    default: false,
-  },
 }
 
 export function useTabPanel(props: TabPanelOptions, api: TabsAPI) {
@@ -29,8 +25,6 @@ export function useTabPanel(props: TabPanelOptions, api: TabsAPI) {
     role: 'tabpanel' as const,
     id: api.generateId(props.name!),
     hidden: !isSelected.value,
-    style:
-      props.hideContents && !isSelected.value ? { display: 'none' } : undefined,
     tabindex: isSelected.value ? -1 : undefined,
   }))
   return { isSelected, attributes }
@@ -43,15 +37,16 @@ export const TabPanel = defineComponent({
     const api = injectTabsAPI(props.tabsKey)
     const { isSelected, attributes } = useTabPanel(props, api)
     return () => {
-      return h(
-        props.tag,
-        attributes.value,
+      return (
         isSelected.value &&
-          !props.hideContents &&
+        h(
+          props.tag,
+          attributes.value,
           slots.default?.({
             isSelected: isSelected.value,
             attributes: attributes.value,
           })
+        )
       )
     }
   },
