@@ -1,3 +1,4 @@
+import { computed, reactive, Ref } from 'vue'
 // Logic derrived from https://github.com/jonschlinkert/object.omit,
 // simplified and typed by this project
 export function omit<O extends object, K extends keyof O>(
@@ -19,6 +20,20 @@ export function omit<O extends object, K extends keyof O>(
   return res as Omit<O, K>
 }
 
+export function computedOmit<O extends object, K extends keyof O>(
+  obj: O,
+  keys: K[]
+): Ref<Omit<O, K>> {
+  let newObj: Partial<O> = reactive({})
+  return computed(() => {
+    Object.assign(newObj, obj)
+    for (let key of keys) {
+      delete newObj[key]
+    }
+    return newObj as Omit<O, K>
+  })
+}
+
 // Logic derrived from https://github.com/jonschlinkert/object.pick,
 // simplified and typed by this project
 export function pick<O extends object, K extends keyof O>(
@@ -37,4 +52,21 @@ export function pick<O extends object, K extends keyof O>(
     }
   }
   return res as Pick<O, K>
+}
+
+export function computedPick<O extends object, K extends keyof O>(
+  obj: O,
+  keys: K[]
+): Ref<Pick<O, K>> {
+  const newObj: Partial<O> = reactive({})
+  return computed(() => {
+    //TODO: This seems inefficient....
+    for (let key of Object.keys(newObj)) {
+      delete newObj[key as keyof typeof newObj]
+    }
+    for (let key of keys) {
+      newObj[key] = obj[key]
+    }
+    return newObj as Pick<O, K>
+  })
 }
