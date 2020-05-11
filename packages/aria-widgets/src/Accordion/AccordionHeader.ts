@@ -1,4 +1,5 @@
-import { defineComponent, h, PropType, computed, ref, toRef } from 'vue'
+import { defineComponent, h, PropType, computed, toRef } from 'vue'
+import { nanoid } from 'nanoid/non-secure'
 import { AccordionAPI, AccordionAPIKey, ButtonOptions } from '../types'
 import { injectAccordionAPI } from './use-accordion'
 import { ButtonProps, useButton } from '../Button'
@@ -14,19 +15,24 @@ export function useAccordionHeader(
   props: AccordionHeaderProps,
   api: AccordionAPI
 ) {
-  const id = api.generateId(props.name)
+  const id = nanoid()
+  const contentId = api.generateId(props.name)
+
+  // Derrived state
   const isExpanded = computed(() => api.state.selected.has(props.name))
   const hasFocus = computed(() => api.arrowNav.currentActiveId.value === id)
   const isDisabled = toRef(props, 'disabled')
-  api.arrowNav.addToElNavigation(id, isDisabled) // TODO: add disabled behaviour
+  api.arrowNav.addToElNavigation(id, isDisabled)
 
+  // Derrived Element Attributes
   const btnAttrs = useButton(props)
   const arrowAttrs = useArrowNavigationChild(hasFocus, api.arrowNav)
   return computed(() => ({
     ...btnAttrs.value,
     ...arrowAttrs.value,
+    id,
     'aria-expanded': isExpanded.value,
-    'aria-controls': id,
+    'aria-controls': contentId,
     onClick: () =>
       isExpanded.value
         ? api.state.unselect(props.name)
