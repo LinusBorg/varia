@@ -5,6 +5,8 @@ import TabsView from '../views/Tabs.vue'
 import PopoversView from '../views/Popovers.vue'
 import DisclosuresView from '../views/Disclosures.vue'
 import AccordionsView from '../views/Accordions.vue'
+import FocusTrapsView from '../views/FocusTraps.vue'
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
@@ -35,8 +37,13 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/popovers',
-    name: 'Popoverss',
+    name: 'Popovers',
     component: PopoversView,
+  },
+  {
+    path: '/focustraps',
+    name: 'FocusTraps',
+    component: FocusTrapsView,
   },
 ]
 

@@ -12,6 +12,8 @@ export {
   createCachedIdFn,
   applyFocus,
   moveFocusToNextElement,
+  getFirstFocusableChild,
+  getLastFocusableChild,
 } from './utils'
 
 export function install(app: App) {

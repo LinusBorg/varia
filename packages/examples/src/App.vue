@@ -6,6 +6,7 @@
       <router-link to="/disclosures">Disclosures</router-link> |
       <router-link to="/accordions">Accordions</router-link> |
       <router-link to="/popovers">Popovers</router-link> |
+      <router-link to="/focustraps">FocusTraps</router-link> |
       <router-link to="/tabs">Tabs</router-link>
     </div>
     <main id="main" class="text-left mx-auto">

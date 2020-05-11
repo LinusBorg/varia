@@ -162,6 +162,15 @@ export interface PopoverOptions {
 }
 
 /**
+ * FocusTrap
+ */
+export interface FocusTrapOptions {
+  activateOnMount?: boolean
+  modelValue?: boolean
+  [key: string]: any
+}
+
+/**
  * Teleport
  */
 export interface TeleportProps extends Record<string, any> {
