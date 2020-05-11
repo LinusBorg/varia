@@ -1,5 +1,5 @@
 import { provide, inject, Ref } from 'vue'
-import { useIdGenerator } from 'vue-aria-composables'
+import { createCachedIdFn } from 'vue-aria-composables'
 
 import { DisclosureAPIKey } from '../types'
 import { createInjector } from '../utils/inject'
@@ -10,7 +10,7 @@ export function useDisclosure(
   selected: Ref<boolean>,
   { skipProvide }: { skipProvide?: boolean } = {}
 ) {
-  const id = useIdGenerator()('disclosure')
+  const id = createCachedIdFn()('disclosure')
   const api = {
     state: {
       selected,

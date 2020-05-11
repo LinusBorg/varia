@@ -1,4 +1,4 @@
-import { ArrowNavigation, useIdGenerator } from 'vue-aria-composables'
+import { ArrowNavigation, createCachedIdFn } from 'vue-aria-composables'
 import {
   ExtractPropTypes,
   reactive,
@@ -42,7 +42,7 @@ export function useListbox<Item = any>(
 
   // API
   provide(listBoxAPIKey as ListBoxAPIKey<Item>, {
-    genId: useIdGenerator('listbox'),
+    genId: createCachedIdFn('listbox'),
     selected,
     select,
     deselect,

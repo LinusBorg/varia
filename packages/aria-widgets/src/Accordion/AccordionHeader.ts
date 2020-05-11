@@ -1,9 +1,8 @@
 import { defineComponent, h, PropType, computed, toRef } from 'vue'
-import { nanoid } from 'nanoid/non-secure'
 import { AccordionAPI, AccordionAPIKey, ButtonOptions } from '../types'
 import { injectAccordionAPI } from './use-accordion'
 import { ButtonProps, useButton } from '../Button'
-import { useArrowNavigationChild } from 'vue-aria-composables'
+import { useArrowNavigationChild, createId } from 'vue-aria-composables'
 
 export interface AccordionHeaderProps extends ButtonOptions {
   tag?: string
@@ -15,7 +14,7 @@ export function useAccordionHeader(
   props: AccordionHeaderProps,
   api: AccordionAPI
 ) {
-  const id = nanoid()
+  const id = createId()
   const contentId = api.generateId(props.name)
 
   // Derrived state

@@ -7,11 +7,8 @@ import {
   PropType,
   h,
 } from 'vue'
-import { useArrowNavigationChild } from 'vue-aria-composables'
-import { nanoid } from 'nanoid/non-secure'
-
+import { useArrowNavigationChild, createId } from 'vue-aria-composables'
 import { injectTabsAPI } from './use-tabs'
-
 import { useClickable, ClickableProps } from '../Clickable'
 
 import { TabsAPI, TabsAPIKey } from '../types'
@@ -34,7 +31,7 @@ export const TabProps = {
 
 export function useTab(props: useTabOptions, api: TabsAPI) {
   const el = ref<HTMLElement>()
-  const id = 'tab_' + nanoid()
+  const id = 'tab_' + createId()
   api.arrowNav.addToElNavigation(
     id,
     computed(() => !!props.disabled)

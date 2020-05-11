@@ -1,5 +1,5 @@
 import { provide, reactive, defineComponent, PropType } from 'vue'
-import { useIdGenerator, useArrowNavigation } from 'vue-aria-composables'
+import { createCachedIdFn, useArrowNavigation } from 'vue-aria-composables'
 import { createInjector } from '../utils/inject'
 import { AccordionOptions, AccordionAPIKey } from '../types'
 import { ClickableProps } from '../Clickable'
@@ -38,7 +38,7 @@ export function useAccordion(
     loop,
   })
 
-  const generateId = useIdGenerator('accordion')
+  const generateId = createCachedIdFn('accordion')
   const key = customName ? Symbol('accordionCustom') : accordionKey
   const api = {
     generateId,

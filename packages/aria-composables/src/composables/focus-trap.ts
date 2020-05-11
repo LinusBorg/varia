@@ -4,7 +4,7 @@ import { getNextFocusableElement, getPreviousFocusableElement } from '../utils'
 import { applyFocus } from '../utils'
 import { useFocusTracker } from './focus-tracker'
 import { useTabDirection } from './tab-direction'
-import { TemplRef, TemplRefType } from '../types'
+import { TemplRefType } from '../types'
 
 const queue = reactive<Set<Symbol>>(new Set())
 const remove = (id: Symbol) => queue.delete(id)

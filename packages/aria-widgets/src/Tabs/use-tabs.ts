@@ -10,7 +10,7 @@ import {
   Ref,
 } from 'vue'
 import {
-  useIdGenerator,
+  createCachedIdFn,
   useArrowNavigation,
   TemplRef,
   wrapProp,
@@ -55,7 +55,7 @@ export function useTabs(_state: Ref<string | undefined>, options: TabsOptions) {
 
   // API
   const tabsAPI = {
-    generateId: useIdGenerator(options.customName || 'tabs'),
+    generateId: createCachedIdFn(options.customName || 'tabs'),
     state: {
       select,
       selected: readonly(selectedTab),
