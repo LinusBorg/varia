@@ -2,8 +2,7 @@ import { onMounted, onUnmounted, unref, nextTick } from 'vue'
 import { useEvent } from './events'
 import { MaybeTemplRef } from '../types'
 
-useEvent
-
+// TODO: needs to take teleported elements into account.
 export function useClickOutside(
   _els: MaybeTemplRef[],
   cb: (...args: any[]) => any
