@@ -13,9 +13,8 @@ import {
   useElementFocusObserver,
   useSelectorFocusObserver,
 } from './focus-observer'
-import { useFocusTracker } from './focus-tracker'
 import { useArrowKeys, useKeyIf } from './keys'
-import { sortByDocPosition } from './template-refs'
+import { sortByDocPosition } from '../utils/focusable-elements'
 
 import { ArrowNavigationOptions } from '../types'
 
@@ -100,7 +99,7 @@ export function useArrowNavigation(
    */
   const addToElNavigation = (
     id: string,
-    _disabled: MaybeRef<boolean> = false
+    _disabled: MaybeRef<boolean | undefined> = false
   ) => {
     const disabled = ref(_disabled)
     watch(

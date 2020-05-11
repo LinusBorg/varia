@@ -29,89 +29,6 @@ export function createTemplateRefList() {
   }
 }
 
-const templateRefKey = Symbol('templateRefKey') as TemplateRefKey
-
-export function createTemplateRefProvider(
-  key: TemplateRefKey = templateRefKey
-) {
-  const elements = ref<HTMLElement[]>([])
-  const add = (el: HTMLElement) => elements.value?.push(el)
-  const remove = (el: HTMLElement) => removeEl(elements.value, el)
-  provide(key, {
-    add,
-    remove,
-  })
-
-  // When component updates, we slice the array
-  // to trigger a re-sort in the computed prop below
-  // TODO find better way to do this only when dependencies change?
-  onUpdated(() => (elements.value = elements.value.slice()))
-
-  // This ref handles elements picked directly from the template with a refFn
-  const { elements: elementsFromRefs, refFn } = createTemplateRefList()
-
-  // Then we combine both element arrays and sort the elements according
-  // do their DOM position, so tab order is preserved
-  const sortedElements = computed(() => {
-    return ([] as HTMLElement[])
-      .concat(elements.value, elementsFromRefs.value)
-      .sort(sortByDocPosition)
-  })
-
-  return {
-    elements: sortedElements,
-    refFn,
-  }
-}
-
-export function createTemplateRefAPI() {
-  const elements = ref(new Set<HTMLElement>())
-  const add = (el: HTMLElement) => {
-    elements.value.add(el)
-  }
-  const remove = (el: HTMLElement) => {
-    elements.value.delete(el)
-  }
-
-  // When component updates, we slice the array
-  // to trigger a re-sort in the computed prop below
-  // TODO find better way to do this only when dependencies change?
-  onUpdated(() => (elements.value = new Set(elements.value)))
-
-  // Then we combine both element arrays and sort the elements according
-  // do their DOM position, so tab order is preserved
-  const sortedElements = computed(() => {
-    return readonly(Array.from(elements.value).sort(sortByDocPosition))
-  })
-
-  return {
-    elements: sortedElements,
-    add,
-    remove,
-  }
-}
-
-export function useParentElementInjection(
-  _el: Ref<HTMLElement | undefined | HTMLElement[]>,
-  key: TemplateRefKey = templateRefKey
-) {
-  const { add, remove } = inject(key, {} as TemplateRefInjection)!
-  if (!add || !remove) {
-    console.error(`Couldn\'T find expected injection.
-    This likely means that you  didn't call a use*() hook in the parent as you should`)
-  } // nothing provided from parent
-
-  watch(
-    _el,
-    (el, _, onCleanup) => {
-      if (!el) return
-      if (el) Array.isArray(el) ? el.map(add) : add(el)
-      onCleanup(() => el && (Array.isArray(el) ? el.map(remove) : remove(el)))
-    },
-    { immediate: true }
-  )
-}
-
 const QUERY_FOCUSABLE_ELEMENTS =
   'button, [href], input, textarea, [tabindex], audio, video'
 
@@ -135,14 +52,4 @@ export function createTemplateRefQuery(
   onUpdated(handler)
 
   return elements
-}
-
-function removeEl(elements: HTMLElement[] | undefined, el: HTMLElement) {
-  if (!elements) return
-  const i = elements.indexOf(el)
-  i !== -1 && elements.splice(i, 1)
-}
-
-export function sortByDocPosition(a: HTMLElement, b: HTMLElement) {
-  return a.compareDocumentPosition(b) & 2 ? 1 : -1
 }

@@ -35,6 +35,10 @@ export function moveFocusToNextElement(el: HTMLElement) {
   nextEl && applyFocus(nextEl as HTMLElement)
 }
 
+export function sortByDocPosition(a: HTMLElement, b: HTMLElement) {
+  return a.compareDocumentPosition(b) & 2 ? 1 : -1
+}
+
 // const focusableEls = [
 //   'a',
 //   'button',
