@@ -21,7 +21,7 @@ export function useAccordion(
 
   //Accordion State
   // TODO: We should come up with a good interface to leave state updates to the parent.
-  // this peaves consumers of this widget the freedom to implement `multiple`, or `always-one-open` etc on their own.
+  // this leaves consumers of this widget the freedom to implement `multiple`, or `always-one-open` etc on their own.
   const selected: AccordionState = _state ?? reactive(new Set())
   const select = (item: string) => {
     if (!multiple) {

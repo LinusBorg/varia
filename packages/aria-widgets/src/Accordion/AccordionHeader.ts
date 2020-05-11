@@ -1,9 +1,10 @@
-import { defineComponent, h, PropType, computed, ref } from 'vue'
-import { AccordionAPI, AccordionAPIKey } from '../types'
+import { defineComponent, h, PropType, computed, ref, toRef } from 'vue'
+import { AccordionAPI, AccordionAPIKey, ButtonOptions } from '../types'
 import { injectAccordionAPI } from './use-accordion'
-import { Button } from '../Button'
+import { ButtonProps, useButton } from '../Button'
+import { useArrowNavigationChild } from 'vue-aria-composables'
 
-export type AccordionHeaderProps = {
+export interface AccordionHeaderProps extends ButtonOptions {
   tag?: string
   headingLevel: number
   name: string
@@ -13,11 +14,17 @@ export function useAccordionHeader(
   props: AccordionHeaderProps,
   api: AccordionAPI
 ) {
-  const { name, headingLevel } = props
   const id = api.generateId(props.name)
-  api.arrowNav.addToElNavigation(id, ref(false)) // TODO: add disabled behaviour
   const isExpanded = computed(() => api.state.selected.has(props.name))
+  const hasFocus = computed(() => api.arrowNav.currentActiveId.value === id)
+  const isDisabled = toRef(props, 'disabled')
+  api.arrowNav.addToElNavigation(id, isDisabled) // TODO: add disabled behaviour
+
+  const btnAttrs = useButton(props)
+  const arrowAttrs = useArrowNavigationChild(hasFocus, api.arrowNav)
   return computed(() => ({
+    ...btnAttrs.value,
+    ...arrowAttrs.value,
     'aria-expanded': isExpanded.value,
     'aria-controls': id,
     onClick: () =>
@@ -38,6 +45,7 @@ export const accordionHeaderProps = {
     required: true,
   },
   tabsKey: Symbol as PropType<AccordionAPIKey>,
+  ...ButtonProps,
 }
 
 export const AccordionHeader = defineComponent({
@@ -49,7 +57,9 @@ export const AccordionHeader = defineComponent({
 
     return () =>
       h('h' + props.h || '1', [
-        h(Button, { tag: props.tag, ...attributes.value }, () =>
+        h(
+          props.tag || 'button',
+          attributes.value,
           slots.default?.(attributes.value)
         ),
       ])

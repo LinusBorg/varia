@@ -43,13 +43,35 @@ export interface ElementsAPI<El = TemplRefType> {
 }
 
 /**
+ * Accordion
+ */
+
+export interface AccordionOptions {
+  multiple?: boolean
+  orientation?: 'horizontal' | 'vertical'
+  customName?: string
+  loop?: boolean
+  [key: string]: any
+}
+
+export interface AccordionAPI extends BaseAPI {
+  generateId: (n: string) => string
+  state: SetStateAPI
+  arrowNav: ArrowNavigation
+  options: AccordionOptions
+}
+
+export type AccordionAPIKey = InjectionKey<AccordionAPI>
+
+/**
  *  Tabbable
  */
+
 export interface TabbableOptions {
   disabled?: boolean | undefined
   focusable?: boolean | undefined
-  onClick?: <T extends any>(e: T) => any
-  onMouseDown?: <T extends any>(e: T) => any
+  // onClick?: <T extends any>(e: T) => any
+  // onMouseDown?: <T extends any>(e: T) => any
   [key: string]: any
 }
 
@@ -59,7 +81,7 @@ export interface TabbableOptions {
 export interface ClickableOptions extends TabbableOptions {}
 
 /**
- * Button Types
+ * Button
  */
 export interface ButtonOptions extends ClickableOptions {}
 
