@@ -2779,10 +2779,18 @@
   resolved "https://registry.yarnpkg.com/@vue/shared/-/shared-3.0.0-beta.9.tgz#b3bfd0553bef22d508d0e56cc305e25783e64017"
   integrity sha512-ndn3/TCCzvmFI5zTpBTdKdNW2x+ibshvjcoajvcUXNRLlHVJNad0PdnvklPu6zaI6+9fkFpFC5AnMkLg5/KvSw==
 
-"@vue/test-utils@^2.0.0-alpha.2", "@vue/test-utils@^2.0.0-alpha.3":
+"@vue/test-utils@^2.0.0-alpha.2":
   version "2.0.0-alpha.3"
   resolved "https://registry.yarnpkg.com/@vue/test-utils/-/test-utils-2.0.0-alpha.3.tgz#b3652a1205cd744626967fb539d2c59de51a49f4"
   integrity sha512-LS5QIPfMO1Kb3DGiN/zRsRl+rxrA7GVIHroeiXTRrEKDVUJOczh+9xj4g9183bFiuMUK73pBCfDTuxTP8N8y8Q==
+  dependencies:
+    dom-event-types "^1.0.0"
+    lodash "^4.17.15"
+
+"@vue/test-utils@^2.0.0-alpha.4":
+  version "2.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/@vue/test-utils/-/test-utils-2.0.0-alpha.4.tgz#591b8ceaa648323fabfcbea48728999e5b33e7de"
+  integrity sha512-9fAQx0MNhgqcNdcbh8xhyCywsWMd2zny4qpGCrgyOcB9s3V2xgjjtwUN72VbvaLnpdZk3mBwFOchNNe0oociNw==
   dependencies:
     dom-event-types "^1.0.0"
     lodash "^4.17.15"

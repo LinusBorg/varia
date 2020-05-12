@@ -32,15 +32,14 @@
     "@testing-library/dom": "^7.2.1",
     "@types/jest": "^25.2.1",
     "@vue/eslint-config-typescript": "^5.0.1",
-    "@vue/test-utils": "^2.0.0-alpha.3",
+    "@vue/test-utils": "^2.0.0-alpha.4",
     "eslint-plugin-vue": "^7.0.0-alpha.1",
     "husky": "^4.2.5",
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "cuid": "^2.1.8",
-    "tsdx": "^0.13.1"
+    "cuid": "^2.1.8"
   },
   "publishConfig": {
     "registry": "https://registry.yarnpkg.com"
