@@ -54,11 +54,7 @@ export default defineComponent({
     PopoverContent,
   },
   setup() {
-    const { show } = usePopover()
-
-    return {
-      show,
-    }
+    usePopover()
   },
 })
 </script>
