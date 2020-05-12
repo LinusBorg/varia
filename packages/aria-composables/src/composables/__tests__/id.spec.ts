@@ -1,4 +1,4 @@
-import { createCachedIdFn } from '../../utils/id-generator'
+import { createCachedIdFn } from '../../utils/id'
 
 describe('createCachedIdFn', () => {
   it('returns a function', () => {
