@@ -1,7 +1,7 @@
 import { Ref } from 'vue'
 import { ClickableOptions } from '../types'
 import { useTabbable } from '../Tabbable'
-import { useEvent } from 'vue-aria-composables'
+import { useEvent, useFocusTracker } from 'vue-aria-composables'
 
 export { TabbableProps as ClickableProps } from '../Tabbable'
 
@@ -9,7 +9,16 @@ export function useClickable(
   options: ClickableOptions,
   el?: Ref<HTMLElement | undefined>
 ) {
+  const tracker = useFocusTracker()
   const tabbableAttrs = useTabbable(options, el)
+  useEvent(
+    document,
+    'keydown',
+    (e: KeyboardEvent) =>
+      tracker.currentEl.value === tabbableAttrs.value.ref.value &&
+      e.key === ' ' &&
+      e.preventDefault()
+  )
   useEvent(document, 'keyup', ((e: KeyboardEvent) => {
     const el = tabbableAttrs.value.ref
     if (e.target !== el.value) return
