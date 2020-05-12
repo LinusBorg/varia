@@ -11,7 +11,6 @@ export {
   createId,
   createCachedIdFn,
   applyFocus,
-  moveFocusToNextElement,
   getFirstFocusableChild,
   getLastFocusableChild,
 } from './utils'
