@@ -11,21 +11,16 @@ export function useClickable(
 ) {
   const tracker = useFocusTracker()
   const tabbableAttrs = useTabbable(options, el)
-  useEvent(
-    document,
-    'keydown',
-    (e: KeyboardEvent) =>
-      tracker.currentEl.value === tabbableAttrs.value.ref.value &&
-      e.key === ' ' &&
-      e.preventDefault()
-  )
-  useEvent(document, 'keyup', ((e: KeyboardEvent) => {
+  useEvent(document, 'keydown', ((e: KeyboardEvent) => {
     const el = tabbableAttrs.value.ref
     if (e.target !== el.value) return
     if (el?.value?.tagName === 'BUTTON') return
     if (e.key === 'Enter' || e.key === ' ') {
       el?.value?.click()
     }
+    tracker.currentEl.value === tabbableAttrs.value.ref.value &&
+      e.key === ' ' &&
+      e.preventDefault()
   }) as EventListener)
 
   return tabbableAttrs
