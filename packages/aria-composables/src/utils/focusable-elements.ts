@@ -25,12 +25,10 @@ export function getFocusableElements(
 
 export function getFirstFocusableChild(wrapperEl: HTMLElement) {
   const els = getFocusableElements(wrapperEl)
-  console.log('getFirstFocusableChild', els)
   return els.length ? els[0] : undefined
 }
 export function getLastFocusableChild(wrapperEl: HTMLElement) {
   const els = getFocusableElements(wrapperEl)
-  console.log('getLastFocusableChild', els)
   return els.length ? els[els.length - 1] : undefined
 }
 

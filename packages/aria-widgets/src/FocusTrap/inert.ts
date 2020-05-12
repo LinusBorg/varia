@@ -3,7 +3,6 @@ import { TemplRef } from 'vue-aria-composables'
 
 export function useInert(wrapperEl: TemplRef, isActive: Ref<boolean>) {
   watchEffect(onCleanup => {
-    console.log('inert watchEffect', wrapperEl.value, isActive.value)
     const { value: el } = wrapperEl
     if (el && isActive.value) {
       inert(el)
