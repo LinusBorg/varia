@@ -12,7 +12,7 @@ import {
 import {
   useKeyIf,
   useClickOutside,
-  moveFocusToNextElement,
+  getFirstFocusableChild,
 } from 'vue-aria-composables'
 import { useDisclosureContent } from '../Disclosure'
 import { injectPopoverAPI } from './usePopover'
@@ -83,7 +83,12 @@ export function usePopoverContent(
   // Focus Lifecycle
   options.focusOnOpen &&
     watch(isOpen, isOpen => {
-      isOpen && el.value && nextTick(() => moveFocusToNextElement(el.value!))
+      isOpen &&
+        el.value &&
+        nextTick(() => {
+          const nextEl = getFirstFocusableChild(el.value!)
+          nextEl && nextEl.focus()
+        })
       !isOpen && options.returnFocusOnClose && triggerEl.value?.focus()
     })
 
@@ -108,7 +113,10 @@ export function usePopoverContent(
     isOpen,
     close,
     attributes,
-    focusFirstElement: () => el.value && moveFocusToNextElement(el.value),
+    focusFirstElement: () => {
+      const nextEl = getFirstFocusableChild(el.value!)
+      nextEl && nextEl.focus()
+    },
   }
 }
 
