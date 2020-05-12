@@ -1,4 +1,4 @@
-import { ref, provide, computed, inject, InjectionKey } from 'vue'
+import { ref, provide, computed, inject, InjectionKey, readonly } from 'vue'
 import { useEvent } from './events'
 import { TabDirection } from '../types'
 
@@ -22,6 +22,7 @@ export function useTabDirection() {
 }
 
 export function provideTabDirection() {
-  provide(tabDirectionKey, tabDirection)
-  return computed(() => tabDirection.value)
+  const ro_tabDirection = readonly(tabDirection)
+  provide(tabDirectionKey, ro_tabDirection)
+  return ro_tabDirection
 }
