@@ -1,4 +1,4 @@
-import { computed, defineComponent, h, Ref, toRaw } from 'vue'
+import { computed, defineComponent, h, Ref } from 'vue'
 import { useClickable, ClickableProps } from '../Clickable'
 
 import { ButtonOptions } from '../types'
@@ -23,17 +23,13 @@ export const Button = defineComponent({
   props: ButtonProps,
   setup(props, { slots }) {
     const attributes = useButton(props)
-
-    return () => {
-      return slots.replace
-        ? slots.replace(attributes.value)
-        : h(
-            props.tag,
-            {
-              ...attributes.value,
-            },
-            slots.default?.(attributes)
-          )
-    }
+    return () =>
+      h(
+        props.tag,
+        {
+          ...attributes.value,
+        },
+        slots.default?.(attributes)
+      )
   },
 })
