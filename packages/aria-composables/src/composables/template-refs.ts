@@ -5,16 +5,8 @@ import {
   onMounted,
   onUpdated,
   watch,
-  InjectionKey,
   readonly,
 } from 'vue'
-
-interface TemplateRefInjection {
-  add: (el: HTMLElement) => void
-  remove: (el: HTMLElement) => void
-}
-
-export type TemplateRefKey = InjectionKey<TemplateRefInjection>
 
 export function createTemplateRefList() {
   const elements = ref<HTMLElement[]>([])
