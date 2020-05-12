@@ -34,37 +34,6 @@ export function getLastFocusableChild(wrapperEl: HTMLElement) {
   return els.length ? els[els.length - 1] : undefined
 }
 
-export function getNextFocusableElement(
-  wrapperEl: HTMLElement,
-  el: HTMLElement,
-  query: string = TABBABLE_ELS
-) {
-  const els = getFocusableElements(wrapperEl, query)
-  const i = els.indexOf(el)
-  if (i === els.length) {
-    return els[0]
-  }
-  return i !== -1 ? els[i + 1] : undefined
-}
-export function getPreviousFocusableElement(
-  wrapperEl: HTMLElement,
-  el: HTMLElement,
-  query: string = TABBABLE_ELS
-) {
-  const els = getFocusableElements(wrapperEl, query)
-  const i = els.indexOf(el)
-  if (i === 0) {
-    return els[els.length - 1]
-  }
-  return i !== -1 ? els[i - 1] : undefined
-}
-
-export function moveFocusToNextElement(el: HTMLElement) {
-  if (el.matches(TABBABLE_ELS)) applyFocus(el)
-  const nextEl = el.querySelector(TABBABLE_ELS)
-  nextEl && applyFocus(nextEl as HTMLElement)
-}
-
 export function sortByDocPosition(a: HTMLElement, b: HTMLElement) {
   return a.compareDocumentPosition(b) & 2 ? 1 : -1
 }
