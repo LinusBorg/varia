@@ -20,7 +20,7 @@ export interface BaseAPI<Options extends OptionsBase = Record<string, any>> {
 export type StateAPIBase = BooleanStateAPI | SingleStateAPI | SetStateAPI
 
 export interface BooleanStateAPI {
-  selected: Ref<boolean>
+  selected: Ref<boolean | undefined>
   select?: () => void
   unselect?: () => void
   toggle?: () => void
@@ -127,6 +127,11 @@ export type TabsAPIKey = InjectionKey<TabsAPI>
 /**
  * Disclosure
  */
+export interface DisclosureOptions {
+  skipProvide?: boolean
+  customKey?: symbol | string
+}
+
 export interface DisclosureAPI extends BaseAPI {
   state: BooleanStateAPI
   options: {

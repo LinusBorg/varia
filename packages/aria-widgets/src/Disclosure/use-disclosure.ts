@@ -1,16 +1,16 @@
-import { provide, inject, Ref } from 'vue'
-import { createCachedIdFn } from 'vue-aria-composables'
+import { defineComponent, provide, Ref, PropType } from 'vue'
+import { createId, wrapProp } from 'vue-aria-composables'
 
-import { DisclosureAPIKey } from '../types'
+import { DisclosureAPIKey, DisclosureOptions } from '../types'
 import { createInjector } from '../utils/inject'
 
 export const disclosureAPIKey = Symbol('disclosure') as DisclosureAPIKey
 
 export function useDisclosure(
-  selected: Ref<boolean>,
-  { skipProvide }: { skipProvide?: boolean } = {}
+  selected: Ref<boolean | undefined>,
+  { skipProvide, customKey }: DisclosureOptions = {}
 ) {
-  const id = createCachedIdFn()('disclosure')
+  const id = createId()
   const api = {
     state: {
       selected,
@@ -20,11 +20,27 @@ export function useDisclosure(
       id,
     },
   }
-  !skipProvide && provide(disclosureAPIKey, api)
+  const key = customKey ?? disclosureAPIKey
+  !skipProvide && provide(key, api)
 
   return api
 }
+
 export const injectDisclosureAPI = createInjector(
   disclosureAPIKey,
   `injectDisclosureAPI()`
 )
+
+export const disclosureProps = {
+  modelValue: Boolean as PropType<boolean>,
+}
+
+export const Dicsclosure = defineComponent({
+  name: 'Disclosure',
+  props: disclosureProps,
+  setup(props, { slots }) {
+    const state = wrapProp(props, 'modelValue')
+    useDisclosure(state)
+    return () => slots.default?.()
+  },
+})
