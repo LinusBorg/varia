@@ -20,13 +20,12 @@
     "test:watch": "tsdx test --watch --runInBand",
     "lint": "eslint src/**/*.ts test/**/*.ts --fix"
   },
-  "peerDependencies": {
+  "dependencies": {
+    "cuid": "^2.1.8",
     "vue": "^3.0.0-beta.9"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn lint"
-    }
+  "peerDependencies": {
+    "vue": "^3.0.0-beta.9"
   },
   "devDependencies": {
     "@testing-library/dom": "^7.2.1",
@@ -38,8 +37,10 @@
     "tslib": "^1.11.1",
     "typescript": "^3.8.3"
   },
-  "dependencies": {
-    "cuid": "^2.1.8"
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn lint"
+    }
   },
   "publishConfig": {
     "registry": "https://registry.yarnpkg.com"
