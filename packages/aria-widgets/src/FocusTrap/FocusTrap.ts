@@ -71,7 +71,7 @@ export function useFocusTrap(
   watch(state, state => {
     state ? activate() : deactivate()
   })
-  useInert(wrapperEl, isActiveTrap)
+  options.useInert && useInert(wrapperEl, isActiveTrap)
 
   // Mount/Unmount
   options.activateOnMount && onMounted(activate)
@@ -150,6 +150,10 @@ const focusTrapProps = {
   modelValue: {
     type: Boolean as PropType<boolean>,
     required: true,
+  },
+  useInert: {
+    type: Boolean as PropType<boolean>,
+    default: false,
   },
 }
 

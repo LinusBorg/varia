@@ -172,6 +172,7 @@ export interface PopoverOptions {
 export interface FocusTrapOptions {
   activateOnMount?: boolean
   modelValue?: boolean
+  useInert?: boolean
   [key: string]: any
 }
 
