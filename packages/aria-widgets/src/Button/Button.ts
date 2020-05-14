@@ -1,6 +1,5 @@
 import { computed, defineComponent, h, Ref } from 'vue'
 import { useClickable, ClickableProps } from '../Clickable'
-
 import { ButtonOptions } from '../types'
 
 export const ButtonProps = {
