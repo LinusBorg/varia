@@ -2,7 +2,7 @@
   <div id="container">
     <Announcer />
     <nav id="nav" aria-labelledby="main-nav-label">
-      <SkipToContent selector="h1" class="absolute">
+      <SkipToContent contentId="#main">
         Skip to Main Content
       </SkipToContent>
       <span id="main-nav-label" data-varia-visually-hidden="true"
