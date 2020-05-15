@@ -13,6 +13,7 @@ export {
   applyFocus,
   getFirstFocusableChild,
   getLastFocusableChild,
+  TABBABLE_ELS,
 } from './utils'
 
 export function install(app: App) {

@@ -14,7 +14,7 @@ const focusableElList = [
   '*[contenteditable]',
 ]
 
-const TABBABLE_ELS = focusableElList.join(',')
+export const TABBABLE_ELS = focusableElList.join(',')
 
 export function getFocusableElements(
   el: HTMLElement,

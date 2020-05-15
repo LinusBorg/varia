@@ -6,6 +6,9 @@ export * from './Accordion'
 export * from './Tabs'
 export * from './Popover'
 export * from './FocusTrap'
+export * from './VisuallyHidden'
+export * from './Announcer'
+export * from './SkipToContent'
 
 export * from './types'
 
