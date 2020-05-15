@@ -1,6 +1,10 @@
 <template>
   <div id="container">
+    <Announcer />
     <nav id="nav" aria-labelledby="main-nav-label">
+      <SkipToContent selector="h1" class="absolute">
+        Skip to Main Content
+      </SkipToContent>
       <span id="main-nav-label" data-varia-visually-hidden="true"
         >main navigation</span
       >
@@ -29,8 +33,28 @@
       <router-link to="/tabs" :aria-current="isCurrentRoute('Tabs')">
         Tabs
       </router-link>
+      <router-link to="/Announcer" :aria-current="isCurrentRoute('Announcer')">
+        Announcer
+      </router-link>
     </nav>
-    <main id="main" class="text-left mx-auto">
+    <main
+      id="main"
+      class="text-left mx-auto"
+      aria-labelledby="main-content-label"
+      aria-describedby="main-content-description"
+    >
+      <VisuallyHidden id="main-content-label">
+        Main Content Area
+      </VisuallyHidden>
+      <VisuallyHidden id="main-content-description">
+        <template v-if="$route.meta.description">
+          {{ $route.meta.description }}
+        </template>
+        <template v-else>
+          This area contains the demonstration of each page's component or
+          feature
+        </template>
+      </VisuallyHidden>
       <router-view />
     </main>
   </div>
@@ -39,8 +63,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
+import { SkipToContent, VisuallyHidden, Announcer } from 'vue-aria-widgets'
 export default defineComponent({
   name: 'App',
+  components: {
+    Announcer,
+    SkipToContent,
+    VisuallyHidden,
+  },
   setup() {
     const route = useRoute()
     return {

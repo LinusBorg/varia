@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>FocusTrap</h1>
     <label for="focustrap-input-before"
       >Input before the Trap<input
         class="border border-gray-300"

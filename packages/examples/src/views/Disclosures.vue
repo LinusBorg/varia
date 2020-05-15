@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Disclosures</h1>
     <DisclosureTrigger class="btn border px-2 py-1 rounded">
       Show the hidden Secret
     </DisclosureTrigger>

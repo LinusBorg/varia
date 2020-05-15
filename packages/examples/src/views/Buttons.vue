@@ -1,5 +1,6 @@
 <template>
   <div class="divide-y divide-gray-300">
+    <h1>Buttons</h1>
     <div class="mb-3 mt-6 py-2">
       <h2 class="text-xl font-bold mb-2">Normal</h2>
       <Button class="btn border px-2 py-1 rounded" @click="alert">

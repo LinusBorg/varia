@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Accordions</h1>
     <h2>Basic Accordion</h2>
     <Accordion :modelValue="state1">
       <AccordionHeader :h="3" name="A">Header A</AccordionHeader>

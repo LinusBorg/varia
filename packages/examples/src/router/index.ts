@@ -1,4 +1,5 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
+// Views
 import Home from '../views/Home.vue'
 import ButtonsView from '../views/Buttons.vue'
 import TabsView from '../views/Tabs.vue'
@@ -6,6 +7,7 @@ import PopoversView from '../views/Popovers.vue'
 import DisclosuresView from '../views/Disclosures.vue'
 import AccordionsView from '../views/Accordions.vue'
 import FocusTrapsView from '../views/FocusTraps.vue'
+import Announcer from '../views/Announcer.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -45,11 +47,22 @@ const routes: Array<RouteRecordRaw> = [
     name: 'FocusTraps',
     component: FocusTrapsView,
   },
+  {
+    path: '/announcer',
+    name: 'Announcer',
+    component: Announcer,
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+})
+
+router.afterEach(to => {
+  const name = to.meta?.title ?? to.name
+  document.title = `Varia Components - ${name}`
+  // TODO: Implement announcer
 })
 
 export default router
