@@ -7,8 +7,8 @@ export const Teleport = defineComponent(function Teleport(
   return h(
     props.tag ?? 'DIV',
     {
-      'data-variant-portal': attrs.target as string,
-      ...(!!props.disabled ? { style: 'display: none' } : {}),
+      'data-variant-teleport': attrs.target as string,
+      ...(props.disabled ? {} : { style: 'display: none' }),
     },
     [h('teleport', attrs, slots.default?.())]
   )
