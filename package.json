@@ -6,8 +6,8 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "lerna run build --scope vue-aria-*",
-    "serve": "lerna run serve --parallel --scope vue-aria-*",
+    "build": "lerna run build --scope @varia/*",
+    "serve": "lerna run serve --parallel --scope @varia/*",
     "vite": "yarn workspace dev-server run dev",
     "examples": "yarn workspace examples run serve",
     "docs:dev": "yarn workspace docs run dev",
