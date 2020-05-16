@@ -1,9 +1,9 @@
 {
-  "name": "vue-aria-composables",
+  "name": "@varia/composables",
   "version": "0.0.0",
   "description": "Core composables for vue-aria-widgets",
   "author": "Thorsten <t.luenborg@googlemail.com>",
-  "homepage": "https://github.com/LinusBorg/vue-focus-management/packages/aria-composables",
+  "homepage": "https://github.com/LinusBorg/varia/packages/aria-composables",
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "module": "dist/vue-aria-composables.esm.js",
@@ -42,6 +42,7 @@
     }
   },
   "publishConfig": {
+    "access": "public",
     "registry": "https://registry.yarnpkg.com"
   },
   "engines": {
@@ -49,9 +50,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LinusBorg/vue-focus-management.git"
+    "url": "git+https://github.com/LinusBorg/varia.git"
   },
   "bugs": {
-    "url": "https://github.com/LinusBorg/vue-focus-management/issues"
+    "url": "https://github.com/LinusBorg/varia/issues"
   }
 }

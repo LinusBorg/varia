@@ -1,8 +1,8 @@
 {
   "version": "0.0.0",
-  "name": "vue-aria-widgets",
+  "name": "@varia/widgets",
   "author": "Thorsten",
-  "homepage": "https://github.com/LinusBorg/vue-focus-management/packages/aria-widgets",
+  "homepage": "https://github.com/LinusBorg/varia/packages/aria-widgets",
   "license": "Apache-2.0",
   "main": "dist/index.js",
   "module": "dist/vue-aria-widgets.esm.js",
@@ -46,13 +46,14 @@
     }
   },
   "publishConfig": {
+    "access": "public",
     "registry": "https://registry.yarnpkg.com"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/LinusBorg/vue-focus-management.git"
+    "url": "git+https://github.com/LinusBorg/varia.git"
   },
   "bugs": {
-    "url": "https://github.com/LinusBorg/vue-focus-management/issues"
+    "url": "https://github.com/LinusBorg/varia/issues"
   }
 }
