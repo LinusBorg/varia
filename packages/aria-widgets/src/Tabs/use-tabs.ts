@@ -26,7 +26,7 @@ export function useTabs(_state: Ref<string | undefined>, options: TabsOptions) {
   const {
     customName,
     // Options for ArrowNavigation
-    orientation = 'horizontal',
+    orientation,
     loop,
     startOnFirstSelected,
     autoSelect = false,

@@ -23,26 +23,32 @@ export function useKeyIf(
 
 export function useArrowKeys(
   condRef: Ref<boolean>,
-  { up, down, left, right }: ArrowKeyHandlers = {}
+  { up, down, left, right }: ArrowKeyHandlers = {},
+  {
+    orientation,
+  }: {
+    orientation?: 'horizontal' | 'vertical'
+  } = {}
 ) {
+  const o = orientation
   const handleKeyup = (e: KeyboardEvent) => {
     const key = e.key
     switch (key) {
       case 'Left':
       case 'ArrowLeft':
-        left && left(e)
+        left && (!o || o === 'horizontal') && left(e)
         break
       case 'Up':
       case 'ArrowUp':
-        up && up(e)
+        up && (!o || o === 'vertical') && up(e)
         break
       case 'Right':
       case 'ArrowRight':
-        right && right(e)
+        right && (!o || o === 'horizontal') && right(e)
         break
       case 'Down':
       case 'ArrowDown':
-        down && down(e)
+        down && (!o || o === 'vertical') && down(e)
         break
       default:
         break

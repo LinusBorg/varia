@@ -152,22 +152,27 @@ export function useArrowNavigation(
   /**
    * Listeners for the actual arrow Navigation
    */
-  const backDir = orientation === 'vertical' ? 'up' : 'left'
-  const fwdDir = orientation === 'vertical' ? 'down' : 'right'
+  const backward = (event: KeyboardEvent) => {
+    if (event.shiftKey || event.ctrlKey) return
+    moveto('prev')
+    autoSelect && click()
+  }
+  const forward = (event: KeyboardEvent) => {
+    if (event.shiftKey || event.ctrlKey) return
+    moveto('next')
+    autoSelect && click()
+  }
   const click = () => currentActiveElement.value?.click()
-
-  useArrowKeys(hasFocus, {
-    [backDir]: (event: KeyboardEvent) => {
-      if (event.shiftKey || event.ctrlKey) return
-      moveto('prev')
-      autoSelect && click()
+  useArrowKeys(
+    hasFocus,
+    {
+      up: backward,
+      down: forward,
+      right: forward,
+      left: backward,
     },
-    [fwdDir]: (event: KeyboardEvent) => {
-      if (event.shiftKey || event.ctrlKey) return
-      moveto('next')
-      autoSelect && click()
-    },
-  })
+    { orientation }
+  )
 
   useKeyIf(hasFocus, ['Home', 'End', 'Enter', ' '], ((event: KeyboardEvent) => {
     switch (event.key) {

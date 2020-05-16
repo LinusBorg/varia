@@ -12,7 +12,7 @@ export type MaybeTemplRef<El = HTMLElement> = MaybeRef<TemplRefType<El>>
 
 // ArrowNavigation
 export interface ArrowNavigationOptions {
-  orientation: 'horizontal' | 'vertical'
+  orientation: 'horizontal' | 'vertical' | undefined
   loop?: boolean
   startOnFirstSelected?: boolean
   autoSelect?: boolean
