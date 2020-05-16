@@ -38,7 +38,7 @@ createApp(App)
 
 ## State of Development
 
-<!-- markdownlint ignore MD033 -->
+<!-- markdownlint-disable MD033 -->
 <details>
   <summary>Click here to the the state of development<summary>
 
