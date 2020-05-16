@@ -7,7 +7,7 @@ import {
   PropType,
   h,
 } from 'vue'
-import { useArrowNavigationChild, createId } from 'vue-aria-composables'
+import { useArrowNavigationChild, createId } from '@varia/composables'
 import { injectTabsAPI } from './use-tabs'
 import { useClickable, ClickableProps } from '../Clickable'
 

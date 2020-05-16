@@ -1,5 +1,5 @@
 import { computed, reactive, ref, toRaw, PropType, watchEffect } from 'vue'
-import { useEvent, TemplRef } from 'vue-aria-composables'
+import { useEvent, TemplRef } from '@varia/composables'
 import { isNativeTabbable } from '../utils/elements'
 import { TabbableOptions } from '../types'
 

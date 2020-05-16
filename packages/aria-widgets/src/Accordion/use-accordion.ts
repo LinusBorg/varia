@@ -1,5 +1,5 @@
 import { provide, reactive, defineComponent, PropType } from 'vue'
-import { createCachedIdFn, useArrowNavigation } from 'vue-aria-composables'
+import { createCachedIdFn, useArrowNavigation } from '@varia/composables'
 import { createInjector } from '../utils/inject'
 import { AccordionOptions, AccordionAPIKey } from '../types'
 import { ClickableProps } from '../Clickable'

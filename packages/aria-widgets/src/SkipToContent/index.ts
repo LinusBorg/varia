@@ -1,9 +1,5 @@
 import { ref, defineComponent, h, watch } from 'vue'
-import {
-  TemplRef,
-  wrapProp,
-  useElementFocusObserver,
-} from 'vue-aria-composables'
+import { TemplRef, wrapProp, useElementFocusObserver } from '@varia/composables'
 import { useClickable } from '../Clickable'
 
 // export function useSkipToContent(_el?: TemplRef) {

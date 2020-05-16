@@ -13,7 +13,7 @@ import {
   useKeyIf,
   useClickOutside,
   getFirstFocusableChild,
-} from 'vue-aria-composables'
+} from '@varia/composables'
 import { useDisclosureContent } from '../Disclosure'
 import { injectPopoverAPI } from './usePopover'
 import {

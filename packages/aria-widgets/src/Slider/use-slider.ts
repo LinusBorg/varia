@@ -5,7 +5,7 @@ import {
   wrapProp,
   TemplRef,
   useElementFocusObserver,
-} from 'vue-aria-composables'
+} from '@varia/composables'
 
 interface useSliderValues {
   min: number

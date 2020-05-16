@@ -1,5 +1,5 @@
 import { Ref, InjectionKey } from 'vue'
-import { ArrowNavigation, TemplRefType, TemplRef } from 'vue-aria-composables'
+import { ArrowNavigation, TemplRefType, TemplRef } from '@varia/composables'
 import { Options as PopperOptions } from '@popperjs/core'
 
 /**

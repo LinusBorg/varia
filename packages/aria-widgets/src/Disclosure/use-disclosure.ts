@@ -1,5 +1,5 @@
 import { defineComponent, provide, Ref, PropType } from 'vue'
-import { createId, wrapProp } from 'vue-aria-composables'
+import { createId, wrapProp } from '@varia/composables'
 
 import { DisclosureAPIKey, DisclosureOptions } from '../types'
 import { createInjector } from '../utils/inject'

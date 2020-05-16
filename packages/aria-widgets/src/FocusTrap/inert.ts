@@ -1,5 +1,5 @@
 import { watchEffect, Ref } from 'vue'
-import { TemplRef } from 'vue-aria-composables'
+import { TemplRef } from '@varia/composables'
 
 export function useInert(wrapperEl: TemplRef, isActive: Ref<boolean>) {
   watchEffect(onCleanup => {

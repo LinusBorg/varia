@@ -13,7 +13,7 @@ import {
   useArrowNavigation,
   TemplRef,
   wrapProp,
-} from 'vue-aria-composables'
+} from '@varia/composables'
 import './index.css'
 import { omit } from '../utils/pick'
 

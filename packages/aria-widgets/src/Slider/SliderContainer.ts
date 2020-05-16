@@ -1,5 +1,5 @@
 import { ref, reactive, computed, defineComponent, h } from 'vue'
-import { TemplRef } from 'vue-aria-composables'
+import { TemplRef } from '@varia/composables'
 
 export function useSliderContainer() {
   const el: TemplRef = ref()

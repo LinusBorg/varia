@@ -22,7 +22,7 @@ import {
   TemplRefType,
   useEventIf,
   wrapProp,
-} from 'vue-aria-composables'
+} from '@varia/composables'
 
 import { useInert } from './inert'
 

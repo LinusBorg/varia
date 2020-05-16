@@ -1,7 +1,7 @@
 import { Ref } from 'vue'
 import { ClickableOptions } from '../types'
 import { useTabbable } from '../Tabbable'
-import { useEvent, useFocusTracker } from 'vue-aria-composables'
+import { useEvent, useFocusTracker } from '@varia/composables'
 
 export { TabbableProps as ClickableProps } from '../Tabbable'
 

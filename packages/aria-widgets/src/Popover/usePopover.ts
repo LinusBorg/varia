@@ -1,7 +1,7 @@
 import { inject, provide, ref } from 'vue'
 import { useDisclosure } from '../Disclosure'
 import { PopoverAPIKey } from '../types'
-import { TemplRef } from 'vue-aria-composables'
+import { TemplRef } from '@varia/composables'
 import { createInjector } from '../utils/inject'
 
 export const popoverAPIKey = Symbol('popoverAPI') as PopoverAPIKey

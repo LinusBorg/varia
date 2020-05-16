@@ -1,4 +1,4 @@
-import { ArrowNavigation, createCachedIdFn } from 'vue-aria-composables'
+import { ArrowNavigation, createCachedIdFn } from '@varia/composables'
 import {
   ExtractPropTypes,
   reactive,

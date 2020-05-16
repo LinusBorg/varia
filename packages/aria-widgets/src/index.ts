@@ -12,4 +12,4 @@ export * from './SkipToContent'
 
 export * from './types'
 
-export * from 'vue-aria-composables'
+export * from '@varia/composables'

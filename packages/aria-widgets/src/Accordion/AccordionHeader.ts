@@ -2,7 +2,7 @@ import { defineComponent, h, PropType, computed, toRef } from 'vue'
 import { AccordionAPI, AccordionAPIKey, ButtonOptions } from '../types'
 import { injectAccordionAPI } from './use-accordion'
 import { ButtonProps, useButton } from '../Button'
-import { useArrowNavigationChild, createId } from 'vue-aria-composables'
+import { useArrowNavigationChild, createId } from '@varia/composables'
 
 export interface AccordionHeaderProps extends ButtonOptions {
   tag?: string

@@ -6,7 +6,7 @@
   "homepage": "https://github.com/LinusBorg/varia/packages/aria-composables",
   "license": "Apache-2.0",
   "main": "dist/index.js",
-  "module": "dist/vue-aria-composables.esm.js",
+  "module": "dist/composables.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",

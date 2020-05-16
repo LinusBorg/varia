@@ -2,7 +2,7 @@ import { defineComponent, ref, computed, toRefs, h, PropType } from 'vue'
 import { injectListBoxAPI } from './use-listbox'
 import { useButton, ButtonProps } from '../Button'
 import { ButtonOptions, ListBoxAPI, ListBoxAPIKey } from '../types'
-import { useArrowNavigationChild } from 'vue-aria-composables'
+import { useArrowNavigationChild } from '@varia/composables'
 
 export const listBoxItemProps = {
   tag: {
