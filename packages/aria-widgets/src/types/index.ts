@@ -145,7 +145,6 @@ export type DisclosureAPIKey = InjectionKey<DisclosureAPI>
  */
 export interface PopoverContentOptions {
   returnFocusOnClose: boolean
-  closeOnBlur: boolean
   closeOnEscape: boolean
   closeOnClickOutside: boolean
   focusOnOpen: boolean
@@ -180,5 +179,23 @@ export interface FocusTrapOptions {
  * Teleport
  */
 export interface TeleportProps extends Record<string, any> {
-  tag: string
+  tag?: string
 }
+
+/**
+ * Dialog
+ */
+
+export interface DialogOptions {
+  modal?: boolean
+}
+
+export interface DialogAPI extends PopoverAPI {
+  options: {
+    id: string
+  } & DialogOptions
+}
+export type DialogAPIKey = InjectionKey<DialogAPI>
+
+export interface DialogContentOptions
+  extends Omit<PopoverContentOptions, 'popperOptions'> {}

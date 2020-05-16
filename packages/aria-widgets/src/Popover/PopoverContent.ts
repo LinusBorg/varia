@@ -7,7 +7,6 @@ import {
   watch,
   watchEffect,
   nextTick,
-  reactive,
 } from 'vue'
 import {
   useKeyIf,
@@ -32,7 +31,6 @@ export const PopoverContentProps = {
   apiKey: {
     type: Symbol as PropType<PopoverAPIKey>,
   },
-  closeOnBlur: { type: Boolean as PropType<boolean>, default: true },
   closeOnEscape: { type: Boolean as PropType<boolean>, default: true },
   closeOnClickOutside: {
     type: Boolean as PropType<boolean>,
@@ -51,7 +49,6 @@ export const PopoverContentProps = {
 }
 
 const defaults: PopoverContentOptions = {
-  closeOnBlur: true,
   closeOnEscape: true,
   closeOnClickOutside: true,
   focusOnOpen: false,
@@ -128,7 +125,7 @@ export const PopoverContent = defineComponent({
     const state = usePopoverContent(props, api)
     return () =>
       state.isOpen.value
-        ? h(props.tag, state.attributes.value, slots.default?.(reactive(state)))
+        ? h(props.tag, state.attributes.value, slots.default?.(state))
         : null
   },
 })

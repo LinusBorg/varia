@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { PopoverTrigger, PopoverContent, usePopover } from '@varia/widgets'
 
 export default defineComponent({
@@ -55,7 +55,8 @@ export default defineComponent({
     PopoverContent,
   },
   setup() {
-    usePopover()
+    const state = ref(false)
+    usePopover(state)
   },
 })
 </script>

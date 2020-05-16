@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 import {
   DisclosureTrigger,
   DisclosureContent,
@@ -25,7 +25,8 @@ export default defineComponent({
     DisclosureContent,
   },
   setup() {
-    useDisclosure()
+    const isOpen = ref(false)
+    useDisclosure(isOpen)
 
     return {}
   },
