@@ -90,7 +90,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { Tabs, Tab, TabList, TabPanel /*, useTabs*/ } from 'vue-aria-widgets'
+import { Tabs, Tab, TabList, TabPanel /*, useTabs*/ } from '@varia/widgets'
 
 export default defineComponent({
   components: {

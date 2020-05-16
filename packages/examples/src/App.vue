@@ -63,7 +63,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
-import { SkipToContent, VisuallyHidden, Announcer } from 'vue-aria-widgets'
+import { SkipToContent, VisuallyHidden, Announcer } from '@varia/widgets'
 export default defineComponent({
   name: 'App',
   components: {

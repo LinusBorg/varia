@@ -16,7 +16,7 @@ import {
   DisclosureTrigger,
   DisclosureContent,
   useDisclosure,
-} from 'vue-aria-widgets'
+} from '@varia/widgets'
 
 export default defineComponent({
   components: {

@@ -9,7 +9,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useAnnouncer } from 'vue-aria-widgets'
+import { useAnnouncer } from '@varia/widgets'
 export default defineComponent({
   name: 'AnnouncerDemos',
   setup() {

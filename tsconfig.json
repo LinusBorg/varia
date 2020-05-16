@@ -2,8 +2,8 @@
   "extends": "./config/typescript/tsconfig.build.json",
   "compilerOptions": {
     "paths": {
-      "vue-aria-composables": ["./packages/aria-composables/src"],
-      "vue-aria-widgets": ["./packages/aria-widgets/src"]
+      "@varia/composables": ["./packages/aria-composables/src"],
+      "@varia/widgets": ["./packages/aria-widgets/src"]
     },
     "baseUrl": ".",
     "rootDir": "."

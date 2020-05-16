@@ -26,7 +26,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { FocusTrap } from 'vue-aria-widgets'
+import { FocusTrap } from '@varia/widgets'
 
 export default defineComponent({
   name: 'FocusTraps',

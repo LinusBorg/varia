@@ -1,7 +1,7 @@
 {
   "name": "@varia/composables",
   "version": "0.0.0",
-  "description": "Core composables for vue-aria-widgets",
+  "description": "Core composables for @varia/widgets",
   "author": "Thorsten <t.luenborg@googlemail.com>",
   "homepage": "https://github.com/LinusBorg/varia/packages/aria-composables",
   "license": "Apache-2.0",

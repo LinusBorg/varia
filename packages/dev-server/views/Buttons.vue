@@ -8,7 +8,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { Button } from 'vue-aria-widgets'
+import { Button } from '@varia/widgets'
 export default defineComponent({
   components: {
     Button,

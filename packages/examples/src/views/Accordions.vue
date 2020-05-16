@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRaw } from 'vue'
-import { Accordion, AccordionHeader, AccordionContent } from 'vue-aria-widgets'
+import { Accordion, AccordionHeader, AccordionContent } from '@varia/widgets'
 
 export default defineComponent({
   name: 'Accordions',

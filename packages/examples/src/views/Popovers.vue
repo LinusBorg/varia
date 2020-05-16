@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { PopoverTrigger, PopoverContent, usePopover } from 'vue-aria-widgets'
+import { PopoverTrigger, PopoverContent, usePopover } from '@varia/widgets'
 
 export default defineComponent({
   components: {

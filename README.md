@@ -27,7 +27,7 @@ So:
 ```javascript
 import { createApp } from 'vue'
 // import the plugin
-import { install as plugin } from 'vue-aria-widgets'
+import { install as plugin } from '@varia/widgets'
 
 import App from './App.vue'
 
@@ -207,7 +207,7 @@ createApp(App)
 
 <script lang="ts">
   import { defineComponent } from 'vue'
-  import { Tab, TabList, TabPanel, useTabs } from 'vue-aria-widgets'
+  import { Tab, TabList, TabPanel, useTabs } from '@varia/widgets'
 
   export default defineComponent({
     components: {

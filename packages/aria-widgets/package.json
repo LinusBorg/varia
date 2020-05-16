@@ -5,7 +5,7 @@
   "homepage": "https://github.com/LinusBorg/varia/packages/aria-widgets",
   "license": "Apache-2.0",
   "main": "dist/index.js",
-  "module": "dist/vue-aria-widgets.esm.js",
+  "module": "dist/widgets.esm.js",
   "files": [
     "dist",
     "src"
