@@ -24,9 +24,10 @@ import {
   wrapProp,
 } from '@varia/composables'
 
-import { useInert } from './inert'
+// import { useInert } from './inert'
 
 import { FocusTrapOptions } from '../types'
+import { getFocusableElements } from 'packages/aria-composables/dist/utils'
 
 // only one FocusTrap can be active at a time.
 // So we track a Queue of all active FocusTraps,
@@ -43,6 +44,29 @@ const focusTrapQueue = readonly({
   remove,
 })
 
+function getNextFocusElement(
+  startEl: HTMLElement,
+  endEl: HTMLElement,
+  direction: 'forward' | 'backward'
+) {
+  const property = 'backward' ? 'previousElementSibling' : 'nextElementSibling'
+  let nextSibling: Element | null = startEl[property]
+  while (nextSibling && nextSibling !== endEl) {
+    const els = getFocusableElements(nextSibling as HTMLElement)
+    const idx = direction === 'backward' ? els.length - 1 : 0
+    if (els[idx]) return els[idx]
+    nextSibling = nextSibling[property]
+  }
+  return undefined
+}
+
+function isBetween<El extends Element = HTMLElement>(el: El, el1: El, el2: El) {
+  return (
+    el.compareDocumentPosition(el1) & Node.DOCUMENT_POSITION_FOLLOWING &&
+    el.compareDocumentPosition(el2) & Node.DOCUMENT_POSITION_PRECEDING
+  )
+}
+
 const defaultOptions = {
   activateOnMount: true,
 }
@@ -54,7 +78,6 @@ export function useFocusTrap(
   const tabDirection = useTabDirection()
   const focusTracker = useFocusTracker()
 
-  const wrapperEl: TemplRef = ref()
   const startEl: TemplRef = ref()
   const endEl: TemplRef = ref()
 
@@ -71,7 +94,8 @@ export function useFocusTrap(
   watch(state, state => {
     state ? activate() : deactivate()
   })
-  options.useInert && useInert(wrapperEl, isActiveTrap)
+
+  // options.useInert && useInert(wrapperEl, isActiveTrap)
 
   // Mount/Unmount
   options.activateOnMount && onMounted(activate)
@@ -82,12 +106,12 @@ export function useFocusTrap(
     switch (tabDirection.value) {
       case 'forward':
         if (skip === 'forward') return
-        el = getFirstFocusableChild(wrapperEl.value!)
+        el = getNextFocusElement(startEl.value!, endEl.value!, 'forward')
         el && el.focus()
         break
       case 'backward':
         if (skip === 'backward') return
-        el = getLastFocusableChild(wrapperEl.value!)
+        el = getNextFocusElement(startEl.value!, endEl.value!, 'backward')
         el && el.focus()
         break
     }
@@ -100,29 +124,23 @@ export function useFocusTrap(
   // move focus if - for whatever reason, i.e. a mouse click,
   // any element not included of the trap's elements has received focus
   useEventIf(isActiveTrap, document, 'focusin', ({ target }) => {
-    const wrapper = wrapperEl.value
-    if (!wrapper) return
-    if (wrapper.contains(target as Node)) return
     if (target === startEl.value || target === endEl.value) return
+    if (isBetween(target as HTMLElement, startEl.value!, endEl.value!)) return
     const prevEl = focusTracker.prevEl.value
     if (prevEl) {
-      if (wrapperEl.value?.contains(prevEl)) {
+      if (isBetween(prevEl, startEl.value!, endEl.value!)) {
         // if focus was moved outside of the Trap,
         // bring it back to the last element in the Trap
         applyFocus(prevEl)
       } else {
         // but if the previously focussed Element wasn't inside the FocusTrap,
         // move focus to the first element in the Trap.
-        const el = getFirstFocusableChild(wrapperEl.value!)
-        el && applyFocus(el)
+        startEl.value!.focus()
       }
     }
   })
 
   return {
-    wrapperElAttrs: {
-      ref: wrapperEl,
-    },
     startElAttrs: computed(() => ({
       ref: startEl,
       'data-varia-visually-hidden': true,
@@ -167,7 +185,7 @@ export const FocusTrap = defineComponent({
     return () => {
       return [
         h('SPAN', focusTrap.startElAttrs.value),
-        h(props.tag || 'DIV', focusTrap.wrapperElAttrs, slots.default?.()),
+        ...(slots.default?.() || []),
         h('SPAN', focusTrap.endElAttrs.value),
       ]
     }

@@ -11,6 +11,7 @@ export {
   createId,
   createCachedIdFn,
   applyFocus,
+  getFocusableElements,
   getFirstFocusableChild,
   getLastFocusableChild,
   TABBABLE_ELS,

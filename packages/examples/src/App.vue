@@ -26,6 +26,9 @@
       <router-link to="/popovers" :aria-current="isCurrentRoute('Popovers')">
         Popovers
       </router-link>
+      <router-link to="/dialogs" :aria-current="isCurrentRoute('Dialogs')">
+        Dialogs
+      </router-link>
       <router-link to="/focustraps" :aria-current="isCurrentRoute('FousTraps')">
         FocusTraps
       </router-link>

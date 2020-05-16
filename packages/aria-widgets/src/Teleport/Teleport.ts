@@ -10,7 +10,7 @@ export const Teleport = defineComponent(function Teleport(
       'data-variant-teleport': attrs.target as string,
       ...(props.disabled ? {} : { style: 'display: none' }),
     },
-    [h('teleport', attrs, slots.default?.())]
+    [h('teleport', attrs, slots.default)]
   )
 })
 
@@ -18,3 +18,5 @@ export const Teleport = defineComponent(function Teleport(
 Teleport.props = {
   tag: String,
 }
+// @ts-ignore
+Teleport.name = 'Teleport'
