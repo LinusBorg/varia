@@ -94,7 +94,7 @@ export function useArrowNavigation(
             elementIds.has(target.id) &&
             (currentActiveId.value = target.id),
         }
-      : ref({})
+      : {}
   })
   // Determine wether or not our element group has focus
   //  A. if virtual: true, we only need to watch the wrapper Element because we will be using active-descendant
