@@ -40,10 +40,7 @@ export function useTab(props: useTabOptions, api: TabsAPI) {
 
   const hasFocus = computed(() => id === api.arrowNav.currentActiveId.value)
   const select = () => {
-    // TODO: maybe the removal of `el` below breaks tabs?
-    !props.disabled &&
-      props.name &&
-      api.state.select(props.name /*, el.value!*/)
+    !props.disabled && props.name && api.state.select(props.name)
   }
 
   // Verify that this tab is a child of a role=tablist element
