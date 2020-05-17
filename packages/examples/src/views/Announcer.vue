@@ -2,7 +2,10 @@
   <div>
     <label for="announcer-message">
       Enter Message for Announcer <br />
-      <textarea v-model="message" /><br />
+      <textarea
+        class="__announcer-area border border-gray-300 rounded-sm"
+        v-model="message"
+      /><br />
     </label>
     <button @click="announce">Announce Message</button>
   </div>
@@ -22,4 +25,9 @@ export default defineComponent({
   },
 })
 </script>
-<style lang="postcss"></style>
+<style lang="postcss" scoped>
+.__announcer-area {
+  min-width: 400px;
+  min-height: 300px;
+}
+</style>
