@@ -19,6 +19,7 @@ export interface ArrowNavigationOptions {
   virtual?: boolean
 }
 export interface ArrowNavigation {
+  hasFocus: Ref<boolean | undefined>
   currentActiveElement: TemplRef
   currentActiveId: Ref<string>
   virtual: boolean

@@ -221,6 +221,7 @@ export function useArrowNavigation(
   })
 
   return {
+    hasFocus,
     currentActiveElement,
     currentActiveId,
     virtual,
