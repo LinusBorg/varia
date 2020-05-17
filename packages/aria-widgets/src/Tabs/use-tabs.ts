@@ -81,7 +81,8 @@ export function useTabs(_state: Ref<string>, options: Partial<TabsOptions>) {
       virtual,
     }),
   }
-  const tabsAPIKey = customName ? Symbol('customTabAPIKey') : _tabsAPIKey
+  const tabsAPIKey =
+    customName && customName.value ? Symbol('customTabAPIKey') : _tabsAPIKey
   provide(tabsAPIKey, tabsAPI)
 
   return {

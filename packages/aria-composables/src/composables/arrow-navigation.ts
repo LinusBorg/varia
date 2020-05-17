@@ -81,24 +81,31 @@ export function useArrowNavigation(
   const wrapperElRef = _wrapperElRef || ref()
   // wrapperAttributes need to be applied to the wrapper Element
   // but only when using "virtual" mode
-  const wrapperAttributes = virtual.value
-    ? computed(() => ({
-        ref: wrapperElRef,
-        tabindex: 0,
-        'aria-activedescendant': currentActiveId.value,
-        onClick: ({ target }: { target: Element }) =>
-          target &&
-          target.id &&
-          elementIds.has(target.id) &&
-          (currentActiveId.value = target.id),
-      }))
-    : ref({})
+  // TODO: pull this out into its own use* composable
+  const wrapperAttributes = computed(() => {
+    return virtual.value
+      ? {
+          ref: wrapperElRef,
+          tabindex: 0,
+          'aria-activedescendant': currentActiveId.value,
+          onClick: ({ target }: { target: Element }) =>
+            target &&
+            target.id &&
+            elementIds.has(target.id) &&
+            (currentActiveId.value = target.id),
+        }
+      : ref({})
+  })
   // Determine wether or not our element group has focus
   //  A. if virtual: true, we only need to watch the wrapper Element because we will be using active-descendant
   //  B. if virtual: false, we need to watch the individual elementIds because we will be using the roving tabindex pattern
-  const { hasFocus } = virtual.value
-    ? useElementFocusObserver(wrapperElRef)
-    : useSelectorFocusObserver(elementIdSelector)
+  const virtualObserver = useElementFocusObserver(wrapperElRef)
+  const selectorObserer = useSelectorFocusObserver(elementIdSelector)
+  const hasFocus = computed(() => {
+    return virtual.value
+      ? virtualObserver.hasFocus.value
+      : selectorObserer.hasFocus.value
+  })
 
   /**
    * @function
@@ -249,12 +256,14 @@ export function useArrowNavigationChild(
   tabindex: string | undefined
   'data-varia-focus'?: boolean
 }> {
-  return virtual.value
-    ? computed(() => ({
-        tabindex: undefined,
-        'data-varia-focus': hasFocus.value,
-      }))
-    : computed(() => ({
-        tabindex: hasFocus.value ? '0' : '-1',
-      }))
+  return computed(() => {
+    return virtual.value
+      ? {
+          tabindex: undefined,
+          'data-varia-focus': hasFocus.value,
+        }
+      : {
+          tabindex: hasFocus.value ? '0' : '-1',
+        }
+  })
 }

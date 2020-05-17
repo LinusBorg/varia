@@ -41,8 +41,8 @@ export const TabPanel = defineComponent({
   name: 'TabPanel',
   props: TabPanelProps,
   setup(props, { slots }) {
-    // const api = injectTabsAPI(props.tabsKey)
-    const api = inject(_tabsAPIKey)
+    const api = injectTabsAPI(props.tabsKey)
+    // const api = inject(_tabsAPIKey)
     const { isSelected, attributes } = useTabPanel(props, api!)
     return () => {
       return (

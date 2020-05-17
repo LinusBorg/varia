@@ -74,8 +74,8 @@ export const Tab = defineComponent({
   name: 'Tab',
   props: TabProps,
   setup(props, { slots }) {
-    // const api = injectTabsAPI()
-    const api = inject(_tabsAPIKey)
+    const api = injectTabsAPI()
+    // const api = inject(_tabsAPIKey)
     const { isSelected, attributes } = useTab(props, api!)
     return () => {
       // console.log(attributes.value)
