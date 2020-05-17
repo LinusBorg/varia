@@ -123,6 +123,7 @@ export const ListBox = defineComponent({
         {
           role: 'listbox',
           ...api.arrowNavAPI.wrapperAttributes.value,
+          ...(props.multiple ? { 'aria-multiselectable': true } : {}),
         },
         slots.default?.(api)
       )
