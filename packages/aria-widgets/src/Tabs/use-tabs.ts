@@ -7,12 +7,14 @@ import {
   h,
   PropType,
   Ref,
+  reactive,
 } from 'vue'
 import {
   createCachedIdFn,
   useArrowNavigation,
   TemplRef,
   wrapProp,
+  useReactiveDefaults,
 } from '@varia/composables'
 import './index.css'
 import { omit } from '../utils/pick'
@@ -22,16 +24,26 @@ import { createInjector } from '../utils/inject'
 
 export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
 
-export function useTabs(_state: Ref<string | undefined>, options: TabsOptions) {
+const defaultOptions: TabsOptions = {
+  customName: undefined,
+  // Options for ArrowNavigation
+  orientation: 'horizontal',
+  loop: true,
+  startOnFirstSelected: true,
+  autoSelect: false,
+  virtual: false,
+}
+
+export function useTabs(_state: Ref<string>, options: Partial<TabsOptions>) {
   const {
     customName,
     // Options for ArrowNavigation
     orientation,
     loop,
     startOnFirstSelected,
-    autoSelect = false,
-    virtual = false,
-  } = options
+    autoSelect,
+    virtual,
+  } = useReactiveDefaults(options, defaultOptions)
 
   // Tab State
   const selectedTab = _state
@@ -42,13 +54,13 @@ export function useTabs(_state: Ref<string | undefined>, options: TabsOptions) {
   // Keyboard Navigation
   const el: TemplRef = ref()
   const arrowNav = useArrowNavigation(
-    {
+    reactive({
       orientation,
       loop,
       autoSelect,
       startOnFirstSelected,
       virtual,
-    },
+    }),
     el
   )
 
@@ -60,7 +72,14 @@ export function useTabs(_state: Ref<string | undefined>, options: TabsOptions) {
       selected: readonly(selectedTab),
     },
     arrowNav,
-    options,
+    options: reactive({
+      customName,
+      orientation,
+      loop,
+      startOnFirstSelected,
+      autoSelect,
+      virtual,
+    }),
   }
   const tabsAPIKey = customName ? Symbol('customTabAPIKey') : _tabsAPIKey
   provide(tabsAPIKey, tabsAPI)
@@ -80,7 +99,7 @@ export const tabsProps = {
   },
   modelValue: {
     type: String,
-    required: true,
+    default: '',
   },
   orientation: String as PropType<'horizontal' | 'vertical'>,
   loop: Boolean as PropType<boolean>,

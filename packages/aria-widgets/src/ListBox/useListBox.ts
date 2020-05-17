@@ -11,6 +11,7 @@ import {
   createCachedIdFn,
   wrapProp,
   useArrowNavigation,
+  useReactiveDefaults,
 } from '@varia/composables'
 
 import { ListBoxOptions, ListBoxAPI, ListBoxAPIKey } from '../types'
@@ -18,13 +19,21 @@ import { createInjector } from '../utils/inject'
 
 export const listBoxAPIKey = Symbol('listBoxAPI') as ListBoxAPIKey
 
-export function useListBox(state: Ref<any[]>, options: ListBoxOptions = {}) {
-  const {
-    multiple,
-    orientation = 'vertical',
-    virtual = true,
-    autoSelect = false,
-  } = options
+const defaultOptions: ListBoxOptions = {
+  autoSelect: false,
+  virtual: false,
+  multiple: false,
+  orientation: 'vertical',
+}
+
+export function useListBox(
+  state: Ref<any[]>,
+  options: Partial<ListBoxOptions> = {}
+) {
+  const { multiple, orientation, virtual, autoSelect } = useReactiveDefaults(
+    options,
+    defaultOptions
+  )
 
   // State
   // TODO: this should be cleaner and possibly abstracted away
@@ -34,7 +43,7 @@ export function useListBox(state: Ref<any[]>, options: ListBoxOptions = {}) {
     s.forEach(item => selected.add(item))
   })
   const select = (item: any) => {
-    !multiple && selected.clear()
+    !multiple.value && selected.clear()
     selected.add(item)
     state.value = Array.from(selected)
   }
@@ -46,12 +55,14 @@ export function useListBox(state: Ref<any[]>, options: ListBoxOptions = {}) {
     selected.has(item) ? unselect(item) : select(item)
   }
   // Keyboard navigation
-  const arrowNavAPI = useArrowNavigation({
-    orientation,
-    startOnFirstSelected: true,
-    virtual,
-    autoSelect: multiple ? false : autoSelect,
-  })
+  const arrowNavAPI = useArrowNavigation(
+    reactive({
+      orientation,
+      startOnFirstSelected: true,
+      virtual,
+      autoSelect: multiple.value ? false : autoSelect.value,
+    })
+  )
 
   // API
   const api: ListBoxAPI = {
@@ -63,7 +74,12 @@ export function useListBox(state: Ref<any[]>, options: ListBoxOptions = {}) {
       toggle,
     },
     arrowNavAPI,
-    options,
+    options: reactive({
+      multiple,
+      orientation,
+      virtual,
+      autoSelect,
+    }),
   }
   provide(listBoxAPIKey, api)
 

@@ -91,10 +91,10 @@ export interface ButtonOptions extends ClickableOptions {}
  */
 
 export type ListBoxOptions = {
-  multiple?: boolean
-  orientation?: 'horizontal' | 'vertical'
-  virtual?: boolean
-  autoSelect?: boolean
+  multiple: boolean
+  orientation: 'horizontal' | 'vertical'
+  virtual: boolean
+  autoSelect: boolean
 }
 
 export interface ListBoxAPI extends BaseAPI {

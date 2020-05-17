@@ -1,5 +1,12 @@
-import { computed, defineComponent, ExtractPropTypes, PropType, h } from 'vue'
-import { injectTabsAPI } from './use-tabs'
+import {
+  computed,
+  defineComponent,
+  ExtractPropTypes,
+  PropType,
+  h,
+  inject,
+} from 'vue'
+import { injectTabsAPI, _tabsAPIKey } from './use-tabs'
 
 import { TabsAPI, TabsAPIKey } from '../types'
 
@@ -34,8 +41,9 @@ export const TabPanel = defineComponent({
   name: 'TabPanel',
   props: TabPanelProps,
   setup(props, { slots }) {
-    const api = injectTabsAPI(props.tabsKey)
-    const { isSelected, attributes } = useTabPanel(props, api)
+    // const api = injectTabsAPI(props.tabsKey)
+    const api = inject(_tabsAPIKey)
+    const { isSelected, attributes } = useTabPanel(props, api!)
     return () => {
       return (
         isSelected.value &&

@@ -13,16 +13,16 @@ export type MaybeTemplRef<El = HTMLElement> = MaybeRef<TemplRefType<El>>
 // ArrowNavigation
 export interface ArrowNavigationOptions {
   orientation: 'horizontal' | 'vertical' | undefined
-  loop?: boolean
-  startOnFirstSelected?: boolean
-  autoSelect?: boolean
-  virtual?: boolean
+  loop: boolean
+  startOnFirstSelected: boolean
+  autoSelect: boolean
+  virtual: boolean
 }
 export interface ArrowNavigation {
   hasFocus: Ref<boolean | undefined>
   currentActiveElement: TemplRef
   currentActiveId: Ref<string>
-  virtual: boolean
+  virtual: Ref<boolean>
   wrapperAttributes: Ref<
     | {
         'aria-activedescendant': string

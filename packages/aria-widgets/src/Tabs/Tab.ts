@@ -6,9 +6,10 @@ import {
   ExtractPropTypes,
   PropType,
   h,
+  inject,
 } from 'vue'
 import { useArrowNavigationChild, createId } from '@varia/composables'
-import { injectTabsAPI } from './use-tabs'
+import { injectTabsAPI, _tabsAPIKey } from './use-tabs'
 import { useClickable, ClickableProps } from '../Clickable'
 
 import { TabsAPI, TabsAPIKey } from '../types'
@@ -73,8 +74,9 @@ export const Tab = defineComponent({
   name: 'Tab',
   props: TabProps,
   setup(props, { slots }) {
-    const api = injectTabsAPI(props.tabsKey)
-    const { isSelected, attributes } = useTab(props, api)
+    // const api = injectTabsAPI()
+    const api = inject(_tabsAPIKey)
+    const { isSelected, attributes } = useTab(props, api!)
     return () => {
       // console.log(attributes.value)
       return h(

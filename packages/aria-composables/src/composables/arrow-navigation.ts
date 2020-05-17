@@ -7,6 +7,7 @@ import {
   onMounted,
   onUnmounted,
   nextTick,
+  toRefs,
 } from 'vue'
 import { TemplRef, MaybeRef, ArrowNavigation } from '../types'
 import {
@@ -17,6 +18,7 @@ import { useArrowKeys, useKeyIf } from './keys'
 import { sortByDocPosition } from '../utils/focusable-elements'
 
 import { ArrowNavigationOptions } from '../types'
+import { useReactiveDefaults } from './reactive-defaults'
 
 /**
  * Utility to determine the first HTMLElement in an array
@@ -30,8 +32,16 @@ function getFirstSelectedEl(_elementIds: Array<HTMLElement>) {
   return elementIds.find(el => el.getAttribute('aria-selected') === 'true')
 }
 
+const defaultOptions = {
+  autoSelect: false,
+  loop: false,
+  orientation: undefined,
+  startOnFirstSelected: false,
+  virtual: false,
+}
+
 export function useArrowNavigation(
-  options: ArrowNavigationOptions,
+  options: Partial<ArrowNavigationOptions>,
   _wrapperElRef?: TemplRef
 ): ArrowNavigation {
   const {
@@ -39,8 +49,8 @@ export function useArrowNavigation(
     loop,
     orientation,
     startOnFirstSelected,
-    virtual = false,
-  } = options
+    virtual,
+  } = useReactiveDefaults(options, defaultOptions)
 
   /**
    * `elementIds` is a set containing all elementIds that we want to control with arrow keys
@@ -71,7 +81,7 @@ export function useArrowNavigation(
   const wrapperElRef = _wrapperElRef || ref()
   // wrapperAttributes need to be applied to the wrapper Element
   // but only when using "virtual" mode
-  const wrapperAttributes = virtual
+  const wrapperAttributes = virtual.value
     ? computed(() => ({
         ref: wrapperElRef,
         tabindex: 0,
@@ -86,7 +96,7 @@ export function useArrowNavigation(
   // Determine wether or not our element group has focus
   //  A. if virtual: true, we only need to watch the wrapper Element because we will be using active-descendant
   //  B. if virtual: false, we need to watch the individual elementIds because we will be using the roving tabindex pattern
-  const { hasFocus } = virtual
+  const { hasFocus } = virtual.value
     ? useElementFocusObserver(wrapperElRef)
     : useSelectorFocusObserver(elementIdSelector)
 
@@ -127,10 +137,10 @@ export function useArrowNavigation(
 
     switch (to) {
       case 'next':
-        nextIdx = idx >= max ? (loop ? 0 : idx) : idx + 1
+        nextIdx = idx >= max ? (loop.value ? 0 : idx) : idx + 1
         break
       case 'prev':
-        nextIdx = idx <= 0 ? (loop ? max : idx) : idx - 1
+        nextIdx = idx <= 0 ? (loop.value ? max : idx) : idx - 1
         break
       case 'start':
         nextIdx = 0
@@ -146,7 +156,7 @@ export function useArrowNavigation(
     if (nextEl) {
       currentActiveId.value = nextEl.id
     }
-    !virtual && nextEl && hasFocus.value && nextEl.focus()
+    !virtual.value && nextEl && hasFocus.value && nextEl.focus()
   }
 
   /**
@@ -155,12 +165,12 @@ export function useArrowNavigation(
   const backward = (event: KeyboardEvent) => {
     if (event.shiftKey || event.ctrlKey) return
     moveto('prev')
-    autoSelect && click()
+    autoSelect.value && click()
   }
   const forward = (event: KeyboardEvent) => {
     if (event.shiftKey || event.ctrlKey) return
     moveto('next')
-    autoSelect && click()
+    autoSelect.value && click()
   }
   const click = () => currentActiveElement.value?.click()
   useArrowKeys(
@@ -171,23 +181,23 @@ export function useArrowNavigation(
       right: forward,
       left: backward,
     },
-    { orientation }
+    reactive({ orientation })
   )
 
   useKeyIf(hasFocus, ['Home', 'End', 'Enter', ' '], ((event: KeyboardEvent) => {
     switch (event.key) {
       case 'Home':
         moveto('start')
-        autoSelect && click()
+        autoSelect.value && click()
         break
       case 'End':
         moveto('end')
-        autoSelect && click()
+        autoSelect.value && click()
         break
       case 'Enter':
       case ' ':
         // when using virtual mode, we need to simulate a click on the "focused" argument
-        virtual && click()
+        virtual.value && click()
         break
       default:
         return
@@ -199,7 +209,7 @@ export function useArrowNavigation(
    * when the tab sequence reaches out composite widge
    */
   const determineFirstFocus = () => {
-    if (startOnFirstSelected) {
+    if (startOnFirstSelected.value) {
       const selectedEl = getFirstSelectedEl(elementsFromIds())
       selectedEl
         ? (currentActiveId.value = selectedEl.id || '')
@@ -239,7 +249,7 @@ export function useArrowNavigationChild(
   tabindex: string | undefined
   'data-varia-focus'?: boolean
 }> {
-  return virtual
+  return virtual.value
     ? computed(() => ({
         tabindex: undefined,
         'data-varia-focus': hasFocus.value,
