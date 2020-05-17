@@ -1,15 +1,25 @@
-import { defineComponent, ref, computed, toRefs, h, PropType } from 'vue'
-import { injectListBoxAPI } from './use-listbox'
+import {
+  defineComponent,
+  ref,
+  computed,
+  toRefs,
+  h,
+  PropType,
+  inject,
+  watch,
+} from 'vue'
+import { useArrowNavigationChild, TemplRef } from '@varia/composables'
+import { injectListBoxAPI, listBoxAPIKey } from './useListBox'
 import { useButton, ButtonProps } from '../Button'
 import { ButtonOptions, ListBoxAPI, ListBoxAPIKey } from '../types'
-import { useArrowNavigationChild } from '@varia/composables'
 
 export const listBoxItemProps = {
+  ...ButtonProps,
   tag: {
     type: String,
     default: 'DIV',
   },
-  tabsKey: {
+  apiKey: {
     type: Symbol as PropType<ListBoxAPIKey>,
   },
   label: {
@@ -18,53 +28,57 @@ export const listBoxItemProps = {
   item: {
     required: true,
   },
-  ...ButtonProps,
 }
 
-export function useListBoxItem<Item = any>(
-  props: ButtonOptions,
-  api: ListBoxAPI<Item>
-) {
-  const el = ref<HTMLElement>()
-  const id = api.genId(props.item)
+export function useListBoxItem(props: ButtonOptions, api: ListBoxAPI) {
+  const el: TemplRef = ref()
   const onClick = () => {
-    !props.disabled && props.name && api.select(props.name)
+    if (!props.disabled && props.item) {
+      api.state.toggle(props.item)
+    }
   }
   const isDisabled = computed(() => !!props.disabled)
-  api.arrowNavAPI.addToElNavigation(id, isDisabled)
-  const hasFocus = computed(
-    () => !!el.value && api.arrowNavAPI.currentActiveId.value == id
-  )
+  const isSelected = computed(() => api.state.selected.has(props.item))
 
+  // Arrow Navigation
+  const id = api.generateId(props.item)
+  api.arrowNavAPI.addToElNavigation(id, isDisabled)
+  const hasFocus = computed(() => api.arrowNavAPI.currentActiveId.value === id)
+
+  // Attributes
   const buttonAttrs = useButton(props, el)
   const arrowAttrs = useArrowNavigationChild(hasFocus, api.arrowNavAPI)
-  return computed(() => ({
-    ...buttonAttrs.value,
-    ref: el,
-    role: 'option',
-    'aria-selected': api.selected.has(props.item),
-    onClick,
-  }))
+  return computed(() => {
+    const obj = {
+      ...buttonAttrs.value,
+      ...arrowAttrs.value,
+      id,
+      role: 'option' as const,
+      'aria-selected': isSelected.value,
+      onClick,
+      ref: el,
+    }
+    return obj
+  })
 }
 
 export const ListBoxItem = defineComponent({
   name: 'ListboxItem',
   props: listBoxItemProps,
   setup(props, { slots }) {
-    const { item, label } = toRefs(props)
-    const api = injectListBoxAPI(props.tabsKey)
-    const attributes = useListBoxItem(props, api)
+    const { label } = toRefs(props)
+    // const api = injectListBoxAPI(props.apiKey)
+    const api = inject(listBoxAPIKey)
+    const attributes = useListBoxItem(props, api!)
 
     return () => {
-      return slots.replace
-        ? slots.replace(attributes)
-        : h(
-            props.tag,
-            {
-              ...attributes.value,
-            },
-            label?.value || slots.default?.(attributes.value)
-          )
+      return h(
+        props.tag,
+        {
+          ...attributes.value,
+        },
+        label?.value || slots.default?.(attributes.value)
+      )
     }
   },
 })

@@ -30,6 +30,9 @@
       <router-link to="/focustraps" :aria-current="isCurrentRoute('FousTraps')">
         FocusTraps
       </router-link>
+      <router-link to="/listbox" :aria-current="isCurrentRoute('ListBox')">
+        ListBox
+      </router-link>
       <router-link to="/tabs" :aria-current="isCurrentRoute('Tabs')">
         Tabs
       </router-link>

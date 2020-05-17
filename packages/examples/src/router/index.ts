@@ -3,6 +3,7 @@ import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import ButtonsView from '../views/Buttons.vue'
 import TabsView from '../views/Tabs.vue'
+import ListBoxView from '../views/ListBox.vue'
 import PopoversView from '../views/Popovers.vue'
 import DisclosuresView from '../views/Disclosures.vue'
 import AccordionsView from '../views/Accordions.vue'
@@ -26,6 +27,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/tabs',
     name: 'Tabs',
     component: TabsView,
+  },
+  {
+    path: '/listbox',
+    name: 'ListBox',
+    component: ListBoxView,
   },
   {
     path: '/disclosures',

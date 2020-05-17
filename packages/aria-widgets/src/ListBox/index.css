@@ -1,0 +1,9 @@
+[role='listbox'] [role='option']:not([aria-disabled='true']) {
+  cursor: pointer;
+}
+[role='listbox'] {
+  outline: none;
+}
+[role='listbox']:focus [role='option'][data-varia-focus='true'] {
+  outline: 2px solid red;
+}

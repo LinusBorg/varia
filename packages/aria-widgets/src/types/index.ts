@@ -35,6 +35,7 @@ export interface SetStateAPI<Item = string> {
   selected: Set<Item>
   select: (item: Item) => void
   unselect: (item: Item) => void
+  toggle: (item: Item) => void
 }
 
 export interface ElementsAPI<El = TemplRefType> {
@@ -91,17 +92,19 @@ export interface ButtonOptions extends ClickableOptions {}
 
 export type ListBoxOptions = {
   multiple?: boolean
+  orientation?: 'horizontal' | 'vertical'
+  virtual?: boolean
+  autoSelect?: boolean
 }
 
-export interface ListBoxAPI<Item> {
-  genId: (name: string) => string
-  selected: Set<Item>
-  select: (item: Item) => void
-  deselect: (item: Item) => void
+export interface ListBoxAPI extends BaseAPI {
+  generateId: (name: string) => string
+  state: SetStateAPI<any>
   arrowNavAPI: ArrowNavigation
+  options: ListBoxOptions
 }
 
-export type ListBoxAPIKey<Item = any> = InjectionKey<ListBoxAPI<Item>>
+export type ListBoxAPIKey = InjectionKey<ListBoxAPI>
 
 /**
  * Tabs
