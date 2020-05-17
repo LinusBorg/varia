@@ -114,7 +114,7 @@ export const Tabs = defineComponent({
   props: tabsProps,
   setup(props, { slots }) {
     const state = wrapProp(props, 'modelValue')
-    useTabs(state, omit(props, ['tag', 'modelValue']))
+    useTabs(state, props)
     return () => h(props.tag, slots.default?.())
   },
 })
