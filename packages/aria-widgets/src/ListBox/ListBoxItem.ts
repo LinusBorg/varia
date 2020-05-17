@@ -34,7 +34,9 @@ export function useListBoxItem(props: ButtonOptions, api: ListBoxAPI) {
   const el: TemplRef = ref()
   const onClick = () => {
     if (!props.disabled && props.item) {
-      api.state.toggle(props.item)
+      api.options.autoSelect
+        ? api.state.select(props.item)
+        : api.state.toggle(props.item)
     }
   }
   const isDisabled = computed(() => !!props.disabled)
