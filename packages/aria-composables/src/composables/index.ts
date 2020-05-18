@@ -11,7 +11,7 @@ export * from './events'
 
 // State Helpers
 export * from './state'
+export * from './reactive-defaults'
 
 // Other
 export * from './template-refs'
-export * from './reactive-defaults'
