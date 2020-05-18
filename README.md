@@ -40,30 +40,30 @@ createApp(App)
 
 <!-- markdownlint-disable MD033 -->
 <details>
-  <summary>Click here to the the state of development<summary>
+  <summary>Click here to the the state of development</summary>
 
 ### Basics
 
 #### `<Clickable />`
 
-- [ ] Implementation
-- [ ] Examples
+- [x] Implementation
+- ~~Examples~~
 - [ ] Documentation
 - [ ] Unit Tests
 - [ ] E2e Tests
 
 #### `<Tabbable />`
 
-- [ ] Implementation
-- [ ] Examples
+- [x] Implementation
+- ~~Examples~~
 - [ ] Documentation
 - [ ] Unit Tests
 - [ ] E2e Tests
 
 #### `<Button />`
 
-- [ ] Implementation
-- [ ] Examples
+- [x] Implementation
+- [x] Examples
 - [ ] Documentation
 - [ ] Unit Tests
 - [ ] E2e Tests
@@ -88,8 +88,8 @@ createApp(App)
 
 #### `<Disclosure />`
 
-- [ ] Implementation
-- [ ] Examples
+- [x] Implementation
+- [x] Examples
 - [ ] Documentation
 - [ ] Unit Tests
 - [ ] E2e Tests
@@ -104,24 +104,24 @@ createApp(App)
 
 #### `<Dialog />`
 
-- [ ] Implementation
-- [ ] Examples
+- [x] Implementation
+- [x] Examples
 - [ ] Documentation
 - [ ] Unit Tests
 - [ ] E2e Tests
 
 #### `<Accordion />`
 
-- [ ] Implementation
-- [ ] Examples
+- [x] Implementation
+- [x] Examples
 - [ ] Documentation
 - [ ] Unit Tests
 - [ ] E2e Tests
 
 #### `<Tabs />`
 
-- [ ] Implementation
-- [ ] Examples
+- [x] Implementation
+- [x] Examples
 - [ ] Documentation
 - [ ] Unit Tests
 - [ ] E2e Tests
@@ -130,8 +130,8 @@ createApp(App)
 
 #### `<Listbox />`
 
-- [ ] Implementation
-- [ ] Examples
+- [x] Implementation
+- [x] Examples
 - [ ] Documentation
 - [ ] Unit Tests
 - [ ] E2e Tests
@@ -172,15 +172,15 @@ createApp(App)
 
 #### `<FocusTrap />`
 
-- [ ] Implementation
-- [ ] Examples
+- [x] Implementation
+- [x] Examples
 - [ ] Documentation
 - [ ] Unit Tests
 - [ ] E2e Tests
 
 #### `<Teleport />`
 
-- [ ] Implementation
+- [x] Implementation
 - [ ] Examples
 - [ ] Documentation
 - [ ] Unit Tests
@@ -195,14 +195,16 @@ createApp(App)
 ```html
 <template>
   <h2 class="text-xl font-bold mb-2">Basic</h2>
-  <TabList class="border-b border-gray-300">
-    <Tab name="A">Tab A</Tab>
-    <Tab name="B">Tab B</Tab>
-    <Tab name="C">Tab C</Tab>
-  </TabList>
-  <TabPanel name="A">Panel A</TabPanel>
-  <TabPanel name="B">Panel B</TabPanel>
-  <TabPanel name="C">Panel C</TabPanel>
+  <Tabs v-model="selectedTab">
+    <TabList class="border-b border-gray-300">
+      <Tab name="A">Tab A</Tab>
+      <Tab name="B">Tab B</Tab>
+      <Tab name="C">Tab C</Tab>
+    </TabList>
+    <TabPanel name="A">Panel A</TabPanel>
+    <TabPanel name="B">Panel B</TabPanel>
+    <TabPanel name="C">Panel C</TabPanel>
+  </Tabs>
 </template>
 
 <script lang="ts">
@@ -215,13 +217,9 @@ createApp(App)
       TabList,
       TabPanel,
     },
-    setup() {
-      const { selectedTab, select } = useTabs({
-        initialValue: 'A',
-      })
+    data() {
       return {
-        selectedTab,
-        select,
+        selectedTab: 'A',
       }
     },
   })
@@ -242,6 +240,16 @@ This gives you:
 ### Using a lower-level composable
 
 - _TBD_
+
+## Aknowledgements
+
+I've studied other projects that share the same or or a similar close in my endavour, some more closely than others. If I took anything specific from them you'll find mentions in the source.
+
+Projects:
+
+- Vuetensils
+- Reach-UI
+- Reakit
 
 ## For Developers
 
