@@ -7,7 +7,7 @@ import {
   onMounted,
   onUnmounted,
   nextTick,
-  toRefs,
+  readonly,
 } from 'vue'
 import { TemplRef, MaybeRef, ArrowNavigation } from '../types'
 import {
@@ -27,12 +27,61 @@ import { useReactiveDefaults } from './reactive-defaults'
  * @param {Set<HTMLElement>} _elementIds
  * @returns {HTMLElement | undefined}
  */
-function getFirstSelectedEl(_elementIds: Array<HTMLElement>) {
+function getFirstSelectedElement(_elementIds: Array<HTMLElement>) {
   const elementIds = _elementIds.slice().sort(sortByDocPosition)
   return elementIds.find(el => el.getAttribute('aria-selected') === 'true')
 }
 
-const defaultOptions = {
+/**
+ * Gets elements for the elementIds we have
+ * @param selector {string} CSS selector of all the ids of elements in the nav.
+ */
+function elementsFromIds(selector: string) {
+  const els =
+    selector.length > 0
+      ? (Array.from(document.querySelectorAll(selector)) as HTMLElement[])
+      : []
+  return els
+}
+
+/**
+ * This function creates an aPI for us to track which element ids are
+ * currentply part of the navigation, and add new ids to this group.
+ *
+ * @returns {object} elementIdsAPI
+ * @property {Set<string>} elementIdsAPI.elementIds Set of all ids
+ * @property {Ref<string>} elementIdsAPI.elementIdSelector CSS selector built from ids
+ * @property {function} elementIdsAPI.addToElNavigation add id string to the Set
+ */
+function createElementIdState() {
+  const elementIds = reactive(new Set<string>())
+  const elementIdSelector = computed(() => {
+    return Array.from(elementIds)
+      .map(id => '#' + id)
+      .join(',')
+  })
+  const addToElNavigation = (
+    id: string,
+    _disabled: MaybeRef<boolean | undefined> = false
+  ) => {
+    const disabled = ref(_disabled)
+    watch(
+      disabled,
+      nextDisabled => {
+        !nextDisabled ? elementIds.add(id) : elementIds.delete(id)
+      },
+      { immediate: true }
+    )
+    onUnmounted(() => elementIds.delete(id))
+  }
+  return {
+    elementIds: readonly(elementIds),
+    elementIdSelector: readonly(elementIdSelector),
+    addToElNavigation,
+  }
+}
+
+const defaultOptions: ArrowNavigationOptions = {
   autoSelect: false,
   loop: false,
   orientation: undefined,
@@ -52,25 +101,15 @@ export function useArrowNavigation(
     virtual,
   } = useReactiveDefaults(options, defaultOptions)
 
-  /**
-   * `elementIds` is a set containing all elementIds that we want to control with arrow keys
-   */
-  const elementIds = reactive(new Set<string>())
-  const elementIdSelector = computed(() => {
-    return Array.from(elementIds)
-      .map(id => '#' + id)
-      .join(',')
-  })
-  const elementsFromIds = () => {
-    const selector = elementIdSelector.value
-    const els =
-      selector.length > 0
-        ? (Array.from(document.querySelectorAll(selector)) as HTMLElement[])
-        : []
-    return els
-  }
-  // `currentActiveElement` will contain the element which is currently
-  // "focused" by the arrow navigation
+  // state and methods to work with element id selectors of children
+  const {
+    elementIds,
+    elementIdSelector,
+    addToElNavigation,
+  } = createElementIdState()
+
+  // The id of the child element that is considered active and will receive focus
+  // if the user navigates to this navigation's group of elements
   const currentActiveId = ref('')
   const currentActiveElement = computed(() => {
     return currentActiveId.value.length > 0
@@ -87,6 +126,7 @@ export function useArrowNavigation(
       ? {
           ref: wrapperElRef,
           tabindex: 0,
+          'aria-owns': Array.from(elementIds as Set<string>).join(','),
           'aria-activedescendant': currentActiveId.value,
           onClick: ({ target }: { target: Element }) =>
             target &&
@@ -96,9 +136,12 @@ export function useArrowNavigation(
         }
       : {}
   })
-  // Determine wether or not our element group has focus
-  //  A. if virtual: true, we only need to watch the wrapper Element because we will be using active-descendant
-  //  B. if virtual: false, we need to watch the individual elementIds because we will be using the roving tabindex pattern
+
+  // Determine wether or not our group has Focus
+  //  A. if virtual: true, we only need to watch the wrapper Element
+  //     because we will be using active - descendant
+  //  B. if virtual: false, we need to watch the individual elementIds
+  //     because we will be using the roving tabindex pattern
   const virtualObserver = useElementFocusObserver(wrapperElRef)
   const selectorObserer = useSelectorFocusObserver(elementIdSelector)
   const hasFocus = computed(() => {
@@ -108,34 +151,12 @@ export function useArrowNavigation(
   })
 
   /**
-   * @function
-   * Components can register their element as part of the arrow navigation
-   * This function controls the content of `elementIds`
-   * @param el Ref<HTMLElement> - the element that should be part of the navigation
-   * @param disabled indicates wether or not this elemen is currently disabled
-   */
-  const addToElNavigation = (
-    id: string,
-    _disabled: MaybeRef<boolean | undefined> = false
-  ) => {
-    const disabled = ref(_disabled)
-    watch(
-      disabled,
-      nextDisabled => {
-        !nextDisabled ? elementIds.add(id) : elementIds.delete(id)
-      },
-      { immediate: true }
-    )
-    onUnmounted(() => elementIds.delete(id))
-  }
-
-  /**
    * - Determines the next element to focus within the group of `elementIds`
    * @param {string} to 'next' | 'prev' | 'start' | 'end'
    */
   const moveto = (to: 'next' | 'prev' | 'start' | 'end') => {
     let nextIdx: number
-    const children = elementsFromIds()
+    const children = elementsFromIds(elementIdSelector.value)
     const max = children.length - 1
 
     const idx = currentActiveId.value
@@ -160,6 +181,7 @@ export function useArrowNavigation(
     }
 
     const nextEl = children[nextIdx]
+    if (nextEl === currentActiveElement.value) return
     if (nextEl) {
       currentActiveId.value = nextEl.id
     }
@@ -167,7 +189,7 @@ export function useArrowNavigation(
   }
 
   /**
-   * Listeners for the actual arrow Navigation
+   * Listeners for doing the actual arrow navigation
    */
   const backward = (event: KeyboardEvent) => {
     if (event.shiftKey || event.ctrlKey) return
@@ -203,7 +225,7 @@ export function useArrowNavigation(
         break
       case 'Enter':
       case ' ':
-        // when using virtual mode, we need to simulate a click on the "focused" argument
+        // when using virtual mode, we need to do a click on the "focused" argument
         virtual.value && click()
         break
       default:
@@ -217,7 +239,9 @@ export function useArrowNavigation(
    */
   const determineFirstFocus = () => {
     if (startOnFirstSelected.value) {
-      const selectedEl = getFirstSelectedEl(elementsFromIds())
+      const selectedEl = getFirstSelectedElement(
+        elementsFromIds(elementIdSelector.value)
+      )
       selectedEl
         ? (currentActiveId.value = selectedEl.id || '')
         : moveto('start')
@@ -226,11 +250,15 @@ export function useArrowNavigation(
     }
   }
 
+  // whenever we lose focus, we should determine
+  // on which element focus should start again
+  // when the user returns
   watch(hasFocus, active => {
     if (active) return
     determineFirstFocus()
   })
 
+  // ... and we should do the same check on mounted
   onMounted(() => {
     nextTick(() => {
       determineFirstFocus()
