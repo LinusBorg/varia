@@ -255,8 +255,8 @@ Projects:
 
 This project is set up as a monorepo using lerna and yarn workspaces. For this reason, yarn is required to contribute to this project, all found in the `./packages` directory.
 
-- `aria-composables`: a suppor package providing lower-level composables, upon which the components in `aria-widgets` are built. Can be used standalone as well.
-- `aria-widgets`: the main package, exporting all of the components.
+- `@varia/composables`: a suppor package providing lower-level composables, upon which the components in `aria-widgets` are built. Can be used standalone as well.
+- `@varia/widgets`: the main package, exporting all of the components.
 - `docs`: the project's documentation, built with [Vuepress](vuepress.vuejs.org)
 - `examples`: a Vue CLI app containing examples for all of the components from `aria-widgets`. used for e2e tests
 
