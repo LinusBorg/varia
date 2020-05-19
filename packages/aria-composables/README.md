@@ -1,27 +1,25 @@
-# TSDX Bootstrap
+# `@varia/composables`
 
-This project was bootstrapped with [TSDX](https://github.com/jaredpalmer/tsdx).
+> This package is part of the varia project, a collection of Vue 3 components that provide unstyled, but fully accessible building blocks for popular UI concepts.
 
-## Local Development
+## What This Is
 
-Below is a list of commands you will probably find useful.
+The `composables` package is kind of the core package of `@varia`. It provides a set of lower-level composables and utility functions that the actual component packages can build upon to implement their logic.
 
-### `npm start` or `yarn start`
+As such, it's listed as a `dependency` for pretty much every component package in this monorepo.
 
-Runs the project in development/watch mode. Your project will be rebuilt upon changes. TSDX has a special logger for you convenience. Error messages are pretty printed and formatted for compatibility VS Code's Problems tab.
+## Provided Functionality
 
-<img src="https://user-images.githubusercontent.com/4060187/52168303-574d3a00-26f6-11e9-9f3b-71dbec9ebfcb.gif" width="600" />
+Composables:
 
-Your library will be rebuilt if you make edits.
+- track focus of a single element or a group of elements
+- track tab direction
+- track keybord events and call functions when specific conditions are met
+- arrow navigation primitives (both for "roving tabindex" and `aria-activedescendant` patterns)
+- track clicks outside of an element
 
-### `npm run build` or `yarn build`
+Utilities:
 
-Bundles the package to the `dist` folder.
-The package is optimized and bundled with Rollup into multiple formats (CommonJS, UMD, and ES Module).
-
-<img src="https://user-images.githubusercontent.com/4060187/52168322-a98e5b00-26f6-11e9-8cf6-222d716b75ef.gif" width="600" />
-
-### `npm test` or `yarn test`
-
-Runs the test watcher (Jest) in an interactive mode.
-By default, runs tests related to files changed since the last commit.
+- id helpers: generate random ids and cache them for re-use
+- query helpers to find focusable elements in various ways and situations (i.e. "get the first focusable Element that is a descendant of `provided element`")
+- a small set of reactivity helpers to improve writing of composition functions.
