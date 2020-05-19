@@ -20,21 +20,16 @@ export interface ArrowNavigationOptions {
 }
 export interface ArrowNavigation {
   hasFocus: Ref<boolean | undefined>
-  currentActiveElement: TemplRef
+  elementIds: Set<string>
   currentActiveId: Ref<string>
+  currentActiveElement: TemplRef
   virtual: Ref<boolean>
-  wrapperAttributes: Ref<
-    | {
-        'aria-activedescendant': string
-        tabindex: number
-      }
-    | {}
-  >
-  select: (el: HTMLElement) => void
-  addToElNavigation: (
+  select: (id: string) => void
+  addIdToNavigation: (
     id: string,
     disabled: MaybeRef<boolean | undefined>
   ) => void
+  wrapperElRef: TemplRef
 }
 
 export type ArrowKeyHandlers = {

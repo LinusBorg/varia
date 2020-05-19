@@ -100,7 +100,7 @@ export type ListBoxOptions = {
 export interface ListBoxAPI extends BaseAPI {
   generateId: (name: string) => string
   state: SetStateAPI<any>
-  arrowNavAPI: ArrowNavigation
+  arrowNav: ArrowNavigation
   options: ListBoxOptions
 }
 

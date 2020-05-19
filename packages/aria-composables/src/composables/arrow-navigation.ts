@@ -19,6 +19,7 @@ import { sortByDocPosition } from '../utils/focusable-elements'
 
 import { ArrowNavigationOptions } from '../types'
 import { useReactiveDefaults } from './reactive-defaults'
+import { useEventIf } from './events'
 
 /**
  * Utility to determine the first HTMLElement in an array
@@ -51,7 +52,7 @@ function elementsFromIds(selector: string) {
  * @returns {object} elementIdsAPI
  * @property {Set<string>} elementIdsAPI.elementIds Set of all ids
  * @property {Ref<string>} elementIdsAPI.elementIdSelector CSS selector built from ids
- * @property {function} elementIdsAPI.addToElNavigation add id string to the Set
+ * @property {function} elementIdsAPI.addIdToNavigation add id string to the Set
  */
 function createElementIdState() {
   const elementIds = reactive(new Set<string>())
@@ -60,7 +61,7 @@ function createElementIdState() {
       .map(id => '#' + id)
       .join(',')
   })
-  const addToElNavigation = (
+  const addIdToNavigation = (
     id: string,
     _disabled: MaybeRef<boolean | undefined> = false
   ) => {
@@ -77,7 +78,7 @@ function createElementIdState() {
   return {
     elementIds: readonly(elementIds),
     elementIdSelector: readonly(elementIdSelector),
-    addToElNavigation,
+    addIdToNavigation,
   }
 }
 
@@ -105,7 +106,7 @@ export function useArrowNavigation(
   const {
     elementIds,
     elementIdSelector,
-    addToElNavigation,
+    addIdToNavigation,
   } = createElementIdState()
 
   // The id of the child element that is considered active and will receive focus
@@ -117,31 +118,12 @@ export function useArrowNavigation(
       : undefined
   })
 
-  const wrapperElRef = _wrapperElRef || ref()
-  // wrapperAttributes need to be applied to the wrapper Element
-  // but only when using "virtual" mode
-  // TODO: pull this out into its own use* composable
-  const wrapperAttributes = computed(() => {
-    return virtual.value
-      ? {
-          ref: wrapperElRef,
-          tabindex: 0,
-          'aria-owns': Array.from(elementIds as Set<string>).join(','),
-          'aria-activedescendant': currentActiveId.value,
-          onClick: ({ target }: { target: Element }) =>
-            target &&
-            target.id &&
-            elementIds.has(target.id) &&
-            (currentActiveId.value = target.id),
-        }
-      : {}
-  })
-
   // Determine wether or not our group has Focus
   //  A. if virtual: true, we only need to watch the wrapper Element
   //     because we will be using active - descendant
   //  B. if virtual: false, we need to watch the individual elementIds
   //     because we will be using the roving tabindex pattern
+  const wrapperElRef = _wrapperElRef || ref()
   const virtualObserver = useElementFocusObserver(wrapperElRef)
   const selectorObserer = useSelectorFocusObserver(elementIdSelector)
   const hasFocus = computed(() => {
@@ -233,6 +215,15 @@ export function useArrowNavigation(
     }
   }) as EventListener)
 
+  const virtualAndHasFocus = computed(() => virtual.value && hasFocus.value)
+  useEventIf(virtualAndHasFocus, document, 'keydown', ((
+    event: KeyboardEvent
+  ) => {
+    if (event.key === ' ') {
+      console.log('prevented space scroll!')
+      event.preventDefault()
+    }
+  }) as EventListener)
   /**
    * Determines which of the `elementIds` should be the first one to receive focus
    * when the tab sequence reaches out composite widge
@@ -267,31 +258,63 @@ export function useArrowNavigation(
 
   return {
     hasFocus,
+    elementIds: elementIds as Set<string>,
     currentActiveElement,
     currentActiveId,
     virtual,
-    wrapperAttributes,
     // Methods
-    addToElNavigation,
-    select: (nextEl: HTMLElement) => void (currentActiveId.value = nextEl.id),
+    addIdToNavigation,
+    select: (id: string) => void (currentActiveId.value = id),
+    wrapperElRef,
   }
 }
+export function useArrowNavWrapper(api: ArrowNavigation) {
+  // wrapperAttributes need to be applied to the wrapper Element
+  // but only when using "virtual" mode
+  // TODO: pull this out into its own use* composable
+  return computed(() => {
+    return api.virtual.value
+      ? {
+          ref: api.wrapperElRef,
+          tabindex: 0,
+          'aria-owns': Array.from(api.elementIds as Set<string>).join(','),
+          'aria-activedescendant': api.currentActiveId.value,
+        }
+      : {}
+  })
+}
 
-export function useArrowNavigationChild(
-  hasFocus: Ref<boolean>,
-  { virtual }: ArrowNavigation
+export function useArrowNavigationItem(
+  {
+    id,
+    isDisabled,
+  }: {
+    id: string
+    isDisabled: Ref<boolean>
+  },
+  api: ArrowNavigation
 ): Ref<{
   tabindex: string | undefined
   'data-varia-focus'?: boolean
+  onClick: () => void
 }> {
+  api.addIdToNavigation(id, isDisabled)
+
+  const hasFocus = computed(() => id === api.currentActiveId.value)
+
+  const onClick = () => {
+    !isDisabled.value && api.select(id)
+  }
   return computed(() => {
-    return virtual.value
+    return api.virtual.value
       ? {
           tabindex: undefined,
           'data-varia-focus': hasFocus.value,
+          onClick,
         }
       : {
           tabindex: hasFocus.value ? '0' : '-1',
+          onClick,
         }
   })
 }

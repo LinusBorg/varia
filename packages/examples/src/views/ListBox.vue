@@ -69,7 +69,7 @@ export default defineComponent({
   setup() {
     const items = reactive(['Shoes', 'Jeans', 'Tops', 'Pants', 'Accessoires'])
     const state = ref<string[]>([])
-    const state2 = ref<string[]>([])
+    const state2 = ref<string[]>(['Tops'])
     const state3 = ref<string[]>([])
     return {
       virtual: ref(false),

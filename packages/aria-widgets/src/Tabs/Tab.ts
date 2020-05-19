@@ -6,9 +6,9 @@ import {
   ExtractPropTypes,
   PropType,
   h,
-  inject,
+  mergeProps,
 } from 'vue'
-import { useArrowNavigationChild, createId } from '@varia/composables'
+import { useArrowNavigationItem, createId } from '@varia/composables'
 import { injectTabsAPI, _tabsAPIKey } from './use-tabs'
 import { useClickable, ClickableProps } from '../Clickable'
 
@@ -33,22 +33,22 @@ export const TabProps = {
 export function useTab(props: useTabOptions, api: TabsAPI) {
   const el = ref<HTMLElement>()
   const id = 'tab_' + createId()
-  api.arrowNav.addToElNavigation(
-    id,
-    computed(() => !!props.disabled)
-  )
+  // api.arrowNav.addIdToNavigation(
+  //   id,
+  //   computed(() => !!props.disabled)
+  // )
   const isSelected = computed(() => api.state.selected.value === props.name)
+  const isDisabled = computed(() => !!props.disabled)
 
-  const hasFocus = computed(() => id === api.arrowNav.currentActiveId.value)
+  // const hasFocus = computed(() => id === api.arrowNav.currentActiveId.value)
   const select = () => {
     !props.disabled && props.name && api.state.select(props.name)
   }
 
-  // Verify that this tab is a child of a role=tablist element
-  // TODO: Should run in __DEV__ only
   onMounted(() => {
-    el.value && isSelected.value && api.arrowNav.select(el.value)
-    // TODO: should set rover tabindex if this tab isSelected on mount
+    el.value && isSelected.value && api.arrowNav.select(id)
+    // Verify that this tab is a child of a role=tablist element
+    // TODO: Should run in __DEV__ only
     if (el.value && !el.value?.closest('[role="tablist"]')) {
       console.warn('<Tab/> has to be nested inside of a `<TabList />`')
     }
@@ -56,16 +56,19 @@ export function useTab(props: useTabOptions, api: TabsAPI) {
 
   // Element Attributes
   const clickableAttrs = useClickable(props, el)
-  const arrrowNavAttrs = useArrowNavigationChild(hasFocus, api.arrowNav)
-  const attributes = computed(() => ({
-    ...clickableAttrs.value,
-    ...arrrowNavAttrs.value,
-    id,
-    role: 'tab' as const,
-    onClick: select,
-    'aria-selected': isSelected.value,
-    'aria-controls': api.generateId(props.name!),
-  }))
+  const arrrowNavAttrs = useArrowNavigationItem(
+    { id, isDisabled },
+    api.arrowNav
+  )
+  const attributes = computed(() =>
+    mergeProps(clickableAttrs.value, arrrowNavAttrs.value, {
+      id,
+      role: 'tab' as const,
+      onClick: select,
+      'aria-selected': isSelected.value,
+      'aria-controls': api.generateId(props.name!),
+    })
+  )
 
   return { isSelected, attributes }
 }
@@ -75,10 +78,8 @@ export const Tab = defineComponent({
   props: TabProps,
   setup(props, { slots }) {
     const api = injectTabsAPI()
-    // const api = inject(_tabsAPIKey)
     const { isSelected, attributes } = useTab(props, api!)
     return () => {
-      // console.log(attributes.value)
       return h(
         props.tag,
         attributes.value,

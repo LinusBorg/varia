@@ -11,6 +11,7 @@ import {
   createCachedIdFn,
   wrapProp,
   useArrowNavigation,
+  useArrowNavWrapper,
   useReactiveDefaults,
 } from '@varia/composables'
 
@@ -55,7 +56,7 @@ export function useListBox(
     selected.has(item) ? unselect(item) : select(item)
   }
   // Keyboard navigation
-  const arrowNavAPI = useArrowNavigation(
+  const arrowNav = useArrowNavigation(
     reactive({
       orientation,
       startOnFirstSelected: true,
@@ -73,7 +74,7 @@ export function useListBox(
       unselect,
       toggle,
     },
-    arrowNavAPI,
+    arrowNav,
     options: reactive({
       multiple,
       orientation,
@@ -116,13 +117,14 @@ export const ListBox = defineComponent({
   setup(props, { slots }) {
     const state = wrapProp(props, 'modelValue')
     const api = useListBox(state, props)
+    const attributes = useArrowNavWrapper(api.arrowNav)
     console.log(api)
     return () =>
       h(
         'div',
         {
           role: 'listbox',
-          ...api.arrowNavAPI.wrapperAttributes.value,
+          ...attributes.value,
           ...(props.multiple ? { 'aria-multiselectable': true } : {}),
         },
         slots.default?.(api)

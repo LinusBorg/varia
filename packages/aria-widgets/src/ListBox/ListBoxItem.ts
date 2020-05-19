@@ -6,9 +6,9 @@ import {
   h,
   PropType,
   inject,
-  watch,
+  mergeProps,
 } from 'vue'
-import { useArrowNavigationChild, TemplRef } from '@varia/composables'
+import { useArrowNavigationItem, TemplRef } from '@varia/composables'
 import { injectListBoxAPI, listBoxAPIKey } from './useListBox'
 import { useButton, ButtonProps } from '../Button'
 import { ButtonOptions, ListBoxAPI, ListBoxAPIKey } from '../types'
@@ -44,24 +44,27 @@ export function useListBoxItem(props: ButtonOptions, api: ListBoxAPI) {
 
   // Arrow Navigation
   const id = api.generateId(props.item)
-  api.arrowNavAPI.addToElNavigation(id, isDisabled)
-  const hasFocus = computed(() => api.arrowNavAPI.currentActiveId.value === id)
+  // api.arrowNavAPI.addIdToNavigation(id, isDisabled)
+  // const hasFocus = computed(() => api.arrowNavAPI.currentActiveId.value === id)
 
   // Attributes
   const buttonAttrs = useButton(props, el)
-  const arrowAttrs = useArrowNavigationChild(hasFocus, api.arrowNavAPI)
-  return computed(() => {
-    const obj = {
-      ...buttonAttrs.value,
-      ...arrowAttrs.value,
+  const arrowAttrs = useArrowNavigationItem(
+    {
+      id,
+      isDisabled,
+    },
+    api.arrowNav
+  )
+  return computed(() =>
+    mergeProps(buttonAttrs.value, arrowAttrs.value, {
       id,
       role: 'option' as const,
       'aria-selected': isSelected.value,
       onClick,
       ref: el,
-    }
-    return obj
-  })
+    })
+  )
 }
 
 export const ListBoxItem = defineComponent({
@@ -69,7 +72,6 @@ export const ListBoxItem = defineComponent({
   props: listBoxItemProps,
   setup(props, { slots }) {
     const { label } = toRefs(props)
-    // const api = injectListBoxAPI(props.apiKey)
     const api = inject(listBoxAPIKey)
     const attributes = useListBoxItem(props, api!)
 

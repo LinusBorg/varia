@@ -2,7 +2,7 @@ import { defineComponent, h, PropType, computed, toRef } from 'vue'
 import { AccordionAPI, AccordionAPIKey, ButtonOptions } from '../types'
 import { injectAccordionAPI } from './use-accordion'
 import { ButtonProps, useButton } from '../Button'
-import { useArrowNavigationChild, createId } from '@varia/composables'
+import { useArrowNavigationItem, createId } from '@varia/composables'
 
 export interface AccordionHeaderProps extends ButtonOptions {
   tag?: string
@@ -19,13 +19,17 @@ export function useAccordionHeader(
 
   // Derrived state
   const isExpanded = computed(() => api.state.selected.has(props.name))
-  const hasFocus = computed(() => api.arrowNav.currentActiveId.value === id)
-  const isDisabled = toRef(props, 'disabled')
-  api.arrowNav.addToElNavigation(id, isDisabled)
+  const isDisabled = computed(() => !!props.disabled)
 
   // Derrived Element Attributes
   const btnAttrs = useButton(props)
-  const arrowAttrs = useArrowNavigationChild(hasFocus, api.arrowNav)
+  const arrowAttrs = useArrowNavigationItem(
+    {
+      id,
+      isDisabled,
+    },
+    api.arrowNav
+  )
   return computed(() => ({
     ...btnAttrs.value,
     ...arrowAttrs.value,
@@ -59,7 +63,7 @@ export const AccordionHeader = defineComponent({
   setup(props, { slots }) {
     const api = injectAccordionAPI(props.tabsKey)
     const attributes = useAccordionHeader(props as AccordionHeaderProps, api)
-
+    //TODO: add useArrowNavWRapper
     return () =>
       h('h' + props.h || '1', [
         h(
