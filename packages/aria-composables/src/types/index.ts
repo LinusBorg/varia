@@ -25,10 +25,7 @@ export interface ArrowNavigation {
   currentActiveElement: TemplRef
   virtual: Ref<boolean>
   select: (id: string) => void
-  addIdToNavigation: (
-    id: string,
-    disabled: MaybeRef<boolean | undefined>
-  ) => void
+  addIdToNavigation: (id: string, disabled: Ref<boolean | undefined>) => void
   wrapperElRef: TemplRef
 }
 
