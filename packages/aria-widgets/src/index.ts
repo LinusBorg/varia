@@ -14,7 +14,6 @@ export * from './ListBox'
 export * from './Accordion'
 export * from './Tabs'
 // Utility Components
-export * from './Announcer'
 export * from './VisuallyHidden'
 export * from './SkipToContent'
 

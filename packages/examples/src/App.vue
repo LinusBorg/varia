@@ -1,6 +1,5 @@
 <template>
   <div id="container">
-    <Announcer />
     <nav id="nav" aria-labelledby="main-nav-label">
       <SkipToContent contentId="#main">
         Skip to Main Content
@@ -66,11 +65,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
-import { SkipToContent, VisuallyHidden, Announcer } from '@varia/widgets'
+import { SkipToContent, VisuallyHidden } from '@varia/widgets'
 export default defineComponent({
   name: 'App',
   components: {
-    Announcer,
     SkipToContent,
     VisuallyHidden,
   },
