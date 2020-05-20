@@ -1,4 +1,4 @@
-import { defineComponent, h, PropType, computed, toRef } from 'vue'
+import { defineComponent, h, PropType, computed, mergeProps } from 'vue'
 import { AccordionAPI, AccordionAPIKey, ButtonOptions } from '../types'
 import { injectAccordionAPI } from './use-accordion'
 import { ButtonProps, useButton } from '../Button'
@@ -30,17 +30,17 @@ export function useAccordionHeader(
     },
     api.arrowNav
   )
-  return computed(() => ({
-    ...btnAttrs.value,
-    ...arrowAttrs.value,
-    id,
-    'aria-expanded': isExpanded.value,
-    'aria-controls': contentId,
-    onClick: () =>
-      isExpanded.value
-        ? api.state.unselect(props.name)
-        : api.state.select(props.name),
-  }))
+  return computed(() =>
+    mergeProps(btnAttrs.value, arrowAttrs.value, {
+      id,
+      'aria-expanded': isExpanded.value,
+      'aria-controls': contentId,
+      onClick: () =>
+        isExpanded.value
+          ? api.state.unselect(props.name)
+          : api.state.select(props.name),
+    })
+  )
 }
 
 export const accordionHeaderProps = {
@@ -63,7 +63,6 @@ export const AccordionHeader = defineComponent({
   setup(props, { slots }) {
     const api = injectAccordionAPI(props.tabsKey)
     const attributes = useAccordionHeader(props as AccordionHeaderProps, api)
-    //TODO: add useArrowNavWRapper
     return () =>
       h('h' + props.h || '1', [
         h(

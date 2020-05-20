@@ -33,10 +33,12 @@ export function useAccordion(
     selected.delete(item)
   }
 
-  const arrowNav = useArrowNavigation({
-    orientation,
-    loop,
-  })
+  const arrowNav = useArrowNavigation(
+    reactive({
+      orientation,
+      loop,
+    })
+  )
 
   const generateId = createCachedIdFn('accordion')
   const key = customName ? Symbol('accordionCustom') : accordionKey
