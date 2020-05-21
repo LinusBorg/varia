@@ -20,7 +20,9 @@
         {{ item }}
       </ListBoxItem>
     </ListBox>
-    <h2 class="text-2xl mb-3">Auto-Selecting Listbox</h2>
+    <hr />
+    <strong>Selected Items:</strong> {{ state.join(', ') }}
+    <h2 class="text-2xl mt-4 mb-3">Auto-Selecting Listbox</h2>
     <ListBox
       v-model="state2"
       :virtual="virtual"
@@ -36,7 +38,9 @@
         {{ item }}
       </ListBoxItem>
     </ListBox>
-    <h2 class="text-2xl mb-3">Multi-Select Listbox</h2>
+    <hr />
+    <strong>Selected Items:</strong> {{ state2.join(', ') }}
+    <h2 class="text-2xl mt-4 mb-3">Multi-Select Listbox</h2>
     <ListBox
       v-model="state3"
       multiple
@@ -53,7 +57,7 @@
       </ListBoxItem>
     </ListBox>
     <hr />
-    {{ state.join(', ') }}
+    <strong>Selected Items:</strong> {{ state3.join(', ') }}
   </div>
 </template>
 <script lang="ts">

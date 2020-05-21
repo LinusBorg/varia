@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper divide-y divide-gray-300">
-    <h1 class="text-3xl">Tabs</h1>
-    <Tabs class="mb-3 mt-6 py-2" v-model="state1" loop virtual>
+    <h1 class="text-3xl mb-4">Tabs</h1>
+    <Tabs class="mb-3 py-2" v-model="state1" loop virtual>
       <h2 class="text-xl font-bold mb-2">Basic</h2>
       <TabList class="border-b border-gray-500">
         <Tab
@@ -20,18 +20,12 @@
           >Tab C</Tab
         >
       </TabList>
-      {{ state1 }}
       <TabPanel name="A">Panel A</TabPanel>
       <TabPanel name="B">Panel B</TabPanel>
       <TabPanel name="C">Panel C</TabPanel>
     </Tabs>
-    <Tabs
-      class="mb-3 mt-6 py-2"
-      v-model="state2"
-      autoSelect
-      startOnFirstSelected
-    >
-      <h2 class="text-xl font-bold mb-2">Arrow Keys auto-select</h2>
+    <Tabs class="mb-3 py-2" v-model="state2" autoSelect startOnFirstSelected>
+      <h2 class="text-xl font-bold mb-4">Arrow Keys auto-select</h2>
       <TabList class="border-b border-gray-500">
         <Tab
           name="A"
@@ -56,7 +50,7 @@
       </div>
     </Tabs>
     <Tabs class="mb-3 mt-6 py-2" v-model="state3">
-      <h2 class="text-xl font-bold mb-2">Disabled Tab</h2>
+      <h2 class="text-xl font-bold mb-4">Disabled Tab</h2>
       <TabList class="border-b border-gray-500">
         <Tab
           name="A"

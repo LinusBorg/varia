@@ -1,9 +1,12 @@
 <template>
   <div id="container">
+    <SkipToContent
+      class="absolute px-2 py-2 m-2 bg-teal-500 text-white shadow-md"
+      contentId="#main"
+    >
+      Skip to Main Content
+    </SkipToContent>
     <nav id="nav" aria-labelledby="main-nav-label">
-      <SkipToContent contentId="#main">
-        Skip to Main Content
-      </SkipToContent>
       <span id="main-nav-label" data-varia-visually-hidden="true"
         >main navigation</span
       >
@@ -38,9 +41,6 @@
       <router-link to="/tabs" :aria-current="isCurrentRoute('Tabs')">
         Tabs
       </router-link>
-      <router-link to="/Announcer" :aria-current="isCurrentRoute('Announcer')">
-        Announcer
-      </router-link>
     </nav>
     <main
       id="main"
@@ -53,7 +53,10 @@
       </VisuallyHidden>
       <VisuallyHidden id="main-content-description">
         <template v-if="$route.meta.description">
-          {{ $route.meta.description }}
+          {{
+            $route.meta.description ||
+              `This page contains examples for ${$route.name} components`
+          }}
         </template>
         <template v-else>
           This area contains the demonstration of each page's component or
