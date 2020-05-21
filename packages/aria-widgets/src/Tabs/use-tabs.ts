@@ -27,7 +27,7 @@ export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
 const defaultOptions: TabsOptions = {
   customName: undefined,
   // Options for ArrowNavigation
-  orientation: 'horizontal',
+  orientation: undefined,
   loop: true,
   startOnFirstSelected: true,
   autoSelect: false,
