@@ -37,7 +37,6 @@ export const SkipToContent = defineComponent({
           href: props.contentId,
           'data-varia-visually-hidden': hasFocus.value ? undefined : true,
           ...(tag === 'a' ? {} : clickableAttrs.value),
-          //...attributes,
           ref: el,
         },
         slots.default?.()
