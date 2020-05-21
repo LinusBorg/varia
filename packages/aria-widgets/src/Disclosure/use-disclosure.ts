@@ -6,7 +6,7 @@ import { createInjector } from '../utils/inject'
 
 export const disclosureAPIKey = Symbol('disclosure') as DisclosureAPIKey
 
-export function useDisclosure(
+function _useDisclosure(
   selected: Ref<boolean | undefined>,
   { skipProvide, customKey }: DisclosureOptions = {}
 ) {
@@ -20,11 +20,19 @@ export function useDisclosure(
       id,
     },
   }
-  const key = customKey ?? disclosureAPIKey
-  !skipProvide && provide(key, api)
+  // const key = customKey ?? disclosureAPIKey
+  // !skipProvide && provide(key, api)
 
   return api
 }
+
+export const useDisclosure = Object.assign(_useDisclosure, {
+  withProvide(selected: Ref<boolean | undefined>) {
+    const api = _useDisclosure(selected)
+    provide(disclosureAPIKey, api)
+    return api
+  },
+})
 
 export const injectDisclosureAPI = createInjector(
   disclosureAPIKey,
@@ -35,12 +43,13 @@ export const disclosureProps = {
   modelValue: Boolean as PropType<boolean>,
 }
 
-export const Dicsclosure = defineComponent({
+export const Disclosure = defineComponent({
   name: 'Disclosure',
   props: disclosureProps,
+  emits: ['update:modelValue'],
   setup(props, { slots }) {
     const state = wrapProp(props, 'modelValue')
-    useDisclosure(state)
+    useDisclosure.withProvide(state)
     return () => slots.default?.()
   },
 })

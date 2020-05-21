@@ -8,10 +8,7 @@ export type AccordionState = Set<string>
 
 export const accordionKey = Symbol('disclosure') as AccordionAPIKey
 
-export function useAccordion(
-  options: AccordionOptions = {},
-  _state: AccordionState
-) {
+function _useAccordion(options: AccordionOptions = {}, _state: AccordionState) {
   const {
     orientation = 'vertical',
     multiple = false,
@@ -41,7 +38,6 @@ export function useAccordion(
   )
 
   const generateId = createCachedIdFn('accordion')
-  const key = customName ? Symbol('accordionCustom') : accordionKey
   const api = {
     generateId,
     state: {
@@ -52,10 +48,18 @@ export function useAccordion(
     arrowNav,
     options,
   }
-  provide(key, api)
+  // provide(key, api)
 
   return api
 }
+
+export const useAccordion = Object.assign(_useAccordion, {
+  withProvide(options: AccordionOptions = {}, _state: AccordionState) {
+    const api = _useAccordion(options, _state)
+    provide(accordionKey, api)
+    return
+  },
+})
 
 export const injectAccordionAPI = createInjector(
   accordionKey,
@@ -76,7 +80,7 @@ export const Accordion = defineComponent({
   name: 'Accordion',
   props: AccordionProps,
   setup(props, { slots }) {
-    useAccordion(props as AccordionOptions, props.modelValue!)
+    useAccordion.withProvide(props as AccordionOptions, props.modelValue!)
     return () => slots.default?.()
   },
 })
