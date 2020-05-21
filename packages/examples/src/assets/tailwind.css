@@ -4,8 +4,6 @@ button[disabled],
   cursor: default;
 }
 
-@import '~@varia/widgets/dist/index.css';
-
 @tailwind base;
 
 @tailwind components;
