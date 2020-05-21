@@ -87,6 +87,13 @@ export interface ClickableOptions extends TabbableOptions {}
 export interface ButtonOptions extends ClickableOptions {}
 
 /**
+ * ToggleButton
+ */
+export interface ToggleButtonOptions extends ClickableOptions {
+  modelValue?: boolean | undefined
+}
+
+/**
  * Listbox
  */
 

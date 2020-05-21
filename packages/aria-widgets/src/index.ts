@@ -2,6 +2,7 @@ export * from './Clickable'
 export * from './Tabbable'
 
 export * from './Button'
+export * from './ToggleButton'
 
 // Composites about showing popups, dialogs etc.
 export * from './Disclosure'
