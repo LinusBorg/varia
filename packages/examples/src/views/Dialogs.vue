@@ -2,7 +2,9 @@
   <div>
     <h2 class="text-3xl mb-5">Modal Dialogs</h2>
     <Dialog v-model="isDialogOpen">
-      <DialogTrigger>Click to Open Modal Dialog</DialogTrigger>
+      <DialogTrigger class="btn border px-2 py-1 rounded"
+        >Click to Open Modal Dialog</DialogTrigger
+      >
       <DialogContent focusOnOpen>
         <div class="absolute top-0 right-0 bottom-0 left-0 flex z-10">
           <div

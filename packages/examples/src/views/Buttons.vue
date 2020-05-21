@@ -37,14 +37,14 @@
         </Button>
       </div>
       <div class="mb-3 pt-5 pb-2">
-        <h2 class="text-xl mb-2">Div as a button</h2>
-        <Button
-          tag="div"
+        <h2 class="text-xl mb-2">Toggle button</h2>
+        <ToggleButton
+          :tag="tag"
+          v-model="btnState"
           class="btn border inline-block px-2 py-1 rounded"
-          @click="alert"
         >
           Click me!
-        </Button>
+        </ToggleButton>
       </div>
     </div>
   </div>
@@ -52,10 +52,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
-import { Button } from '@varia/widgets'
+import { ToggleButton, Button } from '@varia/widgets'
 export default defineComponent({
   components: {
     Button,
+    ToggleButton,
   },
   setup() {
     const alert = () => {
@@ -63,10 +64,13 @@ export default defineComponent({
     }
     const virtualButton = ref(false)
     const tag = computed(() => (virtualButton.value ? 'DIV' : undefined))
+
+    const btnState = ref(false)
     return {
       alert,
       virtualButton,
       tag,
+      btnState,
     }
   },
 })
@@ -75,5 +79,10 @@ export default defineComponent({
 <style scoped lang="postcss">
 .btn:active {
   @apply bg-gray-100;
+}
+
+button[aia-pressed='true'],
+[role='button'][aria-pressed='true'] {
+  @apply bg-teal-600 text-white;
 }
 </style>

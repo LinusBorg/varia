@@ -1,12 +1,14 @@
 <template>
   <div>
-    <h1>Disclosures</h1>
-    <DisclosureTrigger class="btn border px-2 py-1 rounded">
-      Show the hidden Secret
-    </DisclosureTrigger>
-    <DisclosureContent>
-      Hidden!
-    </DisclosureContent>
+    <h1 class="text-3xl mb-5">Disclosures</h1>
+    <Disclosure v-model="show">
+      <DisclosureTrigger class="btn border px-2 py-1 rounded">
+        Show the hidden Secret
+      </DisclosureTrigger>
+      <DisclosureContent class="mt-2 border border-gray-300 p-4">
+        Hidden!
+      </DisclosureContent>
+    </Disclosure>
   </div>
 </template>
 
@@ -15,19 +17,20 @@ import { defineComponent, ref, Ref } from 'vue'
 import {
   DisclosureTrigger,
   DisclosureContent,
-  useDisclosure,
+  Disclosure,
 } from '@varia/widgets'
 
 export default defineComponent({
   components: {
+    Disclosure,
     DisclosureTrigger,
     DisclosureContent,
   },
   setup() {
     const show = ref(false) as Ref<boolean>
-    useDisclosure(show)
-
-    return {}
+    return {
+      show,
+    }
   },
 })
 </script>

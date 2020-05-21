@@ -1,17 +1,19 @@
 <template>
   <div>
     <h1>Popovers</h1>
-    <PopoverTrigger class="btn border px-2 py-1 rounded">
-      Show the Popover!
-    </PopoverTrigger>
-    <PopoverContent class="content border bg-white px-3 py-2" focusOnOpen>
-      <h3>Welcome to the Popup!</h3>
-      <ul>
-        <li tabindex="0">Option #1</li>
-        <li>Option #2</li>
-        <li>Option #3</li>
-      </ul>
-    </PopoverContent>
+    <Popover v-model="state">
+      <PopoverTrigger class="btn border px-2 py-1 rounded">
+        Show the Popover!
+      </PopoverTrigger>
+      <PopoverContent class="content border bg-white px-3 py-2" focusOnOpen>
+        <h3>Welcome to the Popup!</h3>
+        <ul>
+          <li tabindex="0">Option #1</li>
+          <li>Option #2</li>
+          <li>Option #3</li>
+        </ul>
+      </PopoverContent>
+    </Popover>
     <p class="mb-3 p-2">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
       tempor incididunt ut labore et dolore magna aliqua. Diam sit amet nisl
@@ -47,16 +49,19 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { PopoverTrigger, PopoverContent, usePopover } from '@varia/widgets'
+import { PopoverTrigger, PopoverContent, Popover } from '@varia/widgets'
 
 export default defineComponent({
   components: {
+    Popover,
     PopoverTrigger,
     PopoverContent,
   },
   setup() {
     const state = ref(false)
-    usePopover(state)
+    return {
+      state,
+    }
   },
 })
 </script>
