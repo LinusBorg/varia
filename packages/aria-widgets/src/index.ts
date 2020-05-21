@@ -7,7 +7,7 @@ export * from './Button'
 export * from './Disclosure'
 export * from './FocusTrap'
 export * from './Popover'
-// export * from './Dialog'
+export * from './Dialog'
 
 // Composite Widgets with a liust of children
 export * from './ListBox'

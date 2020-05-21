@@ -44,6 +44,9 @@ export function useDialogContent(
     vm && vm.emit('closed')
     isOpen.value = false
   }
+
+  // The following pieces of code are copied from the Popover
+  // We should see if/how we can putr them in /composables
   options.closeOnEscape && useKeyIf(ref(true), ['Escape'], close)
   options.closeOnClickOutside && useClickOutside([el, triggerEl], close)
 
@@ -58,6 +61,7 @@ export function useDialogContent(
         })
       !isOpen && options.returnFocusOnClose && triggerEl.value?.focus()
     })
+
   return {
     isOpen,
     close,
@@ -65,6 +69,8 @@ export function useDialogContent(
   }
 }
 
+// A lot of props are copied from `Popover`-
+// no idea how to share when we move to individual packages
 export const DialogContentProps = {
   tag: {
     type: String,

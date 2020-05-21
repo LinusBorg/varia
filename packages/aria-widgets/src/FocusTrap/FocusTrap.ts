@@ -14,8 +14,8 @@ import {
 } from 'vue'
 import {
   applyFocus,
-  getFirstFocusableChild,
-  getLastFocusableChild,
+  getFocusableElements,
+  TABBABLE_ELS,
   useFocusTracker,
   useTabDirection,
   TemplRef,
@@ -27,7 +27,6 @@ import {
 // import { useInert } from './inert'
 
 import { FocusTrapOptions } from '../types'
-import { getFocusableElements } from 'packages/aria-composables/dist/utils'
 
 // only one FocusTrap can be active at a time.
 // So we track a Queue of all active FocusTraps,
@@ -45,16 +44,26 @@ const focusTrapQueue = readonly({
 })
 
 function getNextFocusElement(
-  startEl: HTMLElement,
-  endEl: HTMLElement,
+  el1: HTMLElement,
+  el2: HTMLElement,
   direction: 'forward' | 'backward'
 ) {
-  const property = 'backward' ? 'previousElementSibling' : 'nextElementSibling'
+  const property =
+    direction === 'backward' ? 'previousElementSibling' : 'nextElementSibling'
+  const startEl = direction === 'backward' ? el2 : el1
+  const endEl = direction === 'backward' ? el1 : el2
+
   let nextSibling: Element | null = startEl[property]
+
   while (nextSibling && nextSibling !== endEl) {
+    // if sibling is focusable, return it
+    if (nextSibling.matches(TABBABLE_ELS)) return nextSibling as HTMLElement
+    // else, loof for focusable descendants
     const els = getFocusableElements(nextSibling as HTMLElement)
     const idx = direction === 'backward' ? els.length - 1 : 0
+    // if a descendant is focusable, return it
     if (els[idx]) return els[idx]
+    // else, go to next Sibling
     nextSibling = nextSibling[property]
   }
   return undefined
@@ -62,8 +71,8 @@ function getNextFocusElement(
 
 function isBetween<El extends Element = HTMLElement>(el: El, el1: El, el2: El) {
   return (
-    el.compareDocumentPosition(el1) & Node.DOCUMENT_POSITION_FOLLOWING &&
-    el.compareDocumentPosition(el2) & Node.DOCUMENT_POSITION_PRECEDING
+    el.compareDocumentPosition(el2) & Node.DOCUMENT_POSITION_FOLLOWING &&
+    el.compareDocumentPosition(el1) & Node.DOCUMENT_POSITION_PRECEDING
   )
 }
 
@@ -101,17 +110,21 @@ export function useFocusTrap(
   options.activateOnMount && onMounted(activate)
   onUnmounted(deactivate)
 
-  const autoMovefocus = (skip: 'forward' | 'backward') => {
+  const autoMovefocus = (defaultDirection: 'forward' | 'backward') => {
     let el: TemplRefType
     switch (tabDirection.value) {
       case 'forward':
-        if (skip === 'forward') return
+        // if (skip === 'forward') return
         el = getNextFocusElement(startEl.value!, endEl.value!, 'forward')
         el && el.focus()
         break
       case 'backward':
-        if (skip === 'backward') return
+        // if (skip === 'backward') return
         el = getNextFocusElement(startEl.value!, endEl.value!, 'backward')
+        el && el.focus()
+        break
+      case undefined:
+        el = getNextFocusElement(startEl.value!, endEl.value!, defaultDirection)
         el && el.focus()
         break
     }
