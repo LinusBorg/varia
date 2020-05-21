@@ -10,7 +10,9 @@
           <div
             class="__modal-backdrop bg-black bg-opacity-50 flex justify-center items-center w-full h-full"
           >
-            <div class="__modal-dialog bg-white shadow-xl rounded p-4 relative">
+            <div
+              class="__modal-dialog bg-white shadow-xl rounded p-4 relative flex"
+            >
               <Button
                 @click="isDialogOpen = false"
                 arial-label="Close Dialog"
@@ -18,6 +20,7 @@
               >
                 X
               </Button>
+              <SignupForm @close="isDialogOpen = false" />
             </div>
           </div>
         </div>
@@ -28,6 +31,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { Button, Dialog, DialogTrigger, DialogContent } from '@varia/widgets'
+import SignupForm from '../components/SignupForm.vue'
 export default defineComponent({
   name: 'Dialogs',
   components: {
@@ -35,6 +39,7 @@ export default defineComponent({
     Dialog,
     DialogContent,
     DialogTrigger,
+    SignupForm,
   },
   setup: () => ({
     isDialogOpen: ref(false),

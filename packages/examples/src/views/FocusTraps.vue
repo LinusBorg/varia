@@ -5,7 +5,7 @@
       Input before the Trap<br />
       <input
         class="border border-gray-300"
-        id="#focustrap-input-before"
+        id="focustrap-input-before"
         type="text"
       />
     </label>

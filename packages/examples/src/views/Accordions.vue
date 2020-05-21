@@ -66,7 +66,7 @@ export default defineComponent({
 </script>
 
 <style lang="postcss" scoped>
-[role='button'][aria-disabled='true'] {
+div >>> [role='button'][aria-disabled='true'] {
   @apply text-gray-600;
 }
 </style>
