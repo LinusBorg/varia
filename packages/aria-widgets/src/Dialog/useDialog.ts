@@ -10,7 +10,7 @@ export function useDialog(
   selected: Ref<boolean | undefined>,
   options: DialogOptions
 ) {
-  const popoverAPI = usePopover(selected, { skipProvide: true })
+  const popoverAPI = usePopover(selected)
 
   provide(dialogAPIKey, {
     ...popoverAPI,
@@ -33,7 +33,7 @@ export const dialogProps = {
 export const Dialog = defineComponent({
   name: 'Dialog',
   props: dialogProps,
-  inheritAttrs: false,
+  emits: ['update:modelValue'],
   setup(props, { slots }) {
     const state = wrapProp(props, 'modelValue')
     const {
