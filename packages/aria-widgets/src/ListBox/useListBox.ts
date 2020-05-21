@@ -118,7 +118,6 @@ export const ListBox = defineComponent({
     const state = wrapProp(props, 'modelValue')
     const api = useListBox(state, props)
     const attributes = useArrowNavWrapper(api.arrowNav)
-    console.log(api)
     return () =>
       h(
         'div',
