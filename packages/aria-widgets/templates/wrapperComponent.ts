@@ -1,8 +1,7 @@
 import { defineComponent, provide, Ref, PropType } from 'vue'
 
 import { ComponentOptions, ComponentAPIKey } from '../types'
-import { wrapProp } from '@varia/composables'
-import { createInjector } from '../src/utils/inject'
+import { wrapProp, createInjector } from '@varia/composables'
 
 export const componentAPIKey = Symbol('componentAPI') as ComponentAPIKey
 export function useComponent(

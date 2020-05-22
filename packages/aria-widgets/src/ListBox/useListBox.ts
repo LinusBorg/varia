@@ -13,10 +13,10 @@ import {
   useArrowNavigation,
   useArrowNavWrapper,
   useReactiveDefaults,
+  createInjector,
 } from '@varia/composables'
 
 import { ListBoxOptions, ListBoxAPI, ListBoxAPIKey } from '../types'
-import { createInjector } from '../utils/inject'
 
 export const listBoxAPIKey = Symbol('listBoxAPI') as ListBoxAPIKey
 

@@ -15,12 +15,11 @@ import {
   TemplRef,
   wrapProp,
   useReactiveDefaults,
+  createInjector,
 } from '@varia/composables'
 import './index.css'
-import { omit } from '../utils/pick'
 
 import { TabsOptions, TabsAPI } from '../types'
-import { createInjector } from '../utils/inject'
 
 export const _tabsAPIKey = Symbol('tabAPI') as InjectionKey<TabsAPI>
 

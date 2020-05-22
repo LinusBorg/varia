@@ -1,8 +1,7 @@
 import { defineComponent, provide, Ref, PropType } from 'vue'
-import { createId, wrapProp } from '@varia/composables'
+import { createId, wrapProp, createInjector } from '@varia/composables'
 
 import { DisclosureAPIKey, DisclosureOptions } from '../types'
-import { createInjector } from '../utils/inject'
 
 export const disclosureAPIKey = Symbol('disclosure') as DisclosureAPIKey
 

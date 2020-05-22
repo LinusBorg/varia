@@ -2,8 +2,7 @@ import { defineComponent, provide, Ref, PropType } from 'vue'
 import { usePopover } from '../Popover'
 
 import { DialogOptions, DialogAPIKey } from '../types'
-import { wrapProp } from '@varia/composables'
-import { createInjector } from '../utils/inject'
+import { wrapProp, createInjector } from '@varia/composables'
 
 export const dialogAPIKey = Symbol('dialogAPI') as DialogAPIKey
 export function useDialog(

@@ -16,6 +16,7 @@ export {
   getLastFocusableChild,
   TABBABLE_ELS,
   isNativeTabbable,
+  createInjector,
 } from './utils'
 
 export function install(app: App) {
