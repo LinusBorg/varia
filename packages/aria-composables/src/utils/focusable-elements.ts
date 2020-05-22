@@ -35,3 +35,17 @@ export function getLastFocusableChild(wrapperEl: HTMLElement) {
 export function sortByDocPosition(a: HTMLElement, b: HTMLElement) {
   return a.compareDocumentPosition(b) & 2 ? 1 : -1
 }
+
+export function isNativeTabbable(
+  element: Element
+): element is HTMLElement & { disabled: boolean } {
+  return (
+    element.tagName === 'BUTTON' ||
+    element.tagName === 'INPUT' ||
+    element.tagName === 'SELECT' ||
+    element.tagName === 'TEXTAREA' ||
+    element.tagName === 'A' ||
+    element.tagName === 'AUDIO' ||
+    element.tagName === 'VIDEO'
+  )
+}

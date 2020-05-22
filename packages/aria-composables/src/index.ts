@@ -15,6 +15,7 @@ export {
   getFirstFocusableChild,
   getLastFocusableChild,
   TABBABLE_ELS,
+  isNativeTabbable,
 } from './utils'
 
 export function install(app: App) {

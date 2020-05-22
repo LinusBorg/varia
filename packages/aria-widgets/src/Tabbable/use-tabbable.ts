@@ -1,6 +1,5 @@
 import { computed, reactive, ref, toRaw, PropType, watchEffect } from 'vue'
-import { useEvent, TemplRef } from '@varia/composables'
-import { isNativeTabbable } from '../utils/elements'
+import { useEvent, TemplRef, isNativeTabbable } from '@varia/composables'
 import { TabbableOptions } from '../types'
 
 export const TabbableProps = {
@@ -50,7 +49,7 @@ export function useTabbable(_options: TabbableOptions = {}, _el?: TemplRef) {
     if (!isNativeTabbable(rawEl)) {
       return
     }
-    rawEl.disabled = options.disabled && !options.focusable
+    ;(rawEl as any).disabled = options.disabled && !options.focusable
   })
 
   return computed(() => ({
