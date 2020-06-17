@@ -81,7 +81,7 @@ export default defineComponent({
   @apply bg-gray-100;
 }
 
-button[aia-pressed='true'],
+button[aria-pressed='true'],
 [role='button'][aria-pressed='true'] {
   @apply bg-teal-600 text-white;
 }
