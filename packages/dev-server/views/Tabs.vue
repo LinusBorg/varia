@@ -108,10 +108,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="postcss">
-.wrapper >>> [role='tab'][aria-selected='true'] {
+.wrapper ::v-deep([role='tab'][aria-selected='true']) {
   @apply bg-teal-500 border-teal-600 text-white;
 }
-.wrapper >>> [role='tab'][aria-disabled='true'] {
+.wrapper ::v-deep([role='tab'][aria-disabled='true']) {
   @apply bg-gray-200 text-gray-600;
 }
 .fade-enter-active,

@@ -66,7 +66,7 @@ export default defineComponent({
 </script>
 
 <style lang="postcss" scoped>
-div >>> [role='button'][aria-disabled='true'] {
+::v-deep([role='button'][aria-disabled='true']) {
   @apply text-gray-600;
 }
 </style>
