@@ -1,10 +1,16 @@
+import { RouteRecordRaw } from 'vue-router'
 // Views
 import Home from '../views/Home.vue'
 import ButtonsView from '../views/Buttons.vue'
-import { RouteRecordRaw } from 'vue-router'
+import TabsView from '../views/Tabs.vue'
+import ListBoxView from '../views/ListBox.vue'
+import PopoversView from '../views/Popovers.vue'
+import DialogsView from '../views/Dialogs.vue'
 import DisclosuresView from '../views/Disclosures.vue'
+import AccordionsView from '../views/Accordions.vue'
+import FocusTrapsView from '../views/FocusTraps.vue'
 
-export const routes: RouteRecordRaw[] = [
+export const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
@@ -18,8 +24,38 @@ export const routes: RouteRecordRaw[] = [
     component: ButtonsView,
   },
   {
+    path: '/tabs',
+    name: 'Tabs',
+    component: TabsView,
+  },
+  {
+    path: '/listbox',
+    name: 'ListBox',
+    component: ListBoxView,
+  },
+  {
     path: '/disclosures',
     name: 'Disclosures',
     component: DisclosuresView,
+  },
+  {
+    path: '/accordions',
+    name: 'Accordions',
+    component: AccordionsView,
+  },
+  {
+    path: '/popovers',
+    name: 'Popovers',
+    component: PopoversView,
+  },
+  {
+    path: '/dialogs',
+    name: 'Dialogs',
+    component: DialogsView,
+  },
+  {
+    path: '/focustraps',
+    name: 'FocusTraps',
+    component: FocusTrapsView,
   },
 ]

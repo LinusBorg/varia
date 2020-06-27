@@ -1,34 +1,36 @@
 <template>
   <div>
-    <DisclosureTrigger>
-      Show the hidden Secret
-    </DisclosureTrigger>
-    <transition appear name="fade">
-      <DisclosureContent>
+    <h1 class="text-3xl mb-5">Disclosures</h1>
+    <Disclosure v-model="show">
+      <DisclosureTrigger class="btn border px-2 py-1 rounded">
+        Show the hidden Secret
+      </DisclosureTrigger>
+      <DisclosureContent class="mt-2 border border-gray-300 p-4">
         Hidden!
       </DisclosureContent>
-    </transition>
+    </Disclosure>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, Ref } from 'vue'
 import {
   DisclosureTrigger,
   DisclosureContent,
-  useDisclosure,
+  Disclosure,
 } from '@varia/widgets'
 
 export default defineComponent({
   components: {
+    Disclosure,
     DisclosureTrigger,
     DisclosureContent,
   },
   setup() {
-    const isOpen = ref(false)
-    useDisclosure(isOpen)
-
-    return {}
+    const show = ref(false) as Ref<boolean>
+    return {
+      show,
+    }
   },
 })
 </script>

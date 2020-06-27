@@ -1,0 +1,11 @@
+button[disabled],
+[role='button'][disabled],
+[role='button'][aria-disabled='true'] {
+  cursor: default;
+}
+
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
