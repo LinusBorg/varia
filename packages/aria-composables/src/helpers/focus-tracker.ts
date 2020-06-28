@@ -1,11 +1,5 @@
-import { ref, provide, inject, computed, InjectionKey, readonly } from 'vue'
+import { ref, computed, readonly } from 'vue'
 import { useEvent } from '../composables/events'
-
-import { FocusTrackerAPI } from '../types'
-
-export const focusTrackerKey: InjectionKey<FocusTrackerAPI> = Symbol(
-  'globalFocusTracker'
-)
 
 // all elements that are not claimed by an explicit FocusGroup
 // are part of the global FocusGroup
