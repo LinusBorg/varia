@@ -1,8 +1,6 @@
-import { mount } from '@vue/test-utils'
-import { defineComponent, h } from 'vue'
 import { wait } from '../../../test/helpers'
 import { fireEvent } from '@testing-library/dom'
-import { tabDirection } from '../../helpers/tab-direction'
+import { tabDirection } from '../tab-direction'
 
 describe('Tab Direction', () => {
   it('tracks tabDirection', async () => {
