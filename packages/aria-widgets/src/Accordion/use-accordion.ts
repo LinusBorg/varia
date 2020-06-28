@@ -60,7 +60,7 @@ export const useAccordion = Object.assign(_useAccordion, {
   withProvide(options: AccordionOptions = {}, _state: AccordionState) {
     const api = _useAccordion(options, _state)
     provide(accordionKey, api)
-    return
+    return api
   },
 })
 

@@ -1,5 +1,5 @@
 import { ref, provide, computed, inject, InjectionKey, readonly } from 'vue'
-import { useEvent } from './events'
+import { useEvent } from '../composables/events'
 import { TabDirection } from '../types'
 import { TABBABLE_ELS } from '../utils/focusable-elements'
 
@@ -20,16 +20,3 @@ useEvent(document, 'click', ((event: MouseEvent) => {
     setTimeout(() => (tabDirection.value = undefined), 0)
   }
 }) as EventListener)
-
-export function useTabDirection() {
-  return inject(
-    tabDirectionKey,
-    (computed(() => null) as unknown) as TabDirection // default
-  )
-}
-
-export function provideTabDirection() {
-  const ro_tabDirection = readonly(tabDirection)
-  provide(tabDirectionKey, ro_tabDirection)
-  return ro_tabDirection
-}

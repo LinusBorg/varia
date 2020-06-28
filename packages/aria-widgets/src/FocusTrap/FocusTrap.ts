@@ -16,8 +16,8 @@ import {
   applyFocus,
   getFocusableElements,
   TABBABLE_ELS,
-  useFocusTracker,
-  useTabDirection,
+  focusTracker,
+  tabDirection,
   TemplRef,
   TemplRefType,
   useEventIf,
@@ -84,8 +84,6 @@ export function useFocusTrap(
   _options: FocusTrapOptions = defaultOptions
 ) {
   const options = Object.assign({}, defaultOptions, _options)
-  const tabDirection = useTabDirection()
-  const focusTracker = useFocusTracker()
 
   const startEl: TemplRef = ref()
   const endEl: TemplRef = ref()
@@ -111,6 +109,7 @@ export function useFocusTrap(
   onUnmounted(deactivate)
 
   const autoMovefocus = (defaultDirection: 'forward' | 'backward') => {
+    console.log('autofucs()', tabDirection.value)
     let el: TemplRefType
     switch (tabDirection.value) {
       case 'forward':

@@ -1,5 +1,5 @@
 import { ref, provide, inject, computed, InjectionKey, readonly } from 'vue'
-import { useEvent } from './events'
+import { useEvent } from '../composables/events'
 
 import { FocusTrackerAPI } from '../types'
 
@@ -28,17 +28,9 @@ useEvent(document, 'focusout', () => {
   }, 0)
 })
 
-export const state = {
+export const focusTracker = {
   // State
   prevEl: readonly(prevEl),
   activeEl: readonly(activeEl),
   currentEl: computed(() => (docHasFocus.value ? activeEl.value : undefined)),
-}
-
-export function provideFocusTracker() {
-  provide(focusTrackerKey, state)
-}
-
-export function useFocusTracker() {
-  return inject(focusTrackerKey, state)
 }
