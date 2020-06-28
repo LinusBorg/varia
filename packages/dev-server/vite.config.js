@@ -1,5 +1,6 @@
 module.exports = {
-  // optimizeDeps: {
-  //   include: ['@varia/widgets/dist/index.css'],
-  //  },
+  optimizeDeps: {
+    include: ['cuid'],
+    exclude: ['@varia/widgets', '@varia/composables'],
+  },
 }
