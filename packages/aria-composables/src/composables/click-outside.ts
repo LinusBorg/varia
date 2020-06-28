@@ -15,7 +15,7 @@ export function useClickOutside(
         const isOutside = els.every(el => {
           return el !== target && !el?.contains(target as Node)
         })
-        isOutside && cb(event)
+        isOutside && cb()
       })
     })
   })
