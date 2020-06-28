@@ -1,5 +1,5 @@
 import { InjectionKey, inject } from 'vue'
-import { BaseAPI } from '../../../aria-widgets/src/types'
+import { BaseAPI } from '../types'
 export function createInjector<API extends BaseAPI>(
   defaultKey: InjectionKey<API>,
   nameOfInjector: string

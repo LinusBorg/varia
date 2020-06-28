@@ -2,51 +2,16 @@ import { Ref, InjectionKey } from 'vue'
 import { ArrowNavigation, TemplRefType, TemplRef } from '@varia/composables'
 import { Options as PopperOptions } from '@popperjs/core'
 
-/**
- * Base Interfaces for the composite widgets APIs
- * Those are usually provided by a wrapper component to children
- */
-type OptionsBase = Record<string, any>
-
-export interface BaseAPI<Options extends OptionsBase = Record<string, any>> {
-  generateId?: (name: string) => string
-  state?: StateAPIBase
-  arrowNav?: ArrowNavigation
-  elements?: ElementsAPI
-  options?: Options
-  // [key: string]: any
-}
-
-export type StateAPIBase = BooleanStateAPI | SingleStateAPI | SetStateAPI
-
-export interface BooleanStateAPI {
-  selected: Ref<boolean | undefined>
-  select?: () => void
-  unselect?: () => void
-  toggle?: () => void
-}
-export interface SingleStateAPI<Item = string> {
-  selected: Ref<Item>
-  select: (item: Item) => void
-  unselect?: () => void
-}
-
-export interface SetStateAPI<Item = string> {
-  selected: Set<Item>
-  select: (item: Item) => void
-  unselect: (item: Item) => void
-  toggle: (item: Item) => void
-}
-
-export interface ElementsAPI<El = TemplRefType> {
-  triggerEl: Ref<El>
-  contentEl: Ref<El>
-}
+import {
+  BaseAPI,
+  SetStateAPI,
+  SingleStateAPI,
+  BooleanStateAPI,
+} from '@varia/composables'
 
 /**
  * Accordion
  */
-
 export interface AccordionOptions {
   multiple?: boolean
   orientation?: 'horizontal' | 'vertical'
